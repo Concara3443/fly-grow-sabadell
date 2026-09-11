@@ -4,360 +4,234 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fly & Grow Sabadell</title>
-<meta name="description" content="2º Congreso Aeronáutico Universitario · Campus Sabadell, UAB · 5 de mayo de 2027">
+<meta name="description" content="2º Congreso Aeronáutico Universitario. Campus Sabadell, UAB. 5 de mayo de 2027">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* colors, fonts - azul Fly&Grow #223D58 (color corporativo oficial) + verde UAB #008539 */
+/* azul oficial fly&grow #223D58 + verde uab #1FA24C, nada de naranja */
 :root{
-  --bg-deep:#060B12;
-  --bg-surface:#0C1826;
+  --bg-deep:#070C14;
+  --bg-panel:#0E1826;
   --bg-card:#101F30;
-  --color-blue:#223D58;
-  --color-blue-light:#6FA3D8;
-  --color-green:#1FA24C;
-  --color-text:#E7E9ED;
-  --color-muted:#7C90A6;
-  --color-line:rgba(111,163,216,0.22);
-  --font-display:'Bebas Neue',Impact,sans-serif;
-  --font-mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',monospace;
-  --font-body:'Barlow',system-ui,sans-serif;
-  --nav-h:76px;
-  --radius:3px;
+  --blue:#223D58;
+  --blue-bright:#3E90E0;
+  --green:#1FA24C;
+  --paper:#EDEFF0;
+  --text:#E7E9ED;
+  --muted:#7C90A6;
+  --line:rgba(111,163,216,0.18);
+  --display:'Bebas Neue',Impact,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',monospace;
+  --body:'Barlow',system-ui,sans-serif;
+  --nav-h:74px;
+  --r:3px;
 }
 
-/* single dark visual world by design - departure board doesn't get a light mode */
+/* un solo mundo oscuro a proposito, no hace falta light mode aqui */
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{
-  background:var(--bg-deep);
-  color:var(--color-text);
-  font-family:var(--font-body);
-  font-size:16px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-  overflow-x:hidden;
-}
+body{background:var(--bg-deep);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 ul{list-style:none}
 button{font:inherit;cursor:pointer;border:none;background:none;color:inherit}
 section{position:relative;scroll-margin-top:var(--nav-h)}
 .container{max-width:1180px;margin:0 auto;padding:0 32px}
-.eyebrow{
-  font-family:var(--font-mono);
-  color:var(--color-blue-light);
-  text-transform:uppercase;
-  letter-spacing:0.28em;
-  font-size:12.5px;
-  display:inline-flex;
-  align-items:center;
-  gap:10px;
-}
-.eyebrow::before{content:'';width:22px;height:1px;background:var(--color-blue-light)}
-h1,h2,h3{font-family:var(--font-display);letter-spacing:0.03em;text-wrap:balance;line-height:1.02}
-h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
-.section-head{margin-bottom:20px}
-.section-note{color:var(--color-muted);font-size:13.5px;margin-bottom:56px}
-.section-pad{padding:120px 0}
+h1,h2,h3{font-family:var(--display);letter-spacing:0.02em;text-wrap:balance;line-height:1.02}
+h2{font-size:clamp(32px,4.6vw,52px)}
+.section-pad{padding:110px 0}
+.kicker{font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:0.04em}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;}
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
 }
 
-/* scroll fade-ins */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
+/* placa clara pa que los logos se vean de verdad en fondo oscuro */
+.plate{background:var(--paper);border-radius:2px;display:inline-flex;align-items:center;justify-content:center}
 
-/* nav bar */
-.nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  height:var(--nav-h);
-  display:flex;align-items:center;
-  background:transparent;
-  border-bottom:1px solid transparent;
-  transition:background .35s ease,border-color .35s ease;
-}
-.nav.scrolled{background:rgba(6,11,18,0.92);backdrop-filter:blur(8px);border-bottom-color:var(--color-line)}
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);display:flex;align-items:center;background:transparent;border-bottom:1px solid transparent;transition:background .3s ease,border-color .3s ease}
+.nav.scrolled{background:rgba(7,12,20,.94);backdrop-filter:blur(8px);border-bottom-color:var(--line)}
 .nav-inner{width:100%;display:flex;align-items:center;justify-content:space-between}
-.logo-img{height:26px;width:auto;display:block}
-.nav-links{display:flex;align-items:center;gap:38px}
-.nav-links a{
-  position:relative;font-family:var(--font-mono);font-size:12.5px;
-  text-transform:uppercase;letter-spacing:0.15em;color:var(--color-muted);
-  padding-bottom:6px;transition:color .2s ease;
-  display:inline-flex;align-items:center;
-}
-.nav-links a::after{
-  content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;
-  background:var(--color-blue-light);transform:scaleX(0);transform-origin:left;
-  transition:transform .3s ease;
-}
-.nav-links a:hover{color:var(--color-text)}
+.brand{display:flex;align-items:center;gap:10px}
+.brand .plate{padding:8px 14px}
+.brand .plate img{height:24px;width:auto}
+.brand .uabmark{height:26px;width:auto}
+.nav-links{display:flex;align-items:center;gap:34px}
+.nav-links a{position:relative;font-family:var(--mono);font-size:12.5px;color:var(--muted);transition:color .2s ease;padding-bottom:5px}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--blue-bright);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
+.nav-links a:hover{color:var(--text)}
 .nav-links a:hover::after{transform:scaleX(1)}
-.nav-cta{
-  font-family:var(--font-mono);font-size:12px;letter-spacing:0.1em;text-transform:uppercase;
-  border:1px solid var(--color-blue-light);color:var(--color-blue-light);padding:9px 18px;border-radius:var(--radius);
-  transition:background .2s ease,color .2s ease;
-  line-height:1;padding-bottom:9px;
-}
+.nav-cta{border:1px solid var(--blue-bright);color:var(--blue-bright);padding:8px 16px;border-radius:var(--r)}
 .nav-cta::after{display:none}
-.nav-cta:hover{background:var(--color-blue-light);color:var(--bg-deep)}
-.hamburger{display:none;flex-direction:column;gap:5px;width:28px;z-index:200}
-.hamburger span{height:2px;background:var(--color-text);width:100%;transition:transform .3s ease,opacity .3s ease}
-.mobile-menu{
-  position:fixed;inset:0;background:var(--bg-deep);z-index:150;
-  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:28px;
-  padding:0 40px;
-  transform:translateX(100%);transition:transform .4s cubic-bezier(.7,0,.3,1);
-}
+.nav-cta:hover{background:var(--blue-bright);color:var(--bg-deep)}
+.hamburger{display:none;flex-direction:column;gap:5px;width:26px;z-index:200}
+.hamburger span{height:2px;background:var(--text);width:100%}
+.mobile-menu{position:fixed;inset:0;background:var(--bg-deep);z-index:150;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:26px;padding:0 40px;transform:translateX(100%);transition:transform .4s cubic-bezier(.7,0,.3,1)}
 .mobile-menu.open{transform:translateX(0)}
-.mobile-menu a{font-family:var(--font-display);font-size:40px;letter-spacing:0.04em;color:var(--color-text)}
-.mobile-menu .nav-cta{margin-top:12px;font-family:var(--font-display);font-size:22px;letter-spacing:0.04em}
+.mobile-menu a{font-family:var(--display);font-size:38px;color:var(--text)}
 
-/* hero */
-.hero{
-  min-height:100vh;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  padding:calc(var(--nav-h) + 40px) 24px 60px;
-  position:relative;overflow:hidden;
-}
-.hero-bg{position:absolute;inset:0;z-index:0;
-  background-image:radial-gradient(rgba(124,144,166,0.16) 1px,transparent 1px);
-  background-size:30px 30px;
-  mask-image:radial-gradient(ellipse 80% 70% at 50% 45%,#000 40%,transparent 85%);
-}
+/* hero, con el split-flap real de tablon de salidas */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(var(--nav-h) + 30px) 20px 50px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0;background-image:radial-gradient(rgba(124,144,166,.15) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse 80% 70% at 50% 45%,#000 40%,transparent 85%)}
 .radar{position:absolute;top:50%;left:50%;z-index:0;pointer-events:none}
-.radar-ring{
-  position:absolute;top:50%;left:50%;
-  width:120px;height:120px;margin:-60px 0 0 -60px;
-  border:1px solid var(--color-blue-light);border-radius:50%;
-  opacity:0;
-  animation:radarPulse 6s ease-out infinite;
-}
+.radar-ring{position:absolute;top:50%;left:50%;width:120px;height:120px;margin:-60px 0 0 -60px;border:1px solid var(--blue-bright);border-radius:50%;opacity:0;animation:radarPulse 6s ease-out infinite}
 .radar-ring:nth-child(2){animation-delay:1.5s}
 .radar-ring:nth-child(3){animation-delay:3s}
-@keyframes radarPulse{
-  0%{transform:scale(0.3);opacity:0}
-  15%{opacity:0.08}
-  100%{transform:scale(9);opacity:0}
-}
+@keyframes radarPulse{0%{transform:scale(.3);opacity:0}15%{opacity:.08}100%{transform:scale(9);opacity:0}}
 .hero-content{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center}
-.hero-organiza{
-  display:flex;align-items:center;gap:10px;margin-bottom:22px;
-  font-family:var(--font-mono);font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--color-muted);
-  opacity:0;animation:fadeUp .7s ease forwards;
+.flapboard{font-family:var(--display);font-size:clamp(48px,10.5vw,124px);letter-spacing:.02em}
+.flap-line{display:block;white-space:nowrap}
+.flap-char{display:inline-block;transform-origin:50% 50%}
+.flap-char.tick{animation:flapTick .09s linear}
+@keyframes flapTick{0%{transform:scaleY(1)}45%{transform:scaleY(.08);filter:brightness(1.8)}100%{transform:scaleY(1)}}
+.hero-sub{margin-top:20px;font-family:var(--body);font-weight:300;font-size:clamp(15px,2vw,18px);color:var(--muted)}
+.boardingstrip{
+  margin-top:38px;display:flex;background:var(--bg-panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
 }
-.hero-organiza img{height:20px;width:auto;background:#fff;padding:3px 5px;border-radius:2px}
-.hero-eyebrow{opacity:0;animation:fadeUp .7s ease forwards;animation-delay:.1s;margin-bottom:26px}
-.hero h1{
-  font-size:clamp(60px,12vw,140px);
-  opacity:0;animation:fadeUp .8s ease forwards;animation-delay:.25s;
-}
-.hero-atis{
-  margin-top:26px;font-family:var(--font-mono);color:var(--color-blue-light);
-  font-size:clamp(13px,2vw,16px);letter-spacing:0.14em;
-  border:1px solid var(--color-line);border-radius:var(--radius);
-  padding:10px 22px;background:rgba(16,31,48,0.6);
-  opacity:0;animation:fadeUp .7s ease forwards;animation-delay:.45s;
-}
-.countdown{
-  display:flex;gap:14px;margin-top:44px;
-  opacity:0;animation:fadeUp .7s ease forwards;animation-delay:.6s;
-}
-.countdown-box{
-  width:76px;
-  background:var(--bg-surface);border:1px solid var(--color-blue);border-radius:var(--radius);
-  padding:14px 0 10px;
-}
-.countdown-num{
-  font-family:var(--font-mono);font-weight:600;font-size:32px;color:var(--color-text);
-  font-variant-numeric:tabular-nums;
-}
-.countdown-label{
-  font-family:var(--font-mono);font-size:10px;letter-spacing:0.18em;color:var(--color-muted);
-  text-transform:uppercase;margin-top:6px;
-}
-.hero-ctas{display:flex;gap:18px;margin-top:48px;flex-wrap:wrap;justify-content:center;
-  opacity:0;animation:fadeUp .7s ease forwards;animation-delay:.75s;
-}
-.btn{
-  font-family:var(--font-mono);font-size:13px;letter-spacing:0.12em;text-transform:uppercase;
-  padding:15px 30px;border-radius:var(--radius);transition:transform .2s ease,background .2s ease,border-color .2s ease,color .2s ease;
-  display:inline-flex;align-items:center;gap:8px;
-}
+.boardingstrip div{padding:12px 22px;border-right:1px solid var(--line)}
+.boardingstrip div:last-child{border-right:none}
+.boardingstrip .lbl{display:block;font-family:var(--mono);font-size:9.5px;color:var(--muted);letter-spacing:.1em;margin-bottom:4px}
+.boardingstrip .val{font-family:var(--mono);font-size:14px;color:var(--text);font-weight:500}
+.countdown{display:flex;gap:12px;margin-top:36px}
+.countdown-box{width:72px;background:var(--bg-panel);border:1px solid var(--blue);border-radius:var(--r);padding:13px 0 9px}
+.countdown-num{font-family:var(--mono);font-weight:600;font-size:30px;color:var(--text);font-variant-numeric:tabular-nums}
+.countdown-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--muted);margin-top:5px}
+.hero-ctas{display:flex;gap:16px;margin-top:42px;flex-wrap:wrap;justify-content:center}
+.btn{font-family:var(--mono);font-size:13px;padding:14px 28px;border-radius:var(--r);transition:transform .2s ease,background .2s ease,border-color .2s ease,color .2s ease;display:inline-flex;align-items:center;gap:8px}
 .btn:hover{transform:translateY(-2px)}
-.btn-fill{background:#EEF1F5;color:var(--color-blue);border:1px solid #EEF1F5;font-weight:600}
-.btn-fill:hover{background:#ffffff}
-.btn-outline{background:transparent;color:var(--color-text);border:1px solid var(--color-line)}
-.btn-outline:hover{border-color:var(--color-blue-light);color:var(--color-blue-light)}
-@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.btn-fill{background:var(--paper);color:var(--blue);border:1px solid var(--paper);font-weight:600}
+.btn-fill:hover{background:#fff}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn-outline:hover{border-color:var(--blue-bright);color:var(--blue-bright)}
 
-/* sobre section */
-.sobre{background:var(--bg-surface)}
-.sobre::before{
-  content:'';position:absolute;inset:0;pointer-events:none;
-  background-image:repeating-linear-gradient(to bottom,var(--color-line) 0,var(--color-line) 1px,transparent 1px,transparent 120px);
-  opacity:.5;
-}
-.sobre-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:start;position:relative}
-.sobre-text p{color:var(--color-muted);font-size:17px;margin-top:18px;max-width:52ch}
-.sobre-text p:first-of-type{margin-top:20px}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.stat-card{
-  background:var(--bg-card);border:1px solid var(--color-line);border-radius:var(--radius);
-  padding:28px 22px;
-}
-.stat-num{font-family:var(--font-mono);font-weight:600;font-size:clamp(30px,3.5vw,42px);color:var(--color-blue-light);font-variant-numeric:tabular-nums}
-.stat-label{font-family:var(--font-mono);font-size:12px;letter-spacing:0.08em;color:var(--color-muted);text-transform:uppercase;margin-top:8px}
+/* opacidad inicial pa los bloques del hero, se activan por JS al terminar el flap */
+.hero-fade{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.hero-fade.in{opacity:1;transform:translateY(0)}
 
-/* programa timeline */
-.timeline{max-width:820px;margin:0 auto}
-.timeline-item{
-  display:grid;grid-template-columns:120px 1fr;gap:28px;
-  padding:26px 0;border-top:1px solid var(--color-line);
-}
-.timeline-item:last-child{border-bottom:1px solid var(--color-line)}
-.timeline-time{font-family:var(--font-mono);color:var(--color-blue-light);font-size:15px;font-weight:500;padding-top:2px}
-.timeline-title{font-family:var(--font-display);font-size:24px;letter-spacing:0.02em}
-.timeline-desc{color:var(--color-muted);margin-top:6px;font-size:15px;max-width:52ch}
+/* fade generico solo para UN reveal por seccion, no en cada tarjeta */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
 
-/* empresas: paquetes + colaboradores */
-.paquetes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.paquete-card{
-  background:var(--bg-card);border:1px solid var(--color-line);border-radius:var(--radius);
-  padding:28px 22px;transition:transform .25s ease,border-color .25s ease;display:flex;flex-direction:column;
-}
-.paquete-card:hover{transform:translateY(-4px);border-color:var(--color-blue-light)}
-.paquete-card h3{font-size:24px;letter-spacing:0.02em}
-.paquete-price{font-family:var(--font-mono);color:var(--color-blue-light);font-size:22px;margin-top:6px;font-weight:600}
-.paquete-card ul{margin-top:16px;display:flex;flex-direction:column;gap:8px;flex:1}
-.paquete-card li{font-size:13.5px;color:var(--color-muted);padding-left:14px;position:relative}
-.paquete-card li::before{content:'—';position:absolute;left:0;color:var(--color-blue-light)}
-.empresas-cta{margin-top:34px;text-align:center;color:var(--color-muted);font-size:14.5px}
-.empresas-cta a{color:var(--color-blue-light);text-decoration:underline}
-.colabora-head{margin-top:90px;text-align:center}
-.colabora-head .eyebrow{justify-content:center}
-.colabora-grid{
-  margin-top:36px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px;
-}
-.colabora-chip{
-  background:#F3F4F6;border-radius:var(--radius);
-  display:flex;align-items:center;justify-content:center;
-  padding:22px 20px;height:88px;color:#1a1a1a;
-}
-.colabora-chip img,.colabora-chip svg{max-height:40px;max-width:100%;width:auto}
+/* sobre */
+.sobre{background:var(--bg-panel)}
+.sobre::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:repeating-linear-gradient(to bottom,var(--line) 0,var(--line) 1px,transparent 1px,transparent 120px);opacity:.5}
+.sobre-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:64px;align-items:center;position:relative}
+.sobre-text p{color:var(--muted);font-size:17px;margin-top:16px;max-width:56ch}
+.sobre-text p:first-of-type{margin-top:18px}
+.stats-row{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.stat-row{display:flex;align-items:baseline;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line)}
+.stat-num{font-family:var(--mono);font-weight:600;font-size:38px;color:var(--blue-bright);font-variant-numeric:tabular-nums}
+.stat-label{font-family:var(--body);font-size:14.5px;color:var(--muted);text-align:right}
 
-/* speed interviews */
-.speed{background:var(--bg-surface)}
-.speed-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:60px;align-items:start}
-.speed-copy p{color:var(--color-muted);font-size:16px;margin-top:16px;max-width:54ch}
-.speed-list{margin-top:26px;display:flex;flex-direction:column;gap:16px}
-.speed-list li{display:flex;gap:14px;align-items:flex-start;color:var(--color-muted);font-size:15px}
-.speed-list li b{color:var(--color-text);font-weight:600}
-.speed-list .num{
-  font-family:var(--font-mono);color:var(--color-green);font-size:13px;border:1px solid var(--color-line);
-  border-radius:2px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex:none;margin-top:2px;
-}
-.gate-card{
-  background:var(--bg-card);border:1px solid var(--color-blue);border-radius:var(--radius);overflow:hidden;
-}
-.gate-header{
-  background:var(--bg-deep);padding:16px 24px;border-bottom:1px dashed var(--color-line);
-  font-family:var(--font-mono);color:var(--color-blue-light);font-size:12.5px;letter-spacing:0.16em;text-transform:uppercase;
-  display:flex;justify-content:space-between;align-items:center;
-}
-.gate-body{padding:34px 28px 30px}
-.gate-body h3{font-size:30px;margin-bottom:10px}
-.gate-body>p{color:var(--color-muted);font-size:15px;margin-bottom:26px}
-.gate-cta{width:100%;justify-content:center;font-size:14px;padding:17px 20px}
-.gate-fine{font-size:12.5px;color:var(--color-muted);margin-top:18px;line-height:1.5}
-.gate-uab{
-  margin-top:14px;font-family:var(--font-mono);font-size:11.5px;color:var(--color-green);
-  border-top:1px solid var(--color-line);padding-top:14px;letter-spacing:0.02em;
-}
-.process{
-  margin-top:70px;display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:18px;
-}
-.process-step{display:flex;flex-direction:column;align-items:center;gap:10px;flex:1;min-width:140px;text-align:center}
-.process-dot{width:10px;height:10px;border-radius:50%;background:var(--color-green)}
-.process-step span{font-family:var(--font-mono);font-size:12.5px;letter-spacing:0.06em;color:var(--color-text)}
-.process-arrow{color:var(--color-line);font-size:20px;font-family:var(--font-mono)}
+/* programa: como el tablon de verdad, filas de hora/actividad */
+.programa h2{text-align:center}
+.timeline{max-width:760px;margin:44px auto 0}
+.timeline-item{display:grid;grid-template-columns:96px 1fr;gap:26px;padding:22px 0;border-top:1px solid var(--line)}
+.timeline-item:last-child{border-bottom:1px solid var(--line)}
+.timeline-time{font-family:var(--mono);color:var(--blue-bright);font-size:16px;font-weight:500;padding-top:2px}
+.timeline-title{font-family:var(--display);font-size:23px}
+.timeline-desc{color:var(--muted);margin-top:5px;font-size:14.5px;max-width:52ch}
+
+/* colaboradores: ticker que se mueve, no tarjetas repetidas */
+.colabora{padding:70px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.colabora-head{text-align:center;margin-bottom:34px}
+.ticker-wrap{overflow:hidden;mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent);-webkit-mask-image:linear-gradient(to right,transparent,#000 8%,#000 92%,transparent)}
+.ticker-track{display:flex;gap:28px;width:max-content;animation:ticker 32s linear infinite}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-chip{background:var(--paper);border-radius:2px;padding:14px 24px;height:56px;display:flex;align-items:center}
+.ticker-chip img{height:26px;width:auto;max-width:120px;object-fit:contain}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.empresas-link{text-align:center;margin-top:36px;color:var(--muted);font-size:14.5px}
+.empresas-link a{color:var(--blue-bright);border-bottom:1px solid currentColor}
+
+/* entrevistas express, tarjeta tipo billete */
+.speed{background:var(--bg-panel)}
+.speed-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start}
+.speed-copy p{color:var(--muted);font-size:16px;margin-top:14px;max-width:54ch}
+.speed-list{margin-top:22px;display:flex;flex-direction:column;gap:14px}
+.speed-list li{display:flex;gap:14px;align-items:flex-start;color:var(--muted);font-size:15px}
+.speed-list li b{color:var(--text);font-weight:600}
+.speed-list .num{font-family:var(--mono);color:var(--green);font-size:13px;border:1px solid var(--line);border-radius:2px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex:none;margin-top:2px}
+.ticket{background:var(--bg-card);border:1px solid var(--blue);border-radius:var(--r);position:relative}
+.ticket::before,.ticket::after{content:'';position:absolute;width:18px;height:18px;background:var(--bg-panel);border-radius:50%;top:calc(50% - 9px)}
+.ticket::before{left:-9px}
+.ticket::after{right:-9px}
+.ticket-head{padding:16px 24px;border-bottom:1px dashed var(--line);font-family:var(--mono);color:var(--blue-bright);font-size:12px;display:flex;justify-content:space-between}
+.ticket-body{padding:30px 26px}
+.ticket-body h3{font-size:28px;margin-bottom:8px}
+.ticket-body>p{color:var(--muted);font-size:14.5px;margin-bottom:22px}
+.ticket-cta{width:100%;justify-content:center;font-size:14px;padding:16px 20px}
+.ticket-fine{font-size:12.5px;color:var(--muted);margin-top:16px;line-height:1.55}
+.ticket-note{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--green);border-top:1px solid var(--line);padding-top:12px}
+.process{margin-top:60px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.process-step{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;min-width:130px;text-align:center}
+.process-dot{width:9px;height:9px;border-radius:50%;background:var(--green)}
+.process-step span{font-family:var(--mono);font-size:12px;color:var(--text)}
+.process-arrow{color:var(--line);font-size:18px}
 
 /* atc / ivao */
-.atc{background:var(--bg-surface)}
-.atc-panel{
-  max-width:900px;margin:0 auto;background:var(--bg-card);border:1px solid var(--color-line);border-radius:var(--radius);
-  padding:48px;text-align:center;
-}
-.atc-panel p{color:var(--color-muted);font-size:16px;max-width:60ch;margin:16px auto 0}
-.atc-stats{display:flex;gap:40px;margin-top:34px;flex-wrap:wrap;justify-content:center}
-.atc-stat b{display:block;font-family:var(--font-mono);color:var(--color-blue-light);font-size:22px;font-weight:600}
-.atc-stat span{font-family:var(--font-mono);font-size:11px;color:var(--color-muted);letter-spacing:0.06em;text-transform:uppercase}
+.atc-panel{max-width:860px;margin:0 auto;background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);padding:44px;text-align:center}
+.atc-panel h2{margin-bottom:14px}
+.atc-panel p{color:var(--muted);font-size:15.5px;max-width:60ch;margin:0 auto}
+.atc-stats{display:flex;gap:36px;margin-top:30px;flex-wrap:wrap;justify-content:center}
+.atc-stat b{display:block;font-family:var(--mono);color:var(--blue-bright);font-size:21px;font-weight:600}
+.atc-stat span{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.05em}
 
-/* form */
-.inscripcion-wrap{max-width:560px;margin:0 auto}
-.form-card{background:var(--bg-card);border:1px solid var(--color-line);border-radius:var(--radius);padding:44px}
-.field{margin-bottom:22px;display:flex;flex-direction:column;gap:8px}
-.field label{font-family:var(--font-mono);font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-muted)}
-.field input[type=text],.field input[type=email]{
-  background:var(--bg-surface);border:1px solid var(--color-line);border-radius:2px;color:var(--color-text);
-  padding:13px 14px;font-family:var(--font-body);font-size:15px;transition:border-color .2s ease;
-}
-.field input:focus{outline:none;border-color:var(--color-blue-light)}
-.checkbox-row{flex-direction:row;align-items:center;gap:12px}
-.checkbox-row input{width:18px;height:18px;accent-color:var(--color-blue-light)}
-.checkbox-row label{text-transform:none;letter-spacing:0;font-size:14.5px;color:var(--color-text);font-family:var(--font-body)}
-.form-submit{width:100%;justify-content:center;margin-top:8px}
-.form-note{margin-top:16px;font-size:13px;color:var(--color-muted);text-align:center}
-.success-state{display:none;text-align:center;padding:30px 10px}
+/* inscripcion, mismo aire de billete que entrevistas */
+.inscripcion-wrap{max-width:540px;margin:0 auto}
+.form-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);padding:40px}
+.field{margin-bottom:20px;display:flex;flex-direction:column;gap:7px}
+.field label{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.field input[type=text],.field input[type=email]{background:var(--bg-panel);border:1px solid var(--line);border-radius:2px;color:var(--text);padding:12px 13px;font-family:var(--body);font-size:15px;transition:border-color .2s ease}
+.field input:focus{outline:none;border-color:var(--blue-bright)}
+.checkbox-row{flex-direction:row;align-items:center;gap:11px}
+.checkbox-row input{width:17px;height:17px;accent-color:var(--blue-bright)}
+.checkbox-row label{font-size:14.5px;color:var(--text);font-family:var(--body)}
+.form-submit{width:100%;justify-content:center;margin-top:6px}
+.form-note{margin-top:14px;font-size:13px;color:var(--muted);text-align:center}
+.success-state{display:none;text-align:center;padding:26px 6px}
 .success-state.show{display:block}
-.success-icon{
-  width:56px;height:56px;border:1px solid var(--color-green);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;margin:0 auto 22px;color:var(--color-green);font-size:24px;
-}
-.success-state h3{font-size:30px;margin-bottom:10px}
-.success-state p{color:var(--color-muted);font-size:15px}
+.success-icon{width:52px;height:52px;border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;color:var(--green);font-size:22px}
+.success-state h3{font-size:28px;margin-bottom:8px}
+.success-state p{color:var(--muted);font-size:14.5px}
 .form-card.submitted .form-fields{display:none}
 
 /* footer */
-.footer{background:var(--bg-deep);border-top:1px solid var(--color-line);padding:56px 0 36px}
-.footer-inner{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:30px}
-.footer-tag{color:var(--color-muted);font-size:13.5px;margin-top:12px;font-family:var(--font-mono);letter-spacing:0.02em;max-width:38ch}
-.footer-contact{text-align:right}
-.footer-contact a{font-family:var(--font-mono);font-size:13px;color:var(--color-blue-light);text-decoration:underline}
-.footer-contact .addr{color:var(--color-muted);font-size:13px;margin-top:8px;max-width:28ch}
-.footer-bottom{
-  margin-top:44px;padding-top:22px;border-top:1px solid var(--color-line);
-  font-family:var(--font-mono);font-size:12px;color:var(--color-muted);letter-spacing:0.04em;
-}
+.footer{background:var(--bg-deep);border-top:1px solid var(--line);padding:50px 0 32px}
+.footer-inner{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:28px}
+.footer-brand{display:flex;align-items:center;gap:10px}
+.footer-brand .plate{padding:9px 14px}
+.footer-brand .plate img{height:26px;width:auto}
+.footer-brand .uabmark{height:30px;width:auto}
+.footer-tag{color:var(--muted);font-size:13px;margin-top:12px;font-family:var(--mono);max-width:36ch}
+.footer-contact a{font-family:var(--mono);font-size:13px;color:var(--blue-bright);border-bottom:1px solid currentColor}
+.footer-contact .addr{color:var(--muted);font-size:13px;margin-top:8px;max-width:28ch}
+.footer-bottom{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--muted)}
 
-/* mobile */
 @media(max-width:920px){
   .nav-links,.nav .nav-cta{display:none}
   .hamburger{display:flex}
-  .sobre-grid,.speed-grid{grid-template-columns:1fr;gap:44px}
-  .paquetes-grid,.colabora-grid{grid-template-columns:repeat(2,1fr)}
+  .sobre-grid,.speed-grid{grid-template-columns:1fr;gap:40px}
+  .boardingstrip{flex-wrap:wrap;justify-content:center}
+  .footer-inner{flex-direction:column}
   .process{justify-content:flex-start}
   .process-arrow{display:none}
   .process-step{flex-direction:row;text-align:left;min-width:100%}
-  .footer-inner{flex-direction:column}
-  .footer-contact{text-align:left}
 }
 @media(max-width:640px){
   .container{padding:0 20px}
-  .section-pad{padding:80px 0}
-  .paquetes-grid,.colabora-grid{grid-template-columns:1fr}
-  .stats-grid{grid-template-columns:1fr 1fr}
+  .section-pad{padding:76px 0}
   .countdown{gap:8px}
-  .countdown-box{width:64px;padding:10px 0 8px}
-  .countdown-num{font-size:24px}
-  .timeline-item{grid-template-columns:1fr;gap:6px}
-  .form-card{padding:30px 22px}
-  .atc-panel{padding:32px 22px}
+  .countdown-box{width:62px;padding:9px 0 7px}
+  .countdown-num{font-size:22px}
+  .timeline-item{grid-template-columns:1fr;gap:5px}
+  .form-card{padding:28px 20px}
+  .atc-panel{padding:30px 20px}
+  .stat-row{flex-direction:column;align-items:flex-start;gap:4px}
+  .stat-label{text-align:left}
 }
 </style>
 </head>
@@ -365,11 +239,14 @@ h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
 
 <nav class="nav" id="nav">
   <div class="container nav-inner">
-    <a href="#top"><img class="logo-img" src="assets/logo-white.png" alt="Fly & Grow"></a>
+    <a href="#top" class="brand">
+      <span class="plate"><img src="assets/logo-color.png" alt="Fly & Grow"></span>
+      <img class="uabmark" src="assets/uab-acronim.svg" alt="UAB">
+    </a>
     <div class="nav-links">
       <a href="#sobre">Sobre</a>
       <a href="#programa">Programa</a>
-      <a href="#empresas">Empresas</a>
+      <a href="empresas/">Empresas</a>
       <a href="#speed">Entrevistas Express</a>
       <a href="#inscripcion" class="nav-cta">Inscripción</a>
     </div>
@@ -382,36 +259,34 @@ h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
 <div class="mobile-menu" id="mobileMenu">
   <a href="#sobre">Sobre</a>
   <a href="#programa">Programa</a>
-  <a href="#empresas">Empresas</a>
+  <a href="empresas/">Empresas</a>
   <a href="#speed">Entrevistas Express</a>
   <a href="#inscripcion" class="btn btn-fill nav-cta">Inscripción</a>
 </div>
 
 <header class="hero" id="top">
   <div class="hero-bg"></div>
-  <div class="radar">
-    <div class="radar-ring"></div>
-    <div class="radar-ring"></div>
-    <div class="radar-ring"></div>
-  </div>
+  <div class="radar"><div class="radar-ring"></div><div class="radar-ring"></div><div class="radar-ring"></div></div>
   <div class="hero-content">
-    <div class="hero-organiza" style="animation-delay:.05s">
-      <span>Organiza</span>
-      <img src="assets/uab-acronim.svg" alt="UAB">
-      <span>· Grau en Gestió Aeronàutica</span>
+    <h1 class="flapboard" aria-label="Fly and Grow Sabadell">
+      <span class="flap-line" id="flapLine1" aria-hidden="true"></span>
+      <span class="flap-line" id="flapLine2" aria-hidden="true"></span>
+    </h1>
+    <p class="hero-sub hero-fade">2º Congreso Aeronáutico Universitario. Grau en Gestió Aeronàutica, UAB</p>
+    <div class="boardingstrip hero-fade">
+      <div><span class="lbl">Fecha</span><span class="val">05 MAY 2027</span></div>
+      <div><span class="lbl">Hora</span><span class="val">15:00</span></div>
+      <div><span class="lbl">Lugar</span><span class="val">Campus Sabadell</span></div>
     </div>
-    <span class="hero-eyebrow eyebrow">2º Congreso Aeronáutico Universitario</span>
-    <h1>FLY & GROW<br>SABADELL</h1>
-    <div class="hero-atis">05 MAY 2027 · 15:00H · CAMPUS SABADELL, UAB</div>
-    <div class="countdown" id="countdown">
+    <div class="countdown hero-fade" id="countdown">
       <div class="countdown-box"><div class="countdown-num" id="cd-days">000</div><div class="countdown-label">Días</div></div>
       <div class="countdown-box"><div class="countdown-num" id="cd-hours">00</div><div class="countdown-label">Horas</div></div>
       <div class="countdown-box"><div class="countdown-num" id="cd-mins">00</div><div class="countdown-label">Min</div></div>
       <div class="countdown-box"><div class="countdown-num" id="cd-secs">00</div><div class="countdown-label">Seg</div></div>
     </div>
-    <div class="hero-ctas">
+    <div class="hero-ctas hero-fade">
       <a href="#inscripcion" class="btn btn-fill">Inscríbete</a>
-      <a href="#programa" class="btn btn-outline">Ver Programa</a>
+      <a href="#programa" class="btn btn-outline">Ver programa</a>
     </div>
   </div>
 </header>
@@ -419,40 +294,36 @@ h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
 <section class="sobre section-pad" id="sobre">
   <div class="container sobre-grid">
     <div class="sobre-text reveal">
-      <span class="eyebrow">Sobre el congreso</span>
-      <h2>Del aula<br>al hangar</h2>
-      <p>Fly & Grow Sabadell nace de la iniciativa de estudiantes del Grau en Gestió Aeronàutica de la UAB, Campus Sabadell, con un objetivo claro: crear un punto de encuentro entre las empresas del sector aeronáutico y los estudiantes que se están formando específicamente para trabajar en él.</p>
-      <p>El Grau en Gestió Aeronàutica es una titulación prácticamente única a nivel nacional, así que el perfil de quienes se forman aquí es muy específico. Eso convierte cada edición en una oportunidad real de contacto entre talento especializado y empresas del sector.</p>
-      <p>Tras el éxito de la primera edición, la segunda vuelve con stands, ponencias, entrevistas express con empresas y una simulación de control aéreo en directo junto a IVAO España.</p>
+      <span class="kicker">Sobre el congreso</span>
+      <h2>Del aula al hangar</h2>
+      <p>Fly & Grow Sabadell nace de la iniciativa de estudiantes del Grau en Gestió Aeronàutica de la UAB, Campus Sabadell. La idea es simple: poner en la misma sala a empresas del sector aeronáutico y a los estudiantes que se están formando específicamente para trabajar en él.</p>
+      <p>El Grau en Gestió Aeronàutica es una titulación prácticamente única a nivel nacional, así que el perfil de quienes se forman aquí es muy concreto. Eso convierte cada edición en un punto de contacto real entre talento especializado y empresas que lo buscan.</p>
+      <p>Tras la primera edición, la segunda vuelve con stands, ponencias, entrevistas express con empresas y una simulación de control aéreo en directo junto a IVAO España.</p>
     </div>
-    <div class="stats-grid">
-      <div class="stat-card reveal"><div class="stat-num" data-count="2" data-suffix="ª">0</div><div class="stat-label">Edición</div></div>
-      <div class="stat-card reveal"><div class="stat-num" data-count="90" data-suffix="+">0</div><div class="stat-label">Asistentes 1ª ed.</div></div>
-      <div class="stat-card reveal"><div class="stat-num" data-count="4">0</div><div class="stat-label">Modalidades empresa</div></div>
-      <div class="stat-card reveal"><div class="stat-num" data-count="5">0</div><div class="stat-label">Posiciones ATC</div></div>
+    <div class="stats-row">
+      <div class="stat-row"><span class="stat-num">2ª</span><span class="stat-label">Edición</span></div>
+      <div class="stat-row"><span class="stat-num">150</span><span class="stat-label">Asistentes en la 1ª edición</span></div>
+      <div class="stat-row"><span class="stat-num">5</span><span class="stat-label">Posiciones ATC con IVAO España</span></div>
     </div>
   </div>
 </section>
 
 <section class="programa section-pad" id="programa">
   <div class="container">
-    <div class="section-head reveal" style="text-align:center">
-      <span class="eyebrow" style="justify-content:center">Programa</span>
-      <h2>Itinerario del día</h2>
-    </div>
-    <p class="section-note reveal" style="text-align:center">Estructura orientativa — se confirma en firme al cerrar las empresas participantes.</p>
+    <span class="kicker" style="display:block;text-align:center">Itinerario del día</span>
+    <h2>Programa</h2>
     <div class="timeline">
       <div class="timeline-item reveal">
         <div class="timeline-time">15:00</div>
-        <div><div class="timeline-title">Apertura</div><div class="timeline-desc">Stands abiertos, ponencias de empresas en el Aula 12 y actividades lúdicas en paralelo — entre ellas, control aéreo en directo con IVAO España.</div></div>
+        <div><div class="timeline-title">Apertura</div><div class="timeline-desc">Stands abiertos, ponencias de empresas en el Aula 12 y actividades lúdicas en paralelo, entre ellas el control aéreo en directo con IVAO España.</div></div>
       </div>
       <div class="timeline-item reveal">
         <div class="timeline-time">17:30</div>
-        <div><div class="timeline-title">Charlas del sector</div><div class="timeline-desc">Profesionales en activo y exalumnos del grado comparten su experiencia y la realidad laboral que espera al salir.</div></div>
+        <div><div class="timeline-title">Charlas del sector</div><div class="timeline-desc">Profesionales en activo y exalumnos del grado cuentan cómo es la realidad laboral que espera al salir.</div></div>
       </div>
       <div class="timeline-item reveal">
         <div class="timeline-time">19:30</div>
-        <div><div class="timeline-title">Networking y Entrevistas Express</div><div class="timeline-desc">Espacio abierto de contacto con empresas y, en paralelo, entrevistas de 5-10 min con estudiantes preinscritos.</div></div>
+        <div><div class="timeline-title">Networking y Entrevistas Express</div><div class="timeline-desc">Espacio abierto de contacto con empresas y, en paralelo, entrevistas de 5 a 10 minutos con estudiantes preinscritos.</div></div>
       </div>
       <div class="timeline-item reveal">
         <div class="timeline-time">20:00</div>
@@ -466,65 +337,25 @@ h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
   </div>
 </section>
 
-<section class="empresas section-pad" id="empresas">
+<section class="colabora">
   <div class="container">
-    <div class="section-head reveal" style="text-align:center">
-      <span class="eyebrow" style="justify-content:center">Para empresas</span>
-      <h2>Modalidades de participación</h2>
-    </div>
-    <p class="section-note reveal" style="text-align:center">Acceso directo a estudiantes del Grau en Gestió Aeronàutica de la UAB. Elige el paquete que mejor encaje con tu empresa.</p>
-    <div class="paquetes-grid">
-      <div class="paquete-card reveal">
-        <h3>Despegue</h3>
-        <div class="paquete-price">175€</div>
-        <ul>
-          <li>Stand informativo toda la jornada (15:00-20:00h)</li>
-        </ul>
-      </div>
-      <div class="paquete-card reveal">
-        <h3>Conexión</h3>
-        <div class="paquete-price">250€</div>
-        <ul>
-          <li>Stand informativo toda la jornada</li>
-          <li>Entrevistas Express con estudiantes preinscritos</li>
-          <li>Pack Visibilidad (photocall + redes + mención)</li>
-        </ul>
-      </div>
-      <div class="paquete-card reveal">
-        <h3>Altitud</h3>
-        <div class="paquete-price">275€</div>
-        <ul>
-          <li>Stand informativo toda la jornada</li>
-          <li>Ponencia de hasta 30 min en el Aula 12 (aforo 160)</li>
-        </ul>
-      </div>
-      <div class="paquete-card reveal">
-        <h3>Primera Clase</h3>
-        <div class="paquete-price">400€</div>
-        <ul>
-          <li>Stand informativo toda la jornada</li>
-          <li>Ponencia de hasta 30 min</li>
-          <li>Entrevistas Express con estudiantes preinscritos</li>
-          <li>Pack Visibilidad (photocall + redes + mención)</li>
-        </ul>
-      </div>
-    </div>
-    <p class="empresas-cta reveal">La participación se confirma por correo — escríbenos a <a href="mailto:flyandgrow.sabadell@gmail.com">flyandgrow.sabadell@gmail.com</a> indicando el paquete que os interesa.</p>
-
     <div class="colabora-head reveal">
-      <span class="eyebrow">Colaboran con nosotros</span>
-      <h2 style="font-size:clamp(26px,3vw,34px)">Entidades del sector</h2>
+      <span class="kicker">Colaboran con nosotros</span>
+      <h2 style="font-size:clamp(26px,3vw,32px)">Entidades del sector</h2>
     </div>
-    <div class="colabora-grid reveal">
-      <div class="colabora-chip"><img src="assets/collab/aena.png" alt="AENA" loading="lazy"></div>
-      <div class="colabora-chip"><img src="assets/collab/bfs.png" alt="Barcelona Flight School" loading="lazy"></div>
-      <div class="colabora-chip"><img src="assets/collab/enaire.png" alt="ENAIRE" loading="lazy"></div>
-      <div class="colabora-chip"><img src="assets/collab/volotea.svg" alt="Volotea" loading="lazy"></div>
-      <div class="colabora-chip"><img src="assets/collab/hangar10.jpeg" alt="Hangar 10" loading="lazy"></div>
-      <div class="colabora-chip"><img src="assets/collab/itaerea.svg" alt="ITAérea" loading="lazy"></div>
-      <div class="colabora-chip"><img src="assets/collab/aeae.png" alt="AEAE" loading="lazy"></div>
-      <div class="colabora-chip"><img src="assets/collab/ivao.png" alt="IVAO España" loading="lazy"></div>
+    <div class="ticker-wrap">
+      <div class="ticker-track" id="tickerTrack">
+        <div class="ticker-chip"><img src="assets/collab/aena.png" alt="AENA"></div>
+        <div class="ticker-chip"><img src="assets/collab/bfs.png" alt="Barcelona Flight School"></div>
+        <div class="ticker-chip"><img src="assets/collab/enaire.png" alt="ENAIRE"></div>
+        <div class="ticker-chip"><img src="assets/collab/volotea.svg" alt="Volotea"></div>
+        <div class="ticker-chip"><img src="assets/collab/hangar10.jpeg" alt="Hangar 10"></div>
+        <div class="ticker-chip"><img src="assets/collab/itaerea.svg" alt="ITAérea"></div>
+        <div class="ticker-chip"><img src="assets/collab/aeae.png" alt="AEAE"></div>
+        <div class="ticker-chip"><img src="assets/collab/ivao.png" alt="IVAO España"></div>
+      </div>
     </div>
+    <p class="empresas-link">¿Sois una empresa del sector? <a href="empresas/">Mirad cómo colaborar</a></p>
   </div>
 </section>
 
@@ -532,27 +363,24 @@ h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
   <div class="container">
     <div class="speed-grid">
       <div class="speed-copy reveal">
-        <span class="eyebrow">Entrevistas Express</span>
-        <h2>Minutos que<br>abren puertas</h2>
-        <p>Antes del congreso, cada estudiante interesado se preinscribe indicando sus datos, el curso que hace y su CV. Las empresas revisan los perfiles con antelación.</p>
+        <span class="kicker">Entrevistas Express</span>
+        <h2>Minutos que abren puertas</h2>
+        <p>Antes del congreso, cada estudiante interesado se preinscribe con sus datos, el curso que hace y su CV. Las empresas revisan los perfiles con antelación.</p>
         <p>El día del evento, entrevistas rotativas de 5 a 10 minutos en un espacio dedicado, pensadas para que empresa y estudiante se conozcan sin depender de un proceso de selección largo.</p>
         <ul class="speed-list">
-          <li><span class="num">1</span><span><b>Preinscripción</b> — el estudiante deja sus datos y CV antes de la fecha límite.</span></li>
-          <li><span class="num">2</span><span><b>Revisión por empresas</b> — cada empresa elige los perfiles que le interesan.</span></li>
-          <li><span class="num">3</span><span><b>Entrevistas de 5-10 min</b> — el día del congreso, en formato rotativo.</span></li>
+          <li><span class="num">1</span><span><b>Preinscripción</b>: dejas tus datos y tu CV antes de la fecha límite.</span></li>
+          <li><span class="num">2</span><span><b>Revisión por empresas</b>: cada una elige los perfiles que le interesan.</span></li>
+          <li><span class="num">3</span><span><b>Entrevistas de 5 a 10 min</b>: el día del congreso, en formato rotativo.</span></li>
         </ul>
       </div>
-      <div class="gate-card reveal">
-        <div class="gate-header">
-          <span>Puerta de embarque</span>
-          <span>Entrevistas Express</span>
-        </div>
-        <div class="gate-body">
+      <div class="ticket reveal">
+        <div class="ticket-head"><span>Puerta de embarque</span><span>Entrevistas Express</span></div>
+        <div class="ticket-body">
           <h3>Reserva tu plaza</h3>
           <p>Crea tu perfil de candidato para entrar en el proceso de selección de las empresas participantes.</p>
-          <a href="https://app.memenginy.cat" class="btn btn-fill gate-cta" target="_blank" rel="noopener">Crear mi perfil →</a>
-          <p class="gate-fine">Las empresas contactarán directamente a los candidatos seleccionados antes del evento. La realización de las entrevistas depende del número de preinscripciones recibidas.</p>
-          <p class="gate-uab">Plataforma provisional (MEMEnginy HUB) — pendiente de confirmación final. Necesitarás tu correo UAB para acceder.</p>
+          <a href="https://app.memenginy.cat" class="btn btn-fill ticket-cta" target="_blank" rel="noopener">Crear mi perfil</a>
+          <p class="ticket-fine">Las empresas contactarán directamente a los candidatos seleccionados antes del evento. Si hay pocas preinscripciones, puede que este año no se hagan.</p>
+          <p class="ticket-note">Plataforma provisional (MEMEnginy HUB), pendiente de confirmación final. Hace falta correo UAB para entrar.</p>
         </div>
       </div>
     </div>
@@ -563,19 +391,17 @@ h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
       <span class="process-arrow">→</span>
       <div class="process-step"><span class="process-dot"></span><span>Te contactan</span></div>
       <span class="process-arrow">→</span>
-      <div class="process-step"><span class="process-dot"></span><span>¡Entrevista!</span></div>
+      <div class="process-step"><span class="process-dot"></span><span>Entrevista</span></div>
     </div>
   </div>
 </section>
 
-<section class="atc section-pad">
+<section class="section-pad">
   <div class="container">
-    <div class="section-head reveal" style="text-align:center">
-      <span class="eyebrow" style="justify-content:center">Actividades lúdicas</span>
-      <h2>Control aéreo en directo</h2>
-    </div>
     <div class="atc-panel reveal">
-      <p>Durante toda la tarde, controladores de IVAO España simulan en directo el control de tráfico aéreo del aeropuerto de Barcelona-El Prat (LEBL), con posiciones reales de torre y aproximación. Parte del equipo tiene también licencia ATC real.</p>
+      <span class="kicker">Actividades lúdicas</span>
+      <h2>Control aéreo en directo</h2>
+      <p>Durante toda la tarde, controladores de IVAO España simulan en directo el tráfico del aeropuerto de Barcelona-El Prat (LEBL), con posiciones reales de torre y aproximación. Parte del equipo tiene también licencia ATC real.</p>
       <div class="atc-stats">
         <div class="atc-stat"><b>LEBL</b><span>Aeropuerto simulado</span></div>
         <div class="atc-stat"><b>5</b><span>Posiciones ATC</span></div>
@@ -587,11 +413,9 @@ h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
 
 <section class="inscripcion section-pad" id="inscripcion">
   <div class="container">
-    <div class="section-head reveal" style="text-align:center">
-      <span class="eyebrow" style="justify-content:center">Inscripción</span>
-      <h2>Reserva tu asiento</h2>
-    </div>
-    <div class="inscripcion-wrap reveal">
+    <span class="kicker" style="display:block;text-align:center">Reserva tu asiento</span>
+    <h2 style="text-align:center">Inscripción</h2>
+    <div class="inscripcion-wrap reveal" style="margin-top:36px">
       <div class="form-card" id="formCard">
         <form class="form-fields" id="regForm">
           <div class="field">
@@ -604,7 +428,7 @@ h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
           </div>
           <div class="field">
             <label for="uni">Universidad / Grado</label>
-            <input type="text" id="uni" name="uni" required placeholder="Ej: UAB — Gestió Aeronàutica">
+            <input type="text" id="uni" name="uni" required placeholder="Ej: UAB, Gestió Aeronàutica">
           </div>
           <div class="field checkbox-row">
             <input type="checkbox" id="speedcheck" name="speedcheck">
@@ -627,89 +451,99 @@ h2{font-size:clamp(34px,5vw,56px);margin-top:14px}
   <div class="container">
     <div class="footer-inner">
       <div>
-        <a href="#top"><img class="logo-img" src="assets/logo-white.png" alt="Fly & Grow"></a>
-        <p class="footer-tag">Grau en Gestió Aeronàutica · Escola d'Enginyeria · UAB Campus Sabadell</p>
+        <a href="#top" class="footer-brand">
+          <span class="plate"><img src="assets/logo-color.png" alt="Fly & Grow"></span>
+          <img class="uabmark" src="assets/uab-acronim.svg" alt="UAB">
+        </a>
+        <p class="footer-tag">Grau en Gestió Aeronàutica, Escola d'Enginyeria, UAB Campus Sabadell</p>
       </div>
       <div class="footer-contact">
         <a href="mailto:flyandgrow.sabadell@gmail.com">flyandgrow.sabadell@gmail.com</a>
-        <p class="addr">Carrer Emprius, 2 · 08202 Sabadell, Barcelona</p>
+        <p class="addr">Carrer Emprius, 2. 08202 Sabadell, Barcelona</p>
       </div>
     </div>
-    <div class="footer-bottom">© 2027 Fly & Grow Sabadell — Grau en Gestió Aeronàutica, UAB Campus Sabadell</div>
+    <div class="footer-bottom">© 2027 Fly & Grow Sabadell. Grau en Gestió Aeronàutica, UAB Campus Sabadell</div>
   </div>
 </footer>
 
 <script>
-// nav bg on scroll
+// nav pilla fondo al hacer scroll
 const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 80);
-});
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 80));
 
-// mobile menu toggle
+// menu movil
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
-hamburger.addEventListener('click', () => {
-  mobileMenu.classList.toggle('open');
-  hamburger.classList.toggle('open');
-});
+hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
 mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
 
-// countdown to congress
+// countdown al congreso
 const target = new Date('2027-05-05T15:00:00').getTime();
 function tickCountdown(){
-  const now = Date.now();
-  let diff = Math.max(0, target - now);
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  const mins = Math.floor((diff % 3600000) / 60000);
-  const secs = Math.floor((diff % 60000) / 1000);
-  document.getElementById('cd-days').textContent = String(days).padStart(3,'0');
-  document.getElementById('cd-hours').textContent = String(hours).padStart(2,'0');
-  document.getElementById('cd-mins').textContent = String(mins).padStart(2,'0');
-  document.getElementById('cd-secs').textContent = String(secs).padStart(2,'0');
+  const diff = Math.max(0, target - Date.now());
+  document.getElementById('cd-days').textContent = String(Math.floor(diff/86400000)).padStart(3,'0');
+  document.getElementById('cd-hours').textContent = String(Math.floor(diff%86400000/3600000)).padStart(2,'0');
+  document.getElementById('cd-mins').textContent = String(Math.floor(diff%3600000/60000)).padStart(2,'0');
+  document.getElementById('cd-secs').textContent = String(Math.floor(diff%60000/1000)).padStart(2,'0');
 }
 tickCountdown();
 setInterval(tickCountdown, 1000);
 
-// scroll reveal
-const revealEls = document.querySelectorAll('.reveal');
-revealEls.forEach((el, i) => {
-  el.style.transitionDelay = (i % 6) * 0.08 + 's';
-});
+// tablon split-flap de verdad pal titulo, letra a letra
+const FLAP_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ&';
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function buildFlapLine(el, text, baseDelay){
+  el.innerHTML = '';
+  [...text].forEach((ch, i) => {
+    const span = document.createElement('span');
+    span.className = 'flap-char';
+    if (ch === ' '){
+      span.innerHTML = '&nbsp;';
+      el.appendChild(span);
+      return;
+    }
+    if (reduceMotion){
+      span.textContent = ch;
+      el.appendChild(span);
+      return;
+    }
+    span.textContent = FLAP_CHARS[Math.floor(Math.random()*FLAP_CHARS.length)];
+    el.appendChild(span);
+    const ticks = 7 + Math.floor(Math.random()*5);
+    let t = 0;
+    setTimeout(() => {
+      const iv = setInterval(() => {
+        t++;
+        span.textContent = t >= ticks ? ch : FLAP_CHARS[Math.floor(Math.random()*FLAP_CHARS.length)];
+        span.classList.remove('tick'); void span.offsetWidth; span.classList.add('tick');
+        if (t >= ticks) clearInterval(iv);
+      }, 55);
+    }, baseDelay + i*40);
+  });
+}
+buildFlapLine(document.getElementById('flapLine1'), 'FLY & GROW', 100);
+buildFlapLine(document.getElementById('flapLine2'), 'SABADELL', 500);
+
+// resto del hero entra despues del flap
+setTimeout(() => document.querySelectorAll('.hero-fade').forEach((el,i) => setTimeout(()=>el.classList.add('in'), i*100)), reduceMotion ? 0 : 1300);
+
+// reveal on scroll, uno por seccion, no en cada tarjeta suelta
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting) {
+    if (entry.isIntersecting){
       entry.target.classList.add('visible');
       revealObserver.unobserve(entry.target);
     }
   });
 }, { threshold: 0.15 });
-revealEls.forEach(el => revealObserver.observe(el));
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-// stat counters count up once visible
-const counters = document.querySelectorAll('.stat-num');
-const counterObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (!entry.isIntersecting) return;
-    const el = entry.target;
-    const target = parseInt(el.dataset.count, 10);
-    const suffix = el.dataset.suffix || '';
-    const duration = 1400;
-    const start = performance.now();
-    function step(now){
-      const p = Math.min(1, (now - start) / duration);
-      const eased = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.round(eased * target) + suffix;
-      if (p < 1) requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-    counterObserver.unobserve(el);
-  });
-}, { threshold: 0.4 });
-counters.forEach(el => counterObserver.observe(el));
+// ticker duplicado pa que el loop no se note
+const track = document.getElementById('tickerTrack');
+track.innerHTML += track.innerHTML;
 
-// fake inscripcion submit - no backend, just show success state
+// form fake, no hay backend, solo estado visual
 const regForm = document.getElementById('regForm');
 const formCard = document.getElementById('formCard');
 const successState = document.getElementById('successState');
