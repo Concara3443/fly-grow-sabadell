@@ -99,9 +99,19 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 .boardingstrip .val{font-family:var(--mono);font-size:14px;color:var(--text);font-weight:500}
 .countdown{display:flex;gap:12px;margin-top:36px}
 .countdown-box{width:72px;background:var(--bg-panel);border:1px solid var(--blue);border-radius:var(--r);padding:13px 0 9px}
-.countdown-num{font-family:var(--mono);font-weight:600;font-size:30px;color:var(--text);font-variant-numeric:tabular-nums;text-align:center}
-.countdown-num .digit{display:inline-block}
+.countdown-num{display:flex;justify-content:center;gap:2px;font-family:var(--mono);font-weight:600;font-size:30px;color:var(--text)}
 .countdown-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--muted);margin-top:5px}
+
+/* marcador de solapas de verdad pal contador: dos mitades fijas + dos que giran en 3D */
+.flapdigit{position:relative;display:inline-block;width:.62em;height:1em;perspective:3.2em}
+.flapdigit::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.5);z-index:5}
+.flapdigit .half{position:absolute;left:0;right:0;overflow:hidden;display:flex;justify-content:center;background:var(--bg-card);border-radius:1px}
+.flapdigit .half.top{top:0;height:50%;align-items:flex-start}
+.flapdigit .half.bottom{bottom:0;height:50%;align-items:flex-end}
+.flapdigit .half .g{display:block;height:1em;line-height:1em;font-variant-numeric:tabular-nums}
+.flapdigit .leaf{z-index:4}
+.flapdigit .leaf.top{transform-origin:bottom center}
+.flapdigit .leaf.bottom{transform-origin:top center;z-index:3}
 .hero-ctas{display:flex;gap:16px;margin-top:42px;flex-wrap:wrap;justify-content:center}
 .btn{font-family:var(--mono);font-size:13px;padding:14px 28px;border-radius:var(--r);transition:transform .2s ease,background .2s ease,border-color .2s ease,color .2s ease;display:inline-flex;align-items:center;gap:8px}
 .btn:hover{transform:translateY(-2px)}
@@ -487,30 +497,69 @@ const mobileMenu = document.getElementById('mobileMenu');
 hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
 mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
 
-// countdown al congreso, digitos sueltos que giran tipo panel mecanico de aeropuerto
+// countdown al congreso con marcador de solapas real: mitad fija arriba/abajo
+// + dos hojas que giran en 3D para tapar el numero viejo y destapar el nuevo
 const target = new Date('2027-05-05T15:00:00').getTime();
+
+function makeGlyph(ch){
+  const g = document.createElement('span');
+  g.className = 'g';
+  g.textContent = ch;
+  return g;
+}
+
+function makeFlapDigit(){
+  const cell = document.createElement('span');
+  cell.className = 'flapdigit';
+  const topStatic = document.createElement('span'); topStatic.className = 'half top';
+  const botStatic = document.createElement('span'); botStatic.className = 'half bottom';
+  const topLeaf = document.createElement('span'); topLeaf.className = 'half top leaf top';
+  const botLeaf = document.createElement('span'); botLeaf.className = 'half bottom leaf bottom';
+  cell.append(topStatic, botStatic, topLeaf, botLeaf);
+  let current = null;
+  function paint(ch){
+    [topStatic, botStatic, topLeaf, botLeaf].forEach(el => { el.innerHTML=''; el.appendChild(makeGlyph(ch)); });
+  }
+  cell.set = (ch) => {
+    if (ch === current){ return; }
+    if (current === null || reduceMotion){
+      paint(ch);
+      current = ch;
+      return;
+    }
+    topLeaf.innerHTML=''; topLeaf.appendChild(makeGlyph(current));
+    botLeaf.innerHTML=''; botLeaf.appendChild(makeGlyph(ch));
+    topStatic.innerHTML=''; topStatic.appendChild(makeGlyph(ch));
+    botStatic.innerHTML=''; botStatic.appendChild(makeGlyph(ch));
+    topLeaf.style.transform = 'rotateX(0deg)';
+    botLeaf.style.transform = 'rotateX(90deg)';
+    topLeaf.animate(
+      [{ transform:'rotateX(0deg)' }, { transform:'rotateX(-90deg)' }],
+      { duration:130, easing:'ease-in', fill:'forwards' }
+    ).finished.then(() => {
+      botLeaf.animate(
+        [{ transform:'rotateX(90deg)' }, { transform:'rotateX(0deg)' }],
+        { duration:130, easing:'ease-out', fill:'forwards' }
+      );
+    }).catch(() => {});
+    current = ch;
+  };
+  return cell;
+}
 
 function initDigits(id, count){
   const el = document.getElementById(id);
+  el.digits = [];
   for(let i=0;i<count;i++){
-    const d = document.createElement('span');
-    d.className = 'digit';
-    d.textContent = '0';
-    el.appendChild(d);
+    const cell = makeFlapDigit();
+    el.appendChild(cell);
+    el.digits.push(cell);
   }
 }
 ['cd-days','cd-hours','cd-mins','cd-secs'].forEach((id,i) => initDigits(id, i===0?3:2));
 
 function setDigits(id, value){
-  const digits = document.getElementById(id).children;
-  for(let i=0;i<digits.length;i++){
-    if(digits[i].textContent !== value[i]){
-      digits[i].textContent = value[i];
-      if(!reduceMotion){
-        digits[i].classList.remove('tick'); void digits[i].offsetWidth; digits[i].classList.add('tick');
-      }
-    }
-  }
+  document.getElementById(id).digits.forEach((cell, i) => cell.set(value[i]));
 }
 
 function tickCountdown(){
