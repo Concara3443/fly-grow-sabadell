@@ -229,6 +229,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 .checkbox-row label{font-size:14.5px;color:var(--text);font-family:var(--body)}
 .form-submit{width:100%;justify-content:center;margin-top:6px}
 .form-note{margin-top:14px;font-size:13px;color:var(--muted);text-align:center}
+.form-error{margin-top:10px;font-size:13px;color:#e0473e;text-align:center}
 .success-state{display:none;text-align:center;padding:26px 6px}
 .success-state.show{display:block}
 .success-icon{width:52px;height:52px;border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;color:var(--green);font-size:22px}
@@ -502,6 +503,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
           </div>
           <button type="submit" class="btn btn-fill form-submit">Confirmar inscripción</button>
           <p class="form-note">La inscripción es gratuita y sin compromiso.</p>
+          <p class="form-error" id="formError" hidden>No se ha podido enviar la inscripción. Inténtalo de nuevo en unos minutos.</p>
         </form>
         <div class="success-state" id="successState">
           <div class="success-icon">✓</div>
@@ -684,14 +686,39 @@ setTimeout(() => document.querySelectorAll('.hero-fade').forEach((el,i) => setTi
 const track = document.getElementById('tickerTrack');
 track.innerHTML += track.innerHTML;
 
-// form fake, no hay backend, solo estado visual
 const regForm = document.getElementById('regForm');
 const formCard = document.getElementById('formCard');
 const successState = document.getElementById('successState');
-regForm.addEventListener('submit', (e) => {
+const formError = document.getElementById('formError');
+const formSubmitBtn = regForm.querySelector('.form-submit');
+
+regForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-  formCard.classList.add('submitted');
-  successState.classList.add('show');
+  formError.hidden = true;
+  formSubmitBtn.disabled = true;
+  formSubmitBtn.textContent = 'Enviando...';
+
+  const data = {
+    nombre: document.getElementById('nombre').value,
+    email: document.getElementById('email').value,
+    uni: document.getElementById('uni').value,
+    speedcheck: document.getElementById('speedcheck').checked,
+  };
+
+  try {
+    const res = await fetch('/api/inscripcion', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('respuesta no ok');
+    formCard.classList.add('submitted');
+    successState.classList.add('show');
+  } catch {
+    formError.hidden = false;
+    formSubmitBtn.disabled = false;
+    formSubmitBtn.textContent = 'Confirmar inscripción';
+  }
 });
 </script>
 </body>
