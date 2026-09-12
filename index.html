@@ -20,6 +20,7 @@
   --paper:#EDEFF0;
   --text:#E7E9ED;
   --muted:#7C90A6;
+  --amber:#F2B84C;
   --line:rgba(111,163,216,0.18);
   --display:'Bebas Neue',Impact,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',monospace;
@@ -46,6 +47,32 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+
+/* fondo de aeropuerto: cielo arriba, pista y torre abajo, controlado por --p (0=arriba pagina, 1=abajo del todo) */
+/* placeholders CSS/SVG, sin imagenes: cuando haya arte real solo hay que sustituir el contenido de cada capa */
+.airport-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.ab-sky{position:absolute;inset:0}
+.ab-sky-day{background:linear-gradient(to bottom,#14273b 0%,#1c3854 30%,#2a5478 65%,#3e78a3 100%)}
+.ab-sky-ground{background:linear-gradient(to bottom,#14273b 0%,#1c3854 25%,#2c4e56 55%,#35473c 100%);opacity:var(--p,0)}
+.ab-layer{position:absolute;inset:0;will-change:transform}
+.ab-clouds .cloud{position:absolute;border-radius:50%;background:rgba(255,255,255,.16);filter:blur(6px);transform:translateY(calc(var(--p,0) * 40px))}
+.ab-clouds .c1{width:220px;height:60px;top:14%;left:8%}
+.ab-clouds .c2{width:160px;height:46px;top:24%;right:12%}
+.ab-clouds .c3{width:260px;height:70px;top:8%;left:46%}
+.ab-planes .plane{position:absolute;opacity:.55;fill:var(--text);transform:translateY(calc(var(--p,0) * 70px));animation:planeDrift 40s linear infinite}
+.ab-planes .p1{top:18%;left:-40px;width:30px;animation-delay:0s}
+.ab-planes .p2{top:32%;left:-40px;width:22px;animation-duration:55s;animation-delay:-20s}
+@keyframes planeDrift{from{transform:translate(0,calc(var(--p,0) * 70px))}to{transform:translate(calc(100vw + 80px),calc(var(--p,0) * 70px))}}
+.ab-runway{transform:translateY(calc((1 - var(--p,0)) * 42vh));opacity:var(--p,0);will-change:transform,opacity}
+.runway-strip{position:absolute;left:50%;bottom:0;width:140vw;max-width:1400px;height:46vh;transform:translateX(-50%);background:linear-gradient(to top,#2b323b 0%,#3a4652 60%,transparent 100%);clip-path:polygon(38% 0%,62% 0%,88% 100%,12% 100%)}
+.runway-strip::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:4px;transform:translateX(-50%);background:repeating-linear-gradient(to bottom,rgba(255,255,255,.8) 0 26px,transparent 26px 52px)}
+.ab-tower{right:6%;bottom:4vh;left:auto;top:auto;transform:translateY(calc((1 - var(--p,0)) * 55vh));opacity:var(--p,0);will-change:transform,opacity}
+.ab-tower svg{display:block}
+.tower-light{animation:towerBlink 1.6s steps(1) infinite}
+@keyframes towerBlink{0%,49%{opacity:1}50%,100%{opacity:.15}}
+@media(prefers-reduced-motion:reduce){
+  .ab-clouds .cloud,.ab-planes .plane{animation:none;transform:none}
 }
 
 /* placa clara pa que los logos se vean de verdad en fondo oscuro */
@@ -98,13 +125,14 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 .boardingstrip .lbl{display:block;font-family:var(--mono);font-size:9.5px;color:var(--muted);letter-spacing:.1em;margin-bottom:4px}
 .boardingstrip .val{font-family:var(--mono);font-size:14px;color:var(--text);font-weight:500}
 .countdown{display:flex;gap:12px;margin-top:36px}
-.countdown-box{width:72px;background:var(--bg-panel);border:1px solid var(--blue);border-radius:var(--r);padding:13px 0 9px}
-.countdown-num{display:flex;justify-content:center;gap:2px;font-family:var(--mono);font-weight:600;font-size:30px;color:var(--text)}
+.countdown-box{width:96px;padding:18px 0 12px}
+.countdown-num{display:flex;justify-content:center;gap:2px;font-family:var(--mono);font-weight:600;font-size:42px;color:var(--amber)}
 .countdown-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--muted);margin-top:5px}
 
 /* marcador de solapas de verdad pal contador: dos mitades fijas + dos que giran en 3D */
 .flapdigit{position:relative;display:inline-block;width:.62em;height:1em;perspective:3.2em}
 .flapdigit::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.5);z-index:5}
+.flapdigit{box-shadow:0 3px 10px rgba(0,0,0,.4)}
 .flapdigit .half{position:absolute;left:0;right:0;overflow:hidden;display:flex;justify-content:center;background:var(--bg-card);border-radius:1px}
 .flapdigit .half.top{top:0;height:50%;align-items:flex-start}
 .flapdigit .half.bottom{bottom:0;height:50%;align-items:flex-end}
@@ -123,10 +151,6 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 /* opacidad inicial pa los bloques del hero, se activan por JS al terminar el flap */
 .hero-fade{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
 .hero-fade.in{opacity:1;transform:translateY(0)}
-
-/* fade generico solo para UN reveal por seccion, no en cada tarjeta */
-.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
 
 /* sobre */
 .sobre{background:var(--bg-panel)}
@@ -238,8 +262,8 @@ h2{font-size:clamp(32px,4.6vw,52px)}
   .container{padding:0 20px}
   .section-pad{padding:76px 0}
   .countdown{gap:8px}
-  .countdown-box{width:62px;padding:9px 0 7px}
-  .countdown-num{font-size:22px}
+  .countdown-box{width:64px;padding:11px 0 8px}
+  .countdown-num{font-size:30px}
   .timeline-item{grid-template-columns:1fr;gap:5px}
   .form-card{padding:28px 20px}
   .atc-panel{padding:30px 20px}
@@ -249,6 +273,31 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 </style>
 </head>
 <body>
+
+<div class="airport-bg" id="airportBg" aria-hidden="true">
+  <div class="ab-sky ab-sky-day"></div>
+  <div class="ab-sky ab-sky-ground"></div>
+  <div class="ab-layer ab-clouds">
+    <span class="cloud c1"></span>
+    <span class="cloud c2"></span>
+    <span class="cloud c3"></span>
+  </div>
+  <div class="ab-layer ab-planes">
+    <svg class="plane p1" viewBox="0 0 64 24"><path d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
+    <svg class="plane p2" viewBox="0 0 64 24"><path d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
+  </div>
+  <div class="ab-layer ab-runway">
+    <div class="runway-strip"></div>
+  </div>
+  <div class="ab-layer ab-tower">
+    <svg viewBox="0 0 60 140" width="60" height="140">
+      <rect x="24" y="40" width="12" height="90" fill="#3a4652"/>
+      <rect x="10" y="18" width="40" height="26" rx="2" fill="#465868"/>
+      <rect x="14" y="24" width="32" height="10" fill="#3E90E0" opacity=".55"/>
+      <circle class="tower-light" cx="30" cy="12" r="3" fill="#e0473e"/>
+    </svg>
+  </div>
+</div>
 
 <nav class="nav" id="nav">
   <div class="container nav-inner">
@@ -310,7 +359,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 
 <section class="sobre section-pad" id="sobre">
   <div class="container sobre-grid">
-    <div class="sobre-text reveal">
+    <div class="sobre-text">
       <span class="kicker">Sobre el congreso</span>
       <h2>Del aula al hangar</h2>
       <p>Fly & Grow Sabadell nace de la iniciativa de estudiantes del Grau en Gestió Aeronàutica de la UAB, Campus Sabadell. La idea es simple: poner en la misma sala a empresas del sector aeronáutico y a los estudiantes que se están formando específicamente para trabajar en él.</p>
@@ -330,23 +379,23 @@ h2{font-size:clamp(32px,4.6vw,52px)}
     <span class="kicker" style="display:block;text-align:center">Itinerario del día</span>
     <h2>Programa</h2>
     <div class="timeline">
-      <div class="timeline-item reveal">
+      <div class="timeline-item">
         <div class="timeline-time">15:00</div>
         <div><div class="timeline-title">Apertura</div><div class="timeline-desc">Stands abiertos, ponencias de empresas en el Aula 12 y actividades lúdicas en paralelo, entre ellas el control aéreo en directo con IVAO España.</div></div>
       </div>
-      <div class="timeline-item reveal">
+      <div class="timeline-item">
         <div class="timeline-time">17:30</div>
         <div><div class="timeline-title">Charlas del sector</div><div class="timeline-desc">Profesionales en activo y exalumnos del grado cuentan cómo es la realidad laboral que espera al salir.</div></div>
       </div>
-      <div class="timeline-item reveal">
+      <div class="timeline-item">
         <div class="timeline-time">19:30</div>
         <div><div class="timeline-title">Networking y Entrevistas Express</div><div class="timeline-desc">Espacio abierto de contacto con empresas y, en paralelo, entrevistas de 5 a 10 minutos con estudiantes preinscritos.</div></div>
       </div>
-      <div class="timeline-item reveal">
+      <div class="timeline-item">
         <div class="timeline-time">20:00</div>
         <div><div class="timeline-title">Cierre de stands</div><div class="timeline-desc">Fin de la actividad de exhibición en el hall.</div></div>
       </div>
-      <div class="timeline-item reveal">
+      <div class="timeline-item">
         <div class="timeline-time">20:30</div>
         <div><div class="timeline-title">Fin de la jornada</div><div class="timeline-desc">Cierre del congreso.</div></div>
       </div>
@@ -356,7 +405,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 
 <section class="colabora">
   <div class="container">
-    <div class="colabora-head reveal">
+    <div class="colabora-head">
       <span class="kicker">Colaboran con nosotros</span>
       <h2 style="font-size:clamp(26px,3vw,32px)">Entidades del sector</h2>
     </div>
@@ -379,7 +428,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 <section class="speed section-pad" id="speed">
   <div class="container">
     <div class="speed-grid">
-      <div class="speed-copy reveal">
+      <div class="speed-copy">
         <span class="kicker">Entrevistas Express</span>
         <h2>Minutos que abren puertas</h2>
         <p>Antes del congreso, cada estudiante interesado se preinscribe con sus datos, el curso que hace y su CV. Las empresas revisan los perfiles con antelación.</p>
@@ -390,7 +439,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
           <li><span class="num">3</span><span><b>Entrevistas de 5 a 10 min</b>: el día del congreso, en formato rotativo.</span></li>
         </ul>
       </div>
-      <div class="ticket reveal">
+      <div class="ticket">
         <div class="ticket-head"><span>Puerta de embarque</span><span>Entrevistas Express</span></div>
         <div class="ticket-body">
           <h3>Reserva tu plaza</h3>
@@ -401,7 +450,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
         </div>
       </div>
     </div>
-    <div class="process reveal">
+    <div class="process">
       <div class="process-step"><span class="process-dot"></span><span>Crea tu perfil</span></div>
       <span class="process-arrow">→</span>
       <div class="process-step"><span class="process-dot"></span><span>Empresas revisan</span></div>
@@ -415,7 +464,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 
 <section class="section-pad">
   <div class="container">
-    <div class="atc-panel reveal">
+    <div class="atc-panel">
       <span class="kicker">Actividades lúdicas</span>
       <h2>Control aéreo en directo</h2>
       <p>Durante toda la tarde, controladores de IVAO España simulan en directo el tráfico del aeropuerto de Barcelona-El Prat (LEBL), con posiciones reales de torre y aproximación. Parte del equipo tiene también licencia ATC real.</p>
@@ -432,7 +481,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
   <div class="container">
     <span class="kicker" style="display:block;text-align:center">Reserva tu asiento</span>
     <h2 style="text-align:center">Inscripción</h2>
-    <div class="inscripcion-wrap reveal" style="margin-top:36px">
+    <div class="inscripcion-wrap" style="margin-top:36px">
       <div class="form-card" id="formCard">
         <form class="form-fields" id="regForm">
           <div class="field">
@@ -486,6 +535,26 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 <script>
 // si el usuario pide menos movimiento, ni flap ni giros de digitos
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// fondo de aeropuerto: --p va de 0 (arriba, cielo) a 1 (abajo del todo, pista+torre)
+// un solo listener de scroll con rAF, sin tocar 100vh, para que no salte en movil
+const airportBg = document.getElementById('airportBg');
+if (reduceMotion) {
+  airportBg.style.setProperty('--p', 0.6);
+} else {
+  let abTicking = false;
+  function updateAirportBg(){
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    airportBg.style.setProperty('--p', p.toFixed(4));
+    abTicking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!abTicking){ requestAnimationFrame(updateAirportBg); abTicking = true; }
+  }, { passive:true });
+  window.addEventListener('resize', updateAirportBg);
+  updateAirportBg();
+}
 
 // nav pilla fondo al hacer scroll
 const nav = document.getElementById('nav');
@@ -549,6 +618,7 @@ function makeFlapDigit(){
 
 function initDigits(id, count){
   const el = document.getElementById(id);
+  el.textContent = ''; // fuera el placeholder estatico del HTML (000/00), si no se queda pintado a la vez que las solapas
   el.digits = [];
   for(let i=0;i<count;i++){
     const cell = makeFlapDigit();
@@ -609,17 +679,6 @@ buildFlapLine(document.getElementById('flapLine2'), 'SABADELL', 500);
 
 // resto del hero entra despues del flap
 setTimeout(() => document.querySelectorAll('.hero-fade').forEach((el,i) => setTimeout(()=>el.classList.add('in'), i*100)), reduceMotion ? 0 : 1300);
-
-// reveal on scroll, uno por seccion, no en cada tarjeta suelta
-const revealObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting){
-      entry.target.classList.add('visible');
-      revealObserver.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.15 });
-document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 // ticker duplicado pa que el loop no se note
 const track = document.getElementById('tickerTrack');

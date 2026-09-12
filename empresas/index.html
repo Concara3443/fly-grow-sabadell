@@ -26,7 +26,32 @@
   --r:3px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg-deep);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body{background:var(--bg-deep);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+
+/* mismo fondo de aeropuerto que la pagina principal, ver comentarios ahi */
+.airport-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+.ab-sky{position:absolute;inset:0}
+.ab-sky-day{background:linear-gradient(to bottom,#14273b 0%,#1c3854 30%,#2a5478 65%,#3e78a3 100%)}
+.ab-sky-ground{background:linear-gradient(to bottom,#14273b 0%,#1c3854 25%,#2c4e56 55%,#35473c 100%);opacity:var(--p,0)}
+.ab-layer{position:absolute;inset:0;will-change:transform}
+.ab-clouds .cloud{position:absolute;border-radius:50%;background:rgba(255,255,255,.16);filter:blur(6px);transform:translateY(calc(var(--p,0) * 40px))}
+.ab-clouds .c1{width:220px;height:60px;top:14%;left:8%}
+.ab-clouds .c2{width:160px;height:46px;top:24%;right:12%}
+.ab-clouds .c3{width:260px;height:70px;top:8%;left:46%}
+.ab-planes .plane{position:absolute;opacity:.55;fill:var(--text);transform:translateY(calc(var(--p,0) * 70px));animation:planeDrift 40s linear infinite}
+.ab-planes .p1{top:18%;left:-40px;width:30px;animation-delay:0s}
+.ab-planes .p2{top:32%;left:-40px;width:22px;animation-duration:55s;animation-delay:-20s}
+@keyframes planeDrift{from{transform:translate(0,calc(var(--p,0) * 70px))}to{transform:translate(calc(100vw + 80px),calc(var(--p,0) * 70px))}}
+.ab-runway{transform:translateY(calc((1 - var(--p,0)) * 42vh));opacity:var(--p,0);will-change:transform,opacity}
+.runway-strip{position:absolute;left:50%;bottom:0;width:140vw;max-width:1400px;height:46vh;transform:translateX(-50%);background:linear-gradient(to top,#2b323b 0%,#3a4652 60%,transparent 100%);clip-path:polygon(38% 0%,62% 0%,88% 100%,12% 100%)}
+.runway-strip::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:4px;transform:translateX(-50%);background:repeating-linear-gradient(to bottom,rgba(255,255,255,.8) 0 26px,transparent 26px 52px)}
+.ab-tower{right:6%;bottom:4vh;left:auto;top:auto;transform:translateY(calc((1 - var(--p,0)) * 55vh));opacity:var(--p,0);will-change:transform,opacity}
+.ab-tower svg{display:block}
+.tower-light{animation:towerBlink 1.6s steps(1) infinite}
+@keyframes towerBlink{0%,49%{opacity:1}50%,100%{opacity:.15}}
+@media(prefers-reduced-motion:reduce){
+  .ab-clouds .cloud,.ab-planes .plane{animation:none;transform:none}
+}
 img{max-width:100%;display:block}
 a{color:inherit;text-decoration:none}
 h1,h2{font-family:var(--display);letter-spacing:.02em;text-wrap:balance;line-height:1.02}
@@ -91,6 +116,31 @@ tr.destacado th, tr.destacado td{background:rgba(62,144,224,.06)}
 </style>
 </head>
 <body>
+
+<div class="airport-bg" id="airportBg" aria-hidden="true">
+  <div class="ab-sky ab-sky-day"></div>
+  <div class="ab-sky ab-sky-ground"></div>
+  <div class="ab-layer ab-clouds">
+    <span class="cloud c1"></span>
+    <span class="cloud c2"></span>
+    <span class="cloud c3"></span>
+  </div>
+  <div class="ab-layer ab-planes">
+    <svg class="plane p1" viewBox="0 0 64 24"><path d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
+    <svg class="plane p2" viewBox="0 0 64 24"><path d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
+  </div>
+  <div class="ab-layer ab-runway">
+    <div class="runway-strip"></div>
+  </div>
+  <div class="ab-layer ab-tower">
+    <svg viewBox="0 0 60 140" width="60" height="140">
+      <rect x="24" y="40" width="12" height="90" fill="#3a4652"/>
+      <rect x="10" y="18" width="40" height="26" rx="2" fill="#465868"/>
+      <rect x="14" y="24" width="32" height="10" fill="#3E90E0" opacity=".55"/>
+      <circle class="tower-light" cx="30" cy="12" r="3" fill="#e0473e"/>
+    </svg>
+  </div>
+</div>
 
 <header class="top">
   <div class="container top-inner">
@@ -191,5 +241,25 @@ tr.destacado th, tr.destacado td{background:rgba(62,144,224,.06)}
   <div class="container">Fly & Grow Sabadell. Grau en Gestió Aeronàutica, UAB Campus Sabadell</div>
 </footer>
 
+<script>
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const airportBg = document.getElementById('airportBg');
+if (reduceMotion) {
+  airportBg.style.setProperty('--p', 0.6);
+} else {
+  let abTicking = false;
+  function updateAirportBg(){
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+    airportBg.style.setProperty('--p', p.toFixed(4));
+    abTicking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!abTicking){ requestAnimationFrame(updateAirportBg); abTicking = true; }
+  }, { passive:true });
+  window.addEventListener('resize', updateAirportBg);
+  updateAirportBg();
+}
+</script>
 </body>
 </html>
