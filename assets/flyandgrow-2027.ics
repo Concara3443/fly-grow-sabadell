@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//Fly & Grow Sabadell//Inscripcion//ES
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:flyandgrow-2027@flyandgrow.es
+DTSTAMP:20261111T000000Z
+DTSTART:20270505T130000Z
+DTEND:20270505T183000Z
+SUMMARY:Fly & Grow Sabadell 2027
+DESCRIPTION:2º Congreso Aeronáutico Universitario. Grau en Gestió Aeronàutica\, UAB. Programa: https://flyandgrow.es
+LOCATION:Escola d'Enginyeria UAB\, Carrer dels Emprius 2\, 08202 Sabadell
+URL:https://flyandgrow.es
+END:VEVENT
+END:VCALENDAR

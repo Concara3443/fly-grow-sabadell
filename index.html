@@ -4,24 +4,40 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Fly & Grow Sabadell</title>
-<meta name="description" content="2º Congreso Aeronáutico Universitario. Campus Sabadell, UAB. 5 de mayo de 2027">
+<meta name="description" content="2º Congreso Aeronáutico Universitario, Campus Sabadell (UAB). Empresas del sector aeronáutico y estudiantes del Grau en Gestió Aeronàutica. 5 de mayo de 2027.">
+<link rel="canonical" href="https://flyandgrow.es/">
+<link rel="alternate" hreflang="es" href="https://flyandgrow.es/">
+<link rel="alternate" hreflang="ca" href="https://flyandgrow.es/ca/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://flyandgrow.es/">
+<meta property="og:title" content="Fly & Grow Sabadell | Congreso Aeronáutico Universitario UAB">
+<meta property="og:description" content="Gratis. Empresas del sector aeronáutico, charlas y Entrevistas Express en el día. 5 de mayo de 2027, Campus Sabadell (UAB).">
+<meta property="og:image" content="https://flyandgrow.es/assets/og-2027.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Fly & Grow Sabadell, 5 de mayo de 2027, 15:00, Campus Sabadell">
+<meta property="og:site_name" content="Fly & Grow Sabadell">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/assets/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500;600&family=Barlow:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-/* azul oficial fly&grow #223D58 + verde uab #1FA24C, nada de naranja */
+/* azul oficial fly&grow #223D58 = superficie de la tira de embarque y banda de la tarjeta de embarque; el cielo ya es azul, asi que las solapas del contador van en negro tipo Solari con digitos en --paper.
+   verde uab #008539 = senal de 'autorizado' (pasos, confirmacion); --green-text es el mismo
+   tono subido en OKLCH (L .70) para que el texto pequeno pase 4.5:1 sobre fondo oscuro y sobre --blue */
 :root{
   --bg-deep:#070C14;
   --bg-panel:#0E1826;
   --bg-card:#101F30;
   --blue:#223D58;
-  --blue-bright:#3E90E0;
-  --green:#1FA24C;
+  --blue-bright:#86BEF5; /* antes #3E90E0: sobre el cielo se quedaba en 2.8-3.9:1 */
+  --green:#008539;
+  --green-text:#4EB869;
+  --blue-text:#9CBBDC;
   --paper:#EDEFF0;
   --text:#E7E9ED;
-  --muted:#7C90A6;
-  --amber:#F2B84C;
+  --muted:#9AADC2; /* subido de #7C90A6: sobre el cielo azul se quedaba en 2.9:1 */
   --line:rgba(111,163,216,0.18);
   --display:'Bebas Neue',Impact,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',monospace;
@@ -44,7 +60,10 @@ section{position:relative;scroll-margin-top:var(--nav-h)}
 h1,h2,h3{font-family:var(--display);letter-spacing:0.02em;text-wrap:balance;line-height:1.02}
 h2{font-size:clamp(32px,4.6vw,52px)}
 .section-pad{padding:110px 0}
-.kicker{font-family:var(--mono);font-size:12.5px;color:var(--muted);letter-spacing:0.04em}
+[hidden]{display:none !important}
+p{text-wrap:pretty}
+:focus-visible{outline:2px solid var(--blue-bright);outline-offset:3px}
+::placeholder{color:var(--muted);opacity:1}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
@@ -54,36 +73,39 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 /* placeholders CSS/SVG, sin imagenes: cuando haya arte real solo hay que sustituir el contenido de cada capa */
 .airport-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .ab-sky{position:absolute;inset:0}
-.ab-sky-day{background:linear-gradient(to bottom,#14273b 0%,#1c3854 30%,#2a5478 65%,#3e78a3 100%)}
-.ab-sky-ground{background:linear-gradient(to bottom,#14273b 0%,#1c3854 25%,#2c4e56 55%,#35473c 100%);opacity:var(--p,0)}
+/* cielo con tope en #24496a: mas claro y el texto encima (incluso el blanco) dejaba de leerse */
+.ab-sky-day{background:linear-gradient(to bottom,#14273b 0%,#1a3550 35%,#1f405e 70%,#24496a 100%)}
+.ab-sky-ground{background:linear-gradient(to bottom,#14273b 0%,#1a3550 25%,#233f48 55%,#2a3a33 100%);opacity:var(--p,0)}
 .ab-layer{position:absolute;inset:0;will-change:transform}
-.ab-clouds .cloud{position:absolute;border-radius:50%;background:rgba(255,255,255,.16);filter:blur(6px);transform:translateY(calc(var(--p,0) * 40px))}
+.ab-clouds .cloud{position:absolute;border-radius:50%;background:rgba(255,255,255,.045);filter:blur(6px);transform:translateY(calc(var(--p,0) * 40px))}
 .ab-clouds .c1{width:220px;height:60px;top:14%;left:8%}
 .ab-clouds .c2{width:160px;height:46px;top:24%;right:12%}
 .ab-clouds .c3{width:260px;height:70px;top:8%;left:46%}
-.ab-planes .plane{position:absolute;opacity:.55;fill:var(--text);transform:translateY(calc(var(--p,0) * 70px));animation:planeDrift 40s linear infinite}
+.ab-planes .plane{position:absolute;opacity:.22;fill:var(--text);transform:translateY(calc(var(--p,0) * 70px));animation:planeDrift 40s linear infinite}
 .ab-planes .p1{top:18%;left:-40px;width:30px;animation-delay:0s}
 .ab-planes .p2{top:32%;left:-40px;width:22px;animation-duration:55s;animation-delay:-20s}
 @keyframes planeDrift{from{transform:translate(0,calc(var(--p,0) * 70px))}to{transform:translate(calc(100vw + 80px),calc(var(--p,0) * 70px))}}
-.ab-runway{transform:translateY(calc((1 - var(--p,0)) * 42vh));opacity:var(--p,0);will-change:transform,opacity}
+.ab-runway{transform:translateY(calc((1 - var(--p,0)) * 42vh));opacity:calc(clamp(0, (var(--p,0) - .8) * 5, 1) * .55);will-change:transform,opacity}
 .runway-strip{position:absolute;left:50%;bottom:0;width:140vw;max-width:1400px;height:46vh;transform:translateX(-50%);background:linear-gradient(to top,#2b323b 0%,#3a4652 60%,transparent 100%);clip-path:polygon(38% 0%,62% 0%,88% 100%,12% 100%)}
-.runway-strip::after{content:'';position:absolute;left:50%;top:0;bottom:0;width:4px;transform:translateX(-50%);background:repeating-linear-gradient(to bottom,rgba(255,255,255,.8) 0 26px,transparent 26px 52px)}
-.ab-tower{right:6%;bottom:4vh;left:auto;top:auto;transform:translateY(calc((1 - var(--p,0)) * 55vh));opacity:var(--p,0);will-change:transform,opacity}
+.runway-strip::after{content:'';mask-image:linear-gradient(to top,#000 40%,transparent);-webkit-mask-image:linear-gradient(to top,#000 40%,transparent);position:absolute;left:50%;top:0;bottom:0;width:4px;transform:translateX(-50%);background:repeating-linear-gradient(to bottom,rgba(255,255,255,.3) 0 26px,transparent 26px 52px)}
+.ab-tower{right:6%;bottom:4vh;left:auto;top:auto;transform:translateY(calc((1 - var(--p,0)) * 55vh));opacity:calc(clamp(0, (var(--p,0) - .8) * 5, 1) * .7);will-change:transform,opacity}
 .ab-tower svg{display:block}
 .tower-light{animation:towerBlink 1.6s steps(1) infinite}
 @keyframes towerBlink{0%,49%{opacity:1}50%,100%{opacity:.15}}
 @media(prefers-reduced-motion:reduce){
   .ab-clouds .cloud,.ab-planes .plane{animation:none;transform:none}
 }
+/* en movil el segundo avion cruzaba justo por encima del programa */
+@media(max-width:720px){.ab-planes .p2{display:none}}
 
 /* placa clara pa que los logos se vean de verdad en fondo oscuro */
 .plate{background:var(--paper);border-radius:2px;display:inline-flex;align-items:center;justify-content:center}
 
 /* nav */
-.nav{position:fixed;top:0;left:0;right:0;z-index:100;height:var(--nav-h);display:flex;align-items:center;background:transparent;border-bottom:1px solid transparent;transition:background .3s ease,border-color .3s ease}
+.nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:transparent;border-bottom:1px solid transparent;transition:background .3s ease,border-color .3s ease}
 .nav.scrolled{background:rgba(7,12,20,.94);backdrop-filter:blur(8px);border-bottom-color:var(--line)}
 .nav-inner{width:100%;display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:10px;min-height:44px}
 .brand .plate{padding:8px 14px}
 .brand .plate img{height:24px;width:auto}
 .brand .uabmark{height:26px;width:auto}
@@ -92,14 +114,22 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 .nav-links a::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--blue-bright);transform:scaleX(0);transform-origin:left;transition:transform .3s ease}
 .nav-links a:hover{color:var(--text)}
 .nav-links a:hover::after{transform:scaleX(1)}
-.nav-cta{border:1px solid var(--blue-bright);color:var(--blue-bright);padding:8px 16px;border-radius:var(--r)}
+.nav-cta{border:1px solid var(--blue-bright);color:var(--blue-bright);padding:8px 16px;border-radius:var(--r);line-height:1.2}
 .nav-cta::after{display:none}
-.nav-cta:hover{background:var(--blue-bright);color:var(--bg-deep)}
-.hamburger{display:none;flex-direction:column;gap:5px;width:26px;z-index:200}
-.hamburger span{height:2px;background:var(--text);width:100%}
+.nav-links .nav-lang{color:var(--blue-text)}
+.nav-links .nav-cta:hover{background:var(--blue-bright);color:var(--bg-deep)}
+/* la nav va por encima del menu abierto, asi la hamburguesa (que pasa a X) siempre se puede pulsar */
+.hamburger{display:none;flex-direction:column;gap:5px;width:44px;height:44px;padding:13px 9px;margin-right:-9px;justify-content:center}
+.hamburger span{height:2px;background:var(--text);width:100%;transition:transform .3s ease,opacity .2s ease}
+.hamburger[aria-expanded=true] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger[aria-expanded=true] span:nth-child(2){opacity:0}
+.hamburger[aria-expanded=true] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 .mobile-menu{position:fixed;inset:0;background:var(--bg-deep);z-index:150;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:26px;padding:0 40px;transform:translateX(100%);transition:transform .4s cubic-bezier(.7,0,.3,1)}
 .mobile-menu.open{transform:translateX(0)}
 .mobile-menu a{font-family:var(--display);font-size:38px;color:var(--text)}
+.mobile-menu .menu-lang{font-family:var(--mono);font-size:14px;color:var(--blue-text);padding:12px 0}
+@media(min-width:921px){.mobile-menu{display:none}}
+.mobile-menu .btn-fill{font-family:var(--mono);font-size:15px;color:var(--blue);margin-top:10px}
 
 /* hero, con el split-flap real de tablon de salidas */
 .hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(var(--nav-h) + 30px) 20px 50px;position:relative;overflow:hidden}
@@ -117,24 +147,25 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 .flap-char{display:inline-block;transform-origin:50% 50%}
 .tick{animation:flapTick .09s linear}
 @keyframes flapTick{0%{transform:scaleY(1)}45%{transform:scaleY(.08);filter:brightness(1.8)}100%{transform:scaleY(1)}}
-.hero-sub{margin-top:20px;font-family:var(--body);font-weight:300;font-size:clamp(15px,2vw,18px);color:var(--muted)}
+.hero-sub{margin-top:20px;font-family:var(--body);font-weight:400;font-size:clamp(15.5px,2vw,18px);color:var(--muted);max-width:46ch}
 .boardingstrip{
-  margin-top:38px;display:flex;background:var(--bg-panel);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;
+  margin-top:38px;display:flex;background:var(--blue);border:1px solid rgba(156,187,220,.28);border-radius:var(--r);overflow:hidden;
 }
-.boardingstrip div{padding:12px 22px;border-right:1px solid var(--line)}
+.boardingstrip div{padding:12px 22px;border-right:1px solid rgba(156,187,220,.22)}
 .boardingstrip div:last-child{border-right:none}
-.boardingstrip .lbl{display:block;font-family:var(--mono);font-size:9.5px;color:var(--muted);letter-spacing:.1em;margin-bottom:4px}
+.boardingstrip .lbl{display:block;font-family:var(--mono);font-size:11px;color:var(--blue-text);letter-spacing:.1em;margin-bottom:4px}
 .boardingstrip .val{font-family:var(--mono);font-size:14px;color:var(--text);font-weight:500}
 .countdown{display:flex;gap:12px;margin-top:36px}
+.countdown-over{margin-top:36px;font-family:var(--mono);font-size:14px;color:var(--green-text)}
 .countdown-box{width:96px;padding:18px 0 12px}
-.countdown-num{display:flex;justify-content:center;gap:2px;font-family:var(--mono);font-weight:600;font-size:42px;color:var(--amber)}
-.countdown-label{font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--muted);margin-top:5px}
+.countdown-num{display:flex;justify-content:center;gap:2px;font-family:var(--mono);font-weight:600;font-size:42px;color:var(--paper)}
+.countdown-label{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:#C0CDDA;margin-top:5px}
 
 /* marcador de solapas de verdad pal contador: dos mitades fijas + dos que giran en 3D */
 .flapdigit{position:relative;display:inline-block;width:.62em;height:1em;perspective:3.2em}
 .flapdigit::after{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(0,0,0,.5);z-index:5}
 .flapdigit{box-shadow:0 3px 10px rgba(0,0,0,.4)}
-.flapdigit .half{position:absolute;left:0;right:0;overflow:hidden;display:flex;justify-content:center;background:var(--bg-card);border-radius:1px}
+.flapdigit .half{position:absolute;left:0;right:0;overflow:hidden;display:flex;justify-content:center;background:var(--bg-deep);border-radius:1px}
 .flapdigit .half.top{top:0;height:50%;align-items:flex-start}
 .flapdigit .half.bottom{bottom:0;height:50%;align-items:flex-end}
 .flapdigit .half .g{display:block;height:1em;line-height:1em;font-variant-numeric:tabular-nums}
@@ -155,18 +186,15 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 
 /* sobre */
 .sobre{background:var(--bg-panel)}
-.sobre::before{content:'';position:absolute;inset:0;pointer-events:none;background-image:repeating-linear-gradient(to bottom,var(--line) 0,var(--line) 1px,transparent 1px,transparent 120px);opacity:.5}
 .sobre-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:64px;align-items:center;position:relative}
 .sobre-text p{color:var(--muted);font-size:17px;margin-top:16px;max-width:56ch}
-.sobre-text p:first-of-type{margin-top:18px}
 .stats-row{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
 .stat-row{display:flex;align-items:baseline;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--line)}
 .stat-num{font-family:var(--mono);font-weight:600;font-size:38px;color:var(--blue-bright);font-variant-numeric:tabular-nums}
 .stat-label{font-family:var(--body);font-size:14.5px;color:var(--muted);text-align:right}
 
 /* programa: como el tablon de verdad, filas de hora/actividad */
-.programa h2{text-align:center}
-.timeline{max-width:760px;margin:44px auto 0}
+.timeline{max-width:760px;margin:44px 0 0}
 .timeline-item{display:grid;grid-template-columns:96px 1fr;gap:26px;padding:22px 0;border-top:1px solid var(--line)}
 .timeline-item:last-child{border-bottom:1px solid var(--line)}
 .timeline-time{font-family:var(--mono);color:var(--blue-bright);font-size:16px;font-weight:500;padding-top:2px}
@@ -181,61 +209,100 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 .ticker-track:hover{animation-play-state:paused}
 .ticker-chip{background:var(--paper);border-radius:2px;padding:14px 24px;height:56px;display:flex;align-items:center}
 .ticker-chip img{height:26px;width:auto;max-width:120px;object-fit:contain}
+/* logos en blanco (ITAerea) sobre placa azul; cuadrados o con mucho margen propio, mas altos pa que pesen igual */
+.ticker-chip.on-blue{background:var(--blue)}
+.ticker-chip img.tall{height:40px}
 @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .empresas-link{text-align:center;margin-top:36px;color:var(--muted);font-size:14.5px}
 .empresas-link a{color:var(--blue-bright);border-bottom:1px solid currentColor}
 
+/* galeria de la 1a edicion: mosaico, la foto del equipo manda; en movil 1 + parejas */
+.galeria-head{max-width:640px}
+.galeria-head p{color:var(--muted);font-size:16px;margin-top:12px}
+.galeria{margin-top:36px;display:grid;grid-template-columns:repeat(12,1fr);gap:14px}
+.galeria figure{margin:0;position:relative;overflow:hidden;border-radius:var(--r);background:var(--bg-card)}
+.galeria img{width:100%;height:100%;object-fit:cover;display:block}
+.galeria figcaption{position:absolute;left:0;right:0;bottom:0;padding:28px 14px 10px;font-family:var(--mono);font-size:12px;color:var(--paper);background:linear-gradient(to top,rgba(7,12,20,.82),transparent)}
+.galeria .g1{grid-column:span 7;grid-row:span 2;aspect-ratio:auto}
+.galeria .g2,.galeria .g3{grid-column:span 5;aspect-ratio:16/9}
+.galeria .g4,.galeria .g5,.galeria .g6{grid-column:span 4;aspect-ratio:4/3}
+
 /* entrevistas express, tarjeta tipo billete */
 .speed{background:var(--bg-panel)}
-.speed-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start}
 .speed-copy p{color:var(--muted);font-size:16px;margin-top:14px;max-width:54ch}
 .speed-list{margin-top:22px;display:flex;flex-direction:column;gap:14px}
 .speed-list li{display:flex;gap:14px;align-items:flex-start;color:var(--muted);font-size:15px}
 .speed-list li b{color:var(--text);font-weight:600}
-.speed-list .num{font-family:var(--mono);color:var(--green);font-size:13px;border:1px solid var(--line);border-radius:2px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex:none;margin-top:2px}
-.ticket{background:var(--bg-card);border:1px solid var(--blue);border-radius:var(--r);position:relative}
-.ticket::before,.ticket::after{content:'';position:absolute;width:18px;height:18px;background:var(--bg-panel);border-radius:50%;top:calc(50% - 9px)}
-.ticket::before{left:-9px}
-.ticket::after{right:-9px}
-.ticket-head{padding:16px 24px;border-bottom:1px dashed var(--line);font-family:var(--mono);color:var(--blue-bright);font-size:12px;display:flex;justify-content:space-between}
-.ticket-body{padding:30px 26px}
-.ticket-body h3{font-size:28px;margin-bottom:8px}
-.ticket-body>p{color:var(--muted);font-size:14.5px;margin-bottom:22px}
-.ticket-cta{width:100%;justify-content:center;font-size:14px;padding:16px 20px}
-.ticket-fine{font-size:12.5px;color:var(--muted);margin-top:16px;line-height:1.55}
-.ticket-note{margin-top:14px;font-family:var(--mono);font-size:11px;color:var(--green);border-top:1px solid var(--line);padding-top:12px}
-.process{margin-top:60px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
-.process-step{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;min-width:130px;text-align:center}
-.process-dot{width:9px;height:9px;border-radius:50%;background:var(--green)}
-.process-step span{font-family:var(--mono);font-size:12px;color:var(--text)}
-.process-arrow{color:var(--line);font-size:18px}
+.speed-list .num{font-family:var(--mono);color:var(--green-text);font-size:13px;border:1px solid var(--line);border-radius:2px;width:22px;height:22px;display:flex;align-items:center;justify-content:center;flex:none;margin-top:2px}
+/* tarjeta de embarque de papel: cuerpo + talon troquelado. Las muescas van en la linea de corte, no a media altura */
+.pass{--pass-ink:var(--blue);--pass-soft:#4F6378;margin-top:48px;max-width:820px;display:grid;grid-template-columns:1fr 240px;background:var(--paper);color:var(--pass-ink);border-radius:6px;box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.pass-main{min-width:0}
+.pass-band{display:flex;justify-content:space-between;align-items:center;background:var(--blue);color:var(--paper);font-family:var(--mono);font-size:12.5px;padding:12px 26px;border-radius:6px 0 0 0}
+.pass-band b{font-weight:600;letter-spacing:.08em}
+.pass-route{display:flex;align-items:center;gap:18px;padding:22px 26px 6px}
+.pass-route div{display:flex;flex-direction:column}
+.pass-route .code{font-family:var(--display);font-size:clamp(40px,6vw,56px);line-height:1;letter-spacing:.02em}
+.pass-route svg{flex:1;height:20px;fill:var(--pass-ink);opacity:.8;min-width:40px}
+.pass .lbl{font-family:var(--mono);font-size:11px;color:var(--pass-soft);margin-bottom:4px;display:block}
+.pass-fields{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;gap:12px 20px;padding:16px 26px 24px}
+.pass-fields b{font-family:var(--mono);font-size:15px;font-weight:600;text-transform:uppercase}
+.pass-stub{position:relative;border-left:2px dashed rgba(34,61,88,.28);padding:22px 24px 24px;display:flex;flex-direction:column;justify-content:space-between;gap:18px}
+.pass-stub::before,.pass-stub::after{content:'';position:absolute;left:-12px;width:22px;height:22px;border-radius:50%;background:var(--bg-panel)}
+.pass-stub::before{top:-11px}
+.pass-stub::after{bottom:-11px}
+.pass-gate b{font-family:var(--display);font-size:52px;line-height:1}
+.pass-cta{justify-content:center;background:var(--blue);color:var(--paper);font-weight:600;font-size:14px;padding:15px 18px}
+.pass-cta:hover{background:#1a3048}
+.pass-fine{font-size:13px;color:var(--muted);margin-top:16px}
 
 /* atc / ivao */
-.atc-panel{max-width:860px;margin:0 auto;background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);padding:44px;text-align:center}
+.atc-panel{max-width:980px;margin:0 auto;background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);display:grid;grid-template-columns:280px 1fr;overflow:hidden}
+.atc-photo{margin:0;position:relative}
+.atc-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 30%;display:block}
+.atc-body{padding:44px}
 .atc-panel h2{margin-bottom:14px}
-.atc-panel p{color:var(--muted);font-size:15.5px;max-width:60ch;margin:0 auto}
-.atc-stats{display:flex;gap:36px;margin-top:30px;flex-wrap:wrap;justify-content:center}
+.atc-panel p{color:var(--muted);font-size:15.5px;max-width:60ch}
+.atc-stats{display:flex;gap:36px;margin-top:30px;flex-wrap:wrap}
 .atc-stat b{display:block;font-family:var(--mono);color:var(--blue-bright);font-size:21px;font-weight:600}
-.atc-stat span{font-family:var(--mono);font-size:10.5px;color:var(--muted);letter-spacing:.05em}
+.atc-stat span{font-family:var(--mono);font-size:12px;color:var(--muted)}
+
+/* preguntas frecuentes: details nativo, el + / - se dibuja con dos lineas, no con un caracter */
+.faq-list{max-width:760px;margin:36px 0 0}
+.faq-list details{border-top:1px solid var(--line)}
+.faq-list details:last-child{border-bottom:1px solid var(--line)}
+.faq-list summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 0;font-family:var(--body);font-weight:600;font-size:16.5px}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary::after{content:'';flex:none;width:14px;height:14px;background:linear-gradient(var(--blue-bright),var(--blue-bright)) center/14px 2px no-repeat,linear-gradient(var(--blue-bright),var(--blue-bright)) center/2px 14px no-repeat;transition:transform .25s ease}
+.faq-list details[open] summary::after{transform:rotate(45deg)}
+.faq-list details p{color:var(--muted);font-size:15px;padding:0 34px 20px 0;max-width:62ch}
+.faq-list details a{color:var(--blue-bright);border-bottom:1px solid currentColor}
 
 /* inscripcion, mismo aire de billete que entrevistas */
-.inscripcion-wrap{max-width:540px;margin:0 auto}
+.inscripcion-wrap{max-width:540px}
 .form-card{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--r);padding:40px}
 .field{margin-bottom:20px;display:flex;flex-direction:column;gap:7px}
-.field label{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.field label{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
 .field input[type=text],.field input[type=email]{background:var(--bg-panel);border:1px solid var(--line);border-radius:2px;color:var(--text);padding:12px 13px;font-family:var(--body);font-size:15px;transition:border-color .2s ease}
 .field input:focus{outline:none;border-color:var(--blue-bright)}
 .checkbox-row{flex-direction:row;align-items:center;gap:11px}
-.checkbox-row input{width:17px;height:17px;accent-color:var(--blue-bright)}
+.checkbox-row input{width:22px;height:22px;flex:none;accent-color:var(--blue-bright)}
+.checkbox-row label{padding:12px 0}
 .checkbox-row label{font-size:14.5px;color:var(--text);font-family:var(--body)}
 .form-submit{width:100%;justify-content:center;margin-top:6px}
 .form-note{margin-top:14px;font-size:13px;color:var(--muted);text-align:center}
-.form-error{margin-top:10px;font-size:13px;color:#e0473e;text-align:center}
+.form-error{margin:0 0 14px;font-size:13.5px;color:#ff7a70;text-align:center;line-height:1.5}
+.form-error a{color:inherit;border-bottom:1px solid currentColor}
+.field-hint{margin:-18px 0 22px 33px;font-size:13px;color:var(--muted);line-height:1.5}
 .success-state{display:none;text-align:center;padding:26px 6px}
 .success-state.show{display:block}
-.success-icon{width:52px;height:52px;border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;color:var(--green);font-size:22px}
+.success-icon{width:52px;height:52px;border:1px solid var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;color:var(--green-text);font-size:22px}
 .success-state h3{font-size:28px;margin-bottom:8px}
 .success-state p{color:var(--muted);font-size:14.5px}
+.success-state h3:focus{outline:none}
+.success-state b{color:var(--text);font-weight:500;overflow-wrap:anywhere}
+.success-speed{margin-top:12px}
+.success-speed a{color:var(--blue-bright);border-bottom:1px solid currentColor}
+.success-cal{margin-top:22px}
 .form-card.submitted .form-fields{display:none}
 
 /* footer */
@@ -246,33 +313,87 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 .footer-brand .plate img{height:26px;width:auto}
 .footer-brand .uabmark{height:30px;width:auto}
 .footer-tag{color:var(--muted);font-size:13px;margin-top:12px;font-family:var(--mono);max-width:36ch}
-.footer-contact a{font-family:var(--mono);font-size:13px;color:var(--blue-bright);border-bottom:1px solid currentColor}
-.footer-contact .addr{color:var(--muted);font-size:13px;margin-top:8px;max-width:28ch}
-.footer-bottom{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.footer-contact{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.footer-contact a{padding:12px 0;font-family:var(--mono);font-size:13px;color:var(--blue-bright);text-decoration:underline;text-underline-offset:4px}
+.footer-contact a.addr{font-family:var(--body);color:var(--muted);font-size:13px;max-width:28ch}
+.footer-bottom{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:12px;color:var(--muted)}
 
+/* boton de inscripcion siempre a mano en movil: aparece al dejar atras el hero, se va al llegar al formulario */
+.sticky-cta{display:none}
 @media(max-width:920px){
+  .sticky-cta{display:flex;justify-content:center;position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:120;font-size:14px;padding:15px 20px;box-shadow:0 8px 24px rgba(0,0,0,.45);transform:translateY(calc(100% + 30px));transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+  .sticky-cta.show{transform:translateY(0)}
   .nav-links,.nav .nav-cta{display:none}
   .hamburger{display:flex}
-  .sobre-grid,.speed-grid{grid-template-columns:1fr;gap:40px}
+  .sobre-grid{grid-template-columns:1fr;gap:40px}
+  .atc-panel{grid-template-columns:1fr}
+  .atc-photo{aspect-ratio:4/3}
+  .pass{grid-template-columns:1fr}
+  .pass-stub{border-left:none;border-top:2px dashed rgba(34,61,88,.28);flex-direction:row;align-items:center}
+  .pass-stub::before,.pass-stub::after{top:-12px;bottom:auto}
+  .pass-stub::before{left:-11px}
+  .pass-stub::after{left:auto;right:-11px}
+  .pass-band{border-radius:6px 6px 0 0}
+  .pass-cta{flex:1}
   .boardingstrip{flex-wrap:wrap;justify-content:center}
   .footer-inner{flex-direction:column}
-  .process{justify-content:flex-start}
-  .process-arrow{display:none}
-  .process-step{flex-direction:row;text-align:left;min-width:100%}
 }
 @media(max-width:640px){
+  .galeria{grid-template-columns:1fr 1fr;gap:8px}
+  .galeria .g1{grid-column:1/-1;grid-row:auto;aspect-ratio:3/2}
+  .galeria .g2,.galeria .g3,.galeria .g4,.galeria .g5{grid-column:span 1;aspect-ratio:1}
+  .galeria .g6{grid-column:1/-1;aspect-ratio:16/9}
+  .galeria figcaption{font-size:11px;padding:22px 10px 8px}
+  .atc-body{padding:28px 20px}
   .container{padding:0 20px}
   .section-pad{padding:76px 0}
+  /* tira de embarque en 2+1: fecha y hora arriba, lugar a lo ancho, sin celda vacia */
+  .boardingstrip{display:grid;grid-template-columns:1fr 1fr;width:100%}
+  .boardingstrip div:nth-child(2){border-right:none}
+  .boardingstrip div:last-child{grid-column:1/-1;border-top:1px solid rgba(156,187,220,.22)}
+  .pass-band,.pass-route,.pass-fields{padding-left:18px;padding-right:18px}
+  .pass-fields{grid-template-columns:1fr 1fr}
+  .pass-stub{padding:18px}
+  .pass-gate b{font-size:40px}
   .countdown{gap:8px}
   .countdown-box{width:64px;padding:11px 0 8px}
   .countdown-num{font-size:30px}
   .timeline-item{grid-template-columns:1fr;gap:5px}
   .form-card{padding:28px 20px}
-  .atc-panel{padding:30px 20px}
   .stat-row{flex-direction:column;align-items:flex-start;gap:4px}
   .stat-label{text-align:left}
 }
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Event",
+  "name": "Fly & Grow Sabadell",
+  "description": "2º Congreso Aeronáutico Universitario, organizado por estudiantes del Grau en Gestió Aeronàutica de la UAB (Campus Sabadell).",
+  "startDate": "2027-05-05T15:00:00+02:00",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "location": {
+    "@type": "Place",
+    "name": "Escola d'Enginyeria UAB, Campus Sabadell",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Carrer dels Emprius, 2",
+      "postalCode": "08202",
+      "addressLocality": "Sabadell",
+      "addressRegion": "Barcelona",
+      "addressCountry": "ES"
+    }
+  },
+  "image": "https://flyandgrow.es/assets/og-2027.png",
+  "organizer": {
+    "@type": "Organization",
+    "name": "Fly & Grow Sabadell",
+    "url": "https://flyandgrow.es",
+    "sameAs": ["https://www.instagram.com/flyandgrow.sabadell/"]
+  }
+}
+</script>
 </head>
 <body>
 
@@ -285,8 +406,8 @@ h2{font-size:clamp(32px,4.6vw,52px)}
     <span class="cloud c3"></span>
   </div>
   <div class="ab-layer ab-planes">
-    <svg class="plane p1" viewBox="0 0 64 24"><path d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
-    <svg class="plane p2" viewBox="0 0 64 24"><path d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
+    <svg class="plane p1" viewBox="0 0 64 24"><path transform="matrix(-1 0 0 1 64 0)" d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
+    <svg class="plane p2" viewBox="0 0 64 24"><path transform="matrix(-1 0 0 1 64 0)" d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
   </div>
   <div class="ab-layer ab-runway">
     <div class="runway-strip"></div>
@@ -312,20 +433,22 @@ h2{font-size:clamp(32px,4.6vw,52px)}
       <a href="#programa">Programa</a>
       <a href="empresas/">Empresas</a>
       <a href="#speed">Entrevistas Express</a>
-      <a href="#inscripcion" class="nav-cta">Inscripción</a>
+      <a href="ca/" lang="ca" hreflang="ca" class="nav-lang">Català</a>
+      <a href="#inscripcion" class="nav-cta">Inscríbete gratis</a>
     </div>
-    <button class="hamburger" id="hamburger" aria-label="Abrir menú">
+    <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false" aria-controls="mobileMenu">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
 
-<div class="mobile-menu" id="mobileMenu">
+<div class="mobile-menu" id="mobileMenu" inert>
   <a href="#sobre">Sobre</a>
   <a href="#programa">Programa</a>
   <a href="empresas/">Empresas</a>
   <a href="#speed">Entrevistas Express</a>
-  <a href="#inscripcion" class="btn btn-fill nav-cta">Inscripción</a>
+  <a href="#inscripcion" class="btn btn-fill">Inscríbete gratis</a>
+  <a href="ca/" lang="ca" hreflang="ca" class="menu-lang">Català</a>
 </div>
 
 <header class="hero" id="top">
@@ -340,7 +463,7 @@ h2{font-size:clamp(32px,4.6vw,52px)}
       <span class="flap-line" id="flapLine1" aria-hidden="true"></span>
       <span class="flap-line" id="flapLine2" aria-hidden="true"></span>
     </h1>
-    <p class="hero-sub hero-fade">2º Congreso Aeronáutico Universitario. Grau en Gestió Aeronàutica, UAB</p>
+    <p class="hero-sub hero-fade">2º Congreso Aeronáutico Universitario de la UAB. Empresas del sector, charlas y Entrevistas Express, gratis para estudiantes de cualquier grado.</p>
     <div class="boardingstrip hero-fade">
       <div><span class="lbl">Fecha</span><span class="val">05 MAY 2027</span></div>
       <div><span class="lbl">Hora</span><span class="val">15:00</span></div>
@@ -352,8 +475,9 @@ h2{font-size:clamp(32px,4.6vw,52px)}
       <div class="countdown-box"><div class="countdown-num" id="cd-mins">00</div><div class="countdown-label">Min</div></div>
       <div class="countdown-box"><div class="countdown-num" id="cd-secs">00</div><div class="countdown-label">Seg</div></div>
     </div>
+    <p class="countdown-over hero-fade" id="countdownOver" hidden>Hoy es el día. Nos vemos en el Campus Sabadell.</p>
     <div class="hero-ctas hero-fade">
-      <a href="#inscripcion" class="btn btn-fill">Inscríbete</a>
+      <a href="#inscripcion" class="btn btn-fill">Inscríbete gratis</a>
       <a href="#programa" class="btn btn-outline">Ver programa</a>
     </div>
   </div>
@@ -362,23 +486,37 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 <section class="sobre section-pad" id="sobre">
   <div class="container sobre-grid">
     <div class="sobre-text">
-      <span class="kicker">Sobre el congreso</span>
       <h2>Del aula al hangar</h2>
-      <p>Fly & Grow Sabadell nace de la iniciativa de estudiantes del Grau en Gestió Aeronàutica de la UAB, Campus Sabadell. La idea es simple: poner en la misma sala a empresas del sector aeronáutico y a los estudiantes que se están formando específicamente para trabajar en él.</p>
-      <p>El Grau en Gestió Aeronàutica es una titulación prácticamente única a nivel nacional, así que el perfil de quienes se forman aquí es muy concreto. Eso convierte cada edición en un punto de contacto real entre talento especializado y empresas que lo buscan.</p>
-      <p>Tras la primera edición, la segunda vuelve con stands, ponencias, entrevistas express con empresas y una simulación de control aéreo en directo junto a IVAO España.</p>
+      <p>Lo organizan estudiantes del Grau en Gestió Aeronàutica de la UAB, una titulación prácticamente única en España. La idea es simple: poner en la misma sala a las empresas del sector y a quienes se están formando para trabajar en él, con stands, ponencias, Entrevistas Express y control aéreo en directo con IVAO España.</p>
+      <p>Abierto a estudiantes de cualquier universidad o grado.</p>
     </div>
     <div class="stats-row">
-      <div class="stat-row"><span class="stat-num">2ª</span><span class="stat-label">Edición</span></div>
+      <div class="stat-row"><span class="stat-num">8</span><span class="stat-label">Entidades del sector en la 1ª edición</span></div>
       <div class="stat-row"><span class="stat-num">150</span><span class="stat-label">Asistentes en la 1ª edición</span></div>
-      <div class="stat-row"><span class="stat-num">5</span><span class="stat-label">Posiciones ATC con IVAO España</span></div>
+      <div class="stat-row"><span class="stat-num">0€</span><span class="stat-label">Entrada, con inscripción previa</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section-pad" id="galeria" style="padding-bottom:30px">
+  <div class="container">
+    <div class="galeria-head">
+      <h2>Así fue la 1ª edición</h2>
+      <p>150 personas, 8 entidades del sector y una tarde entera en el Campus Sabadell.</p>
+    </div>
+    <div class="galeria">
+      <figure class="g1"><img src="assets/fotos/equipo-800.webp" srcset="assets/fotos/equipo-800.webp 800w, assets/fotos/equipo-1600.webp 1600w" sizes="(max-width:640px) 100vw, 680px" width="800" height="525" alt="Equipo organizador de Fly & Grow Sabadell con las camisetas del congreso en el hall" loading="lazy" decoding="async"><figcaption>Equipo organizador</figcaption></figure>
+      <figure class="g2"><img src="assets/fotos/ponencia-800.webp" srcset="assets/fotos/ponencia-800.webp 800w, assets/fotos/ponencia-1600.webp 1600w" sizes="(max-width:640px) 50vw, 400px" width="800" height="450" alt="Ponencia de Aena ante el aula llena de estudiantes" loading="lazy" decoding="async"><figcaption>Ponencia de Aena</figcaption></figure>
+      <figure class="g3"><img src="assets/fotos/mesa-redonda-800.webp" srcset="assets/fotos/mesa-redonda-800.webp 800w, assets/fotos/mesa-redonda-1600.webp 1600w" sizes="(max-width:640px) 50vw, 400px" width="800" height="450" alt="Mesa redonda con exalumnos del grado en el escenario" loading="lazy" decoding="async"><figcaption>Mesa redonda con exalumnos</figcaption></figure>
+      <figure class="g4"><img src="assets/fotos/stands-800.webp" srcset="assets/fotos/stands-800.webp 800w, assets/fotos/stands-1600.webp 1600w" sizes="(max-width:640px) 50vw, 400px" width="800" height="600" alt="Estudiantes y empresas en los stands del hall" loading="lazy" decoding="async"><figcaption>Stands en el hall</figcaption></figure>
+      <figure class="g5"><img src="assets/fotos/simulador-800.webp" srcset="assets/fotos/simulador-800.webp 800w, assets/fotos/simulador-1600.webp 1600w" sizes="(max-width:640px) 50vw, 400px" width="800" height="450" alt="Estudiantes probando un simulador de vuelo con joystick" loading="lazy" decoding="async"><figcaption>Simuladores de vuelo</figcaption></figure>
+      <figure class="g6"><img src="assets/fotos/simulador-stand-800.webp" srcset="assets/fotos/simulador-stand-800.webp 800w, assets/fotos/simulador-stand-1600.webp 1600w" sizes="(max-width:640px) 50vw, 400px" width="800" height="450" alt="Stand con simulador de cabina de avión comercial" loading="lazy" decoding="async"><figcaption>Stand de simulación</figcaption></figure>
     </div>
   </div>
 </section>
 
 <section class="programa section-pad" id="programa">
   <div class="container">
-    <span class="kicker" style="display:block;text-align:center">Itinerario del día</span>
     <h2>Programa</h2>
     <div class="timeline">
       <div class="timeline-item">
@@ -405,11 +543,27 @@ h2{font-size:clamp(32px,4.6vw,52px)}
   </div>
 </section>
 
+<section class="section-pad" id="atc">
+  <div class="container">
+    <div class="atc-panel">
+      <figure class="atc-photo"><img src="assets/fotos/ivao-800.webp" srcset="assets/fotos/ivao-800.webp 800w, assets/fotos/ivao-1600.webp 1600w" sizes="(max-width:920px) 100vw, 300px" width="450" height="800" alt="Controlador de IVAO España con cascos frente a la pantalla de radar" loading="lazy" decoding="async"></figure>
+      <div class="atc-body">
+      <h2>Control aéreo en directo</h2>
+      <p>Durante toda la tarde, controladores de IVAO España simulan en directo el tráfico del aeropuerto de Barcelona-El Prat (LEBL), con posiciones reales de torre y aproximación. Parte del equipo tiene también licencia ATC real.</p>
+      <div class="atc-stats">
+        <div class="atc-stat"><b>LEBL</b><span>Aeropuerto simulado</span></div>
+        <div class="atc-stat"><b>5</b><span>Posiciones ATC</span></div>
+        <div class="atc-stat"><b>IVAO ES</b><span>Organización colaboradora</span></div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="colabora">
   <div class="container">
     <div class="colabora-head">
-      <span class="kicker">Colaboran con nosotros</span>
-      <h2 style="font-size:clamp(26px,3vw,32px)">Entidades del sector</h2>
+      <h2 style="font-size:clamp(26px,3vw,32px)">Colaboraron en la 1ª edición</h2>
     </div>
     <div class="ticker-wrap">
       <div class="ticker-track" id="tickerTrack">
@@ -417,9 +571,9 @@ h2{font-size:clamp(32px,4.6vw,52px)}
         <div class="ticker-chip"><img src="assets/collab/bfs.png" alt="Barcelona Flight School"></div>
         <div class="ticker-chip"><img src="assets/collab/enaire.png" alt="ENAIRE"></div>
         <div class="ticker-chip"><img src="assets/collab/volotea.svg" alt="Volotea"></div>
-        <div class="ticker-chip"><img src="assets/collab/hangar10.jpeg" alt="Hangar 10"></div>
-        <div class="ticker-chip"><img src="assets/collab/itaerea.svg" alt="ITAérea"></div>
-        <div class="ticker-chip"><img src="assets/collab/aeae.png" alt="AEAE"></div>
+        <div class="ticker-chip"><img class="tall" src="assets/collab/hangar10.jpeg" alt="Hangar 10"></div>
+        <div class="ticker-chip on-blue"><img src="assets/collab/itaerea.svg" alt="ITAérea"></div>
+        <div class="ticker-chip"><img class="tall" src="assets/collab/aeae.png" alt="AEAE"></div>
         <div class="ticker-chip"><img src="assets/collab/ivao.png" alt="IVAO España"></div>
       </div>
     </div>
@@ -429,87 +583,108 @@ h2{font-size:clamp(32px,4.6vw,52px)}
 
 <section class="speed section-pad" id="speed">
   <div class="container">
-    <div class="speed-grid">
-      <div class="speed-copy">
-        <span class="kicker">Entrevistas Express</span>
-        <h2>Minutos que abren puertas</h2>
-        <p>Antes del congreso, cada estudiante interesado se preinscribe con sus datos, el curso que hace y su CV. Las empresas revisan los perfiles con antelación.</p>
-        <p>El día del evento, entrevistas rotativas de 5 a 10 minutos en un espacio dedicado, pensadas para que empresa y estudiante se conozcan sin depender de un proceso de selección largo.</p>
+    <div class="speed-copy">
+        <h2>Entrevistas Express</h2>
+        <p>Entrevistas de 5 a 10 minutos con empresas del sector el mismo día del congreso, sin un proceso de selección largo detrás.</p>
         <ul class="speed-list">
-          <li><span class="num">1</span><span><b>Preinscripción</b>: dejas tus datos y tu CV antes de la fecha límite.</span></li>
-          <li><span class="num">2</span><span><b>Revisión por empresas</b>: cada una elige los perfiles que le interesan.</span></li>
-          <li><span class="num">3</span><span><b>Entrevistas de 5 a 10 min</b>: el día del congreso, en formato rotativo.</span></li>
+          <li><span class="num">1</span><span><b>Crea tu perfil</b> con tu correo UAB, el curso que haces y tu CV, antes de la fecha límite.</span></li>
+          <li><span class="num">2</span><span><b>Las empresas revisan</b> los perfiles y contactan antes del evento con quienes quieren entrevistar.</span></li>
+          <li><span class="num">3</span><span><b>Entrevista</b> el día del congreso, en formato rotativo.</span></li>
         </ul>
-      </div>
-      <div class="ticket">
-        <div class="ticket-head"><span>Puerta de embarque</span><span>Entrevistas Express</span></div>
-        <div class="ticket-body">
-          <h3>Reserva tu plaza</h3>
-          <p>Crea tu perfil de candidato para entrar en el proceso de selección de las empresas participantes.</p>
-          <a href="https://app.memenginy.cat" class="btn btn-fill ticket-cta" target="_blank" rel="noopener">Crear mi perfil</a>
-          <p class="ticket-fine">Las empresas contactarán directamente a los candidatos seleccionados antes del evento. Si hay pocas preinscripciones, puede que este año no se hagan.</p>
-          <p class="ticket-note">Plataforma provisional (MEMEnginy HUB), pendiente de confirmación final. Hace falta correo UAB para entrar.</p>
+    </div>
+    <div class="pass">
+      <div class="pass-main">
+        <div class="pass-band"><span>Tarjeta de embarque</span><b>FG 2027</b></div>
+        <div class="pass-route">
+          <div><span class="lbl">Origen</span><span class="code">Aula</span></div>
+          <svg viewBox="0 0 220 24" aria-hidden="true"><path d="M0 11.4h150v1.2H0z" opacity=".35"/><path transform="translate(156 0)" d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
+          <div><span class="lbl">Destino</span><span class="code">Hangar</span></div>
+        </div>
+        <div class="pass-fields">
+          <div><span class="lbl">Pasajero</span><b>Tú</b></div>
+          <div><span class="lbl">Vuelo</span><b>EE-2027</b></div>
+          <div><span class="lbl">Fecha</span><b>05 May 2027</b></div>
+          <div><span class="lbl">Duración</span><b>5-10 min</b></div>
         </div>
       </div>
+      <div class="pass-stub">
+        <div class="pass-gate"><span class="lbl">Puerta</span><b>EE</b></div>
+        <a href="https://app.memenginy.cat" class="btn pass-cta" target="_blank" rel="noopener">Crear mi perfil</a>
+      </div>
     </div>
-    <div class="process">
-      <div class="process-step"><span class="process-dot"></span><span>Crea tu perfil</span></div>
-      <span class="process-arrow">→</span>
-      <div class="process-step"><span class="process-dot"></span><span>Empresas revisan</span></div>
-      <span class="process-arrow">→</span>
-      <div class="process-step"><span class="process-dot"></span><span>Te contactan</span></div>
-      <span class="process-arrow">→</span>
-      <div class="process-step"><span class="process-dot"></span><span>Entrevista</span></div>
-    </div>
+    <p class="pass-fine">Sujeto a un mínimo de preinscripciones y a las plazas que ofrezca cada empresa.</p>
   </div>
 </section>
 
-<section class="section-pad">
+<section class="section-pad" id="faq">
   <div class="container">
-    <div class="atc-panel">
-      <span class="kicker">Actividades lúdicas</span>
-      <h2>Control aéreo en directo</h2>
-      <p>Durante toda la tarde, controladores de IVAO España simulan en directo el tráfico del aeropuerto de Barcelona-El Prat (LEBL), con posiciones reales de torre y aproximación. Parte del equipo tiene también licencia ATC real.</p>
-      <div class="atc-stats">
-        <div class="atc-stat"><b>LEBL</b><span>Aeropuerto simulado</span></div>
-        <div class="atc-stat"><b>5</b><span>Posiciones ATC</span></div>
-        <div class="atc-stat"><b>IVAO ES</b><span>Organización colaboradora</span></div>
-      </div>
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq-list">
+      <details>
+        <summary>¿Puedo ir si no estudio en la UAB?</summary>
+        <p>Sí. El congreso está abierto a estudiantes de cualquier universidad o grado. Solo tienes que inscribirte antes. Las Entrevistas Express sí piden correo UAB.</p>
+      </details>
+      <details>
+        <summary>¿Cuánto cuesta?</summary>
+        <p>Nada. La entrada es gratuita, con inscripción previa.</p>
+      </details>
+      <details>
+        <summary>¿Tengo que quedarme toda la tarde?</summary>
+        <p>No. Puedes entrar y salir cuando quieras entre las 15:00 y las 20:30. Mira el <a href="#programa">programa</a> para no perderte lo que más te interese.</p>
+      </details>
+      <details>
+        <summary>¿Hace falta llevar el CV?</summary>
+        <p>Para las Entrevistas Express lo subes al crear tu perfil. Aun así, trae un par de copias impresas por si alguna empresa de los stands te lo pide.</p>
+      </details>
+      <details>
+        <summary>¿Hay que ir vestido de alguna forma?</summary>
+        <p>No hay código de vestimenta. Si vas a hacer entrevistas, ven como irías a una entrevista de prácticas.</p>
+      </details>
+      <details>
+        <summary>¿Dan certificado de asistencia?</summary>
+        <p>Sí. Quien lo pida al final de la jornada recibirá un certificado de asistencia por correo.</p>
+      </details>
+      <details>
+        <summary>¿Cómo llego?</summary>
+        <p>Escola d'Enginyeria de la UAB, Carrer dels Emprius 2, en el centro de Sabadell, a pocos minutos a pie de las estaciones de Renfe y FGC. <a href="https://maps.app.goo.gl/AoXZpFzdLGN8G7he6" target="_blank" rel="noopener">Ver en el mapa</a>.</p>
+      </details>
     </div>
   </div>
 </section>
 
 <section class="inscripcion section-pad" id="inscripcion">
   <div class="container">
-    <span class="kicker" style="display:block;text-align:center">Reserva tu asiento</span>
-    <h2 style="text-align:center">Inscripción</h2>
+    <h2>Reserva tu plaza</h2>
     <div class="inscripcion-wrap" style="margin-top:36px">
       <div class="form-card" id="formCard">
         <form class="form-fields" id="regForm">
           <div class="field">
             <label for="nombre">Nombre completo</label>
-            <input type="text" id="nombre" name="nombre" required>
+            <input type="text" id="nombre" name="nombre" required maxlength="120" autocomplete="name">
           </div>
           <div class="field">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" required maxlength="200" autocomplete="email">
           </div>
           <div class="field">
             <label for="uni">Universidad / Grado</label>
-            <input type="text" id="uni" name="uni" required placeholder="Ej: UAB, Gestió Aeronàutica">
+            <input type="text" id="uni" name="uni" required maxlength="160" placeholder="Ej: UAB, Gestió Aeronàutica">
           </div>
           <div class="field checkbox-row">
-            <input type="checkbox" id="speedcheck" name="speedcheck">
-            <label for="speedcheck">¿Participarás en las Entrevistas Express?</label>
+            <input type="checkbox" id="speedcheck" name="speedcheck" aria-describedby="speedhint">
+            <label for="speedcheck">Quiero hacer Entrevistas Express</label>
           </div>
+          <p class="field-hint" id="speedhint">Hace falta correo UAB. En el correo de confirmación te explicamos cómo crear tu perfil de candidato, que es lo que te da plaza en las entrevistas.</p>
+          <p class="form-error" id="formError" role="alert" hidden></p>
           <button type="submit" class="btn btn-fill form-submit">Confirmar inscripción</button>
-          <p class="form-note">La inscripción es gratuita y sin compromiso.</p>
-          <p class="form-error" id="formError" hidden>No se ha podido enviar la inscripción. Inténtalo de nuevo en unos minutos.</p>
+          <p class="form-note">Gratis, sin compromiso y abierta a estudiantes de cualquier universidad o grado. Tus datos solo se usan para gestionar tu inscripción.</p>
         </form>
         <div class="success-state" id="successState">
           <div class="success-icon">✓</div>
-          <h3>¡Estás dentro!</h3>
-          <p>Te hemos reservado tu plaza para el 5 de mayo de 2027 en el Campus de Sabadell. Revisa tu correo para más detalles.</p>
+          <h3 id="successTitle" tabindex="-1">¡Estás dentro!</h3>
+          <p>Tienes plaza para el 5 de mayo de 2027 a las 15:00, en el Campus Sabadell. Te hemos mandado la confirmación a <b id="successEmail"></b>. Si no la ves en unos minutos, mira en spam.</p>
+          <p class="success-speed" id="successSpeed" hidden>Las Entrevistas Express van aparte: <a href="#speed">crea tu perfil de candidato</a> con tu correo UAB.</p>
+          <a class="btn btn-outline success-cal" href="assets/flyandgrow-2027.ics" download="flyandgrow-2027.ics">Añadir al calendario</a>
         </div>
       </div>
     </div>
@@ -528,12 +703,15 @@ h2{font-size:clamp(32px,4.6vw,52px)}
       </div>
       <div class="footer-contact">
         <a href="mailto:flyandgrow.sabadell@gmail.com">flyandgrow.sabadell@gmail.com</a>
-        <p class="addr">Carrer Emprius, 2. 08202 Sabadell, Barcelona</p>
+        <a href="https://www.instagram.com/flyandgrow.sabadell/" target="_blank" rel="noopener">@flyandgrow.sabadell</a>
+        <a class="addr" href="https://maps.app.goo.gl/AoXZpFzdLGN8G7he6" target="_blank" rel="noopener">Carrer dels Emprius, 2, 08202 Sabadell, Barcelona</a>
       </div>
     </div>
-    <div class="footer-bottom">© 2027 Fly & Grow Sabadell. Grau en Gestió Aeronàutica, UAB Campus Sabadell</div>
+    <div class="footer-bottom">© 2026 Fly & Grow Sabadell. Grau en Gestió Aeronàutica, UAB Campus Sabadell. Web: <a href="https://guillermocort.es" target="_blank" rel="noopener" style="color:inherit;border-bottom:1px solid currentColor">Guillermo Cortés</a></div>
   </div>
 </footer>
+
+<a href="#inscripcion" class="btn btn-fill sticky-cta" id="stickyCta">Inscríbete gratis</a>
 
 <script>
 // si el usuario pide menos movimiento, ni flap ni giros de digitos
@@ -566,12 +744,28 @@ window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.
 // menu movil
 const hamburger = document.getElementById('hamburger');
 const mobileMenu = document.getElementById('mobileMenu');
-hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
-mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+function setMenu(open){
+  mobileMenu.classList.toggle('open', open);
+  mobileMenu.inert = !open;
+  hamburger.setAttribute('aria-expanded', String(open));
+  hamburger.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+}
+hamburger.addEventListener('click', () => setMenu(!mobileMenu.classList.contains('open')));
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && mobileMenu.classList.contains('open')) { setMenu(false); hamburger.focus(); } });
+
+// boton fijo de inscripcion en movil: solo cuando ni el hero ni el formulario ni el pie estan en pantalla
+const stickyCta = document.getElementById('stickyCta');
+const ctaBlockers = new Set();
+const ctaObserver = new IntersectionObserver(entries => {
+  entries.forEach(en => en.isIntersecting ? ctaBlockers.add(en.target) : ctaBlockers.delete(en.target));
+  stickyCta.classList.toggle('show', ctaBlockers.size === 0);
+});
+['#top', '#inscripcion', '.footer'].forEach(sel => ctaObserver.observe(document.querySelector(sel)));
 
 // countdown al congreso con marcador de solapas real: mitad fija arriba/abajo
 // + dos hojas que giran en 3D para tapar el numero viejo y destapar el nuevo
-const target = new Date('2027-05-05T15:00:00').getTime();
+const target = new Date('2027-05-05T15:00:00+02:00').getTime(); // hora de Madrid, no la del movil de quien mira
 
 function makeGlyph(ch){
   const g = document.createElement('span');
@@ -636,14 +830,21 @@ function setDigits(id, value){
 }
 
 function tickCountdown(){
-  const diff = Math.max(0, target - Date.now());
+  const diff = target - Date.now();
+  if (diff <= 0){
+    document.getElementById('countdown').hidden = true;
+    document.getElementById('countdownOver').hidden = false;
+    clearInterval(countdownTimer);
+    return;
+  }
   setDigits('cd-days', String(Math.floor(diff/86400000)).padStart(3,'0'));
   setDigits('cd-hours', String(Math.floor(diff%86400000/3600000)).padStart(2,'0'));
   setDigits('cd-mins', String(Math.floor(diff%3600000/60000)).padStart(2,'0'));
   setDigits('cd-secs', String(Math.floor(diff%60000/1000)).padStart(2,'0'));
 }
+let countdownTimer;
 tickCountdown();
-setInterval(tickCountdown, 1000);
+countdownTimer = setInterval(tickCountdown, 1000);
 
 // tablon split-flap de verdad pal titulo, letra a letra
 const FLAP_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ&';
@@ -681,7 +882,7 @@ buildFlapLine(document.getElementById('flapLine1'), 'FLY & GROW', 100);
 buildFlapLine(document.getElementById('flapLine2'), 'SABADELL', 500);
 
 // resto del hero entra despues del flap
-setTimeout(() => document.querySelectorAll('.hero-fade').forEach((el,i) => setTimeout(()=>el.classList.add('in'), i*100)), reduceMotion ? 0 : 1300);
+setTimeout(() => document.querySelectorAll('.hero-fade').forEach((el,i) => setTimeout(()=>el.classList.add('in'), i*100)), reduceMotion ? 0 : 900);
 
 // ticker duplicado pa que el loop no se note
 const track = document.getElementById('tickerTrack');
@@ -704,6 +905,7 @@ regForm.addEventListener('submit', async (e) => {
     email: document.getElementById('email').value,
     uni: document.getElementById('uni').value,
     speedcheck: document.getElementById('speedcheck').checked,
+    lang: document.documentElement.lang,
   };
 
   try {
@@ -712,13 +914,21 @@ regForm.addEventListener('submit', async (e) => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error('respuesta no ok');
+    if (!res.ok) throw new Error(res.status === 400 ? 'invalid' : 'server');
+    document.getElementById('successEmail').textContent = data.email;
+    document.getElementById('successSpeed').hidden = !data.speedcheck;
     formCard.classList.add('submitted');
     successState.classList.add('show');
-  } catch {
+    document.getElementById('successTitle').focus({ preventScroll: true });
+    formCard.scrollIntoView({ block: 'center' });
+  } catch (err) {
+    formError.innerHTML = err.message === 'invalid'
+      ? 'Revisa el nombre y el email: alguno no es válido o es demasiado largo.'
+      : 'No se ha podido enviar la inscripción. Vuelve a intentarlo en unos minutos o escríbenos a <a href="mailto:flyandgrow.sabadell@gmail.com">flyandgrow.sabadell@gmail.com</a>.';
     formError.hidden = false;
     formSubmitBtn.disabled = false;
     formSubmitBtn.textContent = 'Confirmar inscripción';
+    formSubmitBtn.focus();
   }
 });
 </script>
