@@ -9,8 +9,28 @@ DTSTAMP:20261111T000000Z
 DTSTART:20270505T130000Z
 DTEND:20270505T183000Z
 SUMMARY:Fly & Grow Sabadell 2027
-DESCRIPTION:2º Congreso Aeronáutico Universitario. Grau en Gestió Aeronàutica\, UAB. Programa: https://flyandgrow.es
+DESCRIPTION:2º Congreso Aeronáutico Universitario de la UAB. Una tarde co
+ n empresas del sector aeronáutico\, ponencias\, mesa redonda con exalumno
+ s\, control aéreo en directo con IVAO España y Entrevistas Express.\n\nP
+ rograma:\n15:00 Apertura: stands y ponencias\n17:30 Charlas del sector\n19
+ :30 Networking y Entrevistas Express\n20:30 Fin de la jornada\n\nLugar: Es
+ cola d'Enginyeria UAB\, Carrer dels Emprius 2\, 08202 Sabadell\nCómo lleg
+ ar: https://maps.app.goo.gl/AoXZpFzdLGN8G7he6\n\nSi vas a las Entrevistas 
+ Express\, trae un par de CV impresos.\nMás info: https://flyandgrow.es\n\
+ nNos vemos en pista.
 LOCATION:Escola d'Enginyeria UAB\, Carrer dels Emprius 2\, 08202 Sabadell
-URL:https://flyandgrow.es
+URL:https://flyandgrow.es/
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-P1D
+DESCRIPTION:Mañana despegamos: Fly & Grow Sabadell\, 15:00\, Campus Sabade
+ ll
+END:VALARM
+BEGIN:VALARM
+ACTION:DISPLAY
+TRIGGER:-PT3H
+DESCRIPTION:En 3 horas abrimos puertas: Fly & Grow Sabadell\, Campus Sabade
+ ll
+END:VALARM
 END:VEVENT
 END:VCALENDAR

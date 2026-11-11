@@ -302,7 +302,12 @@ p{text-wrap:pretty}
 .success-state b{color:var(--text);font-weight:500;overflow-wrap:anywhere}
 .success-speed{margin-top:12px}
 .success-speed a{color:var(--blue-bright);border-bottom:1px solid currentColor}
-.success-cal{margin-top:22px}
+.success-cals{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.success-cals .btn{justify-content:center}
+.success-speed b{color:var(--text);font-weight:600}
+.success-share-text{margin-top:26px;font-size:14px}
+.success-share{margin-top:10px}
+.insc-count{font-family:var(--mono);font-size:13.5px;color:var(--green-text);margin-top:14px}
 .form-card.submitted .form-fields{display:none}
 
 /* footer */
@@ -475,11 +480,12 @@ p{text-wrap:pretty}
       <div class="countdown-box"><div class="countdown-num" id="cd-mins">00</div><div class="countdown-label">Min</div></div>
       <div class="countdown-box"><div class="countdown-num" id="cd-secs">00</div><div class="countdown-label">Seg</div></div>
     </div>
-    <p class="countdown-over hero-fade" id="countdownOver" hidden>Avui és el dia. Ens veiem al Campus Sabadell.</p>
+    <p class="countdown-over hero-fade" id="countdownOver" hidden>El congrés és avui. T'esperem al Campus Sabadell.</p>
     <div class="hero-ctas hero-fade">
       <a href="#inscripcion" class="btn btn-fill">Inscriu-te gratis</a>
       <a href="#programa" class="btn btn-outline">Veure el programa</a>
     </div>
+    <p class="insc-count hero-fade" data-tpl="Ja hi ha {n} estudiants inscrits." hidden></p>
   </div>
 </header>
 
@@ -487,7 +493,7 @@ p{text-wrap:pretty}
   <div class="container sobre-grid">
     <div class="sobre-text">
       <h2>De l'aula a l'hangar</h2>
-      <p>L'organitzen estudiants del Grau en Gestió Aeronàutica de la UAB, una titulació pràcticament única a Espanya. La idea és senzilla: posar a la mateixa sala les empreses del sector i qui s'està formant per treballar-hi, amb estands, ponències, Entrevistes Express i control aeri en directe amb IVAO Espanya.</p>
+      <p>L'organitzen estudiants del Grau en Gestió Aeronàutica de la UAB, una titulació pràcticament única a Espanya. El seu objectiu és reunir les empreses del sector amb qui s'està formant per treballar-hi, a través d'estands, ponències, Entrevistes Express i una simulació de control aeri en directe amb IVAO Espanya.</p>
       <p>Obert a estudiants de qualsevol universitat o grau.</p>
     </div>
     <div class="stats-row">
@@ -502,7 +508,7 @@ p{text-wrap:pretty}
   <div class="container">
     <div class="galeria-head">
       <h2>Així va ser la primera edició</h2>
-      <p>150 persones, 8 entitats del sector i una tarda sencera al Campus Sabadell.</p>
+      <p>150 assistents i 8 entitats del sector en una jornada al Campus Sabadell.</p>
     </div>
     <div class="galeria">
       <figure class="g1"><img src="../assets/fotos/equipo-800.webp" srcset="../assets/fotos/equipo-800.webp 800w, ../assets/fotos/equipo-1600.webp 1600w" sizes="(max-width:640px) 100vw, 680px" width="800" height="525" alt="Equip organitzador de Fly & Grow Sabadell amb les samarretes del congrés al hall" loading="lazy" decoding="async"><figcaption>Equip organitzador</figcaption></figure>
@@ -525,7 +531,7 @@ p{text-wrap:pretty}
       </div>
       <div class="timeline-item">
         <div class="timeline-time">17:30</div>
-        <div><div class="timeline-title">Xerrades del sector</div><div class="timeline-desc">Professionals en actiu i exalumnes del grau expliquen com és la realitat laboral que t'espera en acabar.</div></div>
+        <div><div class="timeline-title">Xerrades del sector</div><div class="timeline-desc">Professionals en actiu i exalumnes del grau comparteixen la seva experiència sobre la realitat laboral del sector.</div></div>
       </div>
       <div class="timeline-item">
         <div class="timeline-time">19:30</div>
@@ -577,7 +583,7 @@ p{text-wrap:pretty}
         <div class="ticker-chip"><img src="../assets/collab/ivao.png" alt="IVAO Espanya"></div>
       </div>
     </div>
-    <p class="empresas-link">Sou una empresa del sector? <a href="empresas/">Mireu com col·laborar</a></p>
+    <p class="empresas-link">Representa una empresa del sector? <a href="empresas/">Consulti com participar</a></p>
   </div>
 </section>
 
@@ -585,9 +591,9 @@ p{text-wrap:pretty}
   <div class="container">
     <div class="speed-copy">
         <h2>Entrevistes Express</h2>
-        <p>Entrevistes de 5 a 10 minuts amb empreses del sector el mateix dia del congrés, sense un procés de selecció llarg al darrere.</p>
+        <p>Entrevistes de 5 a 10 minuts amb empreses del sector el mateix dia del congrés, sense necessitat d'un procés de selecció llarg.</p>
         <ul class="speed-list">
-          <li><span class="num">1</span><span><b>Crea el teu perfil</b> amb el teu correu UAB, el curs que fas i el teu CV, abans de la data límit.</span></li>
+          <li><span class="num">1</span><span><b>Crea el teu perfil</b> amb el teu correu UAB, el teu curs i el teu CV abans de la data límit.</span></li>
           <li><span class="num">2</span><span><b>Les empreses revisen</b> els perfils i es posen en contacte, abans de l'esdeveniment, amb qui volen entrevistar.</span></li>
           <li><span class="num">3</span><span><b>Entrevista</b> el dia del congrés, en format rotatiu.</span></li>
         </ul>
@@ -609,7 +615,7 @@ p{text-wrap:pretty}
       </div>
       <div class="pass-stub">
         <div class="pass-gate"><span class="lbl">Porta</span><b>EE</b></div>
-        <a href="https://app.memenginy.cat" class="btn pass-cta" target="_blank" rel="noopener">Crear el meu perfil</a>
+        <a href="/entrevistas" class="btn pass-cta" target="_blank" rel="noopener">Crear el meu perfil</a>
       </div>
     </div>
     <p class="pass-fine">Subjecte a un mínim de preinscripcions i a les places que ofereixi cada empresa.</p>
@@ -621,31 +627,31 @@ p{text-wrap:pretty}
     <h2>Preguntes freqüents</h2>
     <div class="faq-list">
       <details>
-        <summary>Hi puc anar si no estudio a la UAB?</summary>
-        <p>Sí. El congrés és obert a estudiants de qualsevol universitat o grau. Només cal que t'hi inscriguis abans. Les Entrevistes Express sí que demanen correu UAB.</p>
+        <summary>Hi puc assistir si no estudio a la UAB?</summary>
+        <p>Sí. El congrés és obert a estudiants de qualsevol universitat o grau; només cal la inscripció prèvia. Les Entrevistes Express sí que requereixen correu UAB.</p>
       </details>
       <details>
-        <summary>Quant costa?</summary>
-        <p>Res. L'entrada és gratuïta, amb inscripció prèvia.</p>
+        <summary>Té algun cost?</summary>
+        <p>No. L'entrada és gratuïta, amb inscripció prèvia.</p>
       </details>
       <details>
-        <summary>M'hi he de quedar tota la tarda?</summary>
-        <p>No. Pots entrar i sortir quan vulguis entre les 15:00 i les 20:30. Mira el <a href="#programa">programa</a> per no perdre't el que més t'interessi.</p>
+        <summary>Cal assistir-hi tota la tarda?</summary>
+        <p>No. Pots assistir-hi lliurement entre les 15:00 i les 20:30. Consulta el <a href="#programa">programa</a> per organitzar la teva visita.</p>
       </details>
       <details>
         <summary>Cal portar el CV?</summary>
-        <p>Per a les Entrevistes Express el puges quan crees el teu perfil. Tot i així, porta'n un parell de còpies impreses per si alguna empresa dels estands te'l demana.</p>
+        <p>Per a les Entrevistes Express s'adjunta en crear el perfil. Tot i així, et recomanem portar-ne un parell de còpies impreses per si alguna empresa dels estands el sol·licita.</p>
       </details>
       <details>
-        <summary>Cal anar vestit d'alguna manera?</summary>
-        <p>No hi ha codi de vestimenta. Si has de fer entrevistes, vine com si anessis a una entrevista de pràctiques.</p>
+        <summary>Hi ha codi de vestimenta?</summary>
+        <p>No. Si participes a les Entrevistes Express, et recomanem la vestimenta que portaries a una entrevista de pràctiques.</p>
       </details>
       <details>
-        <summary>Donen certificat d'assistència?</summary>
-        <p>Sí. Qui el demani al final de la jornada rebrà un certificat d'assistència per correu.</p>
+        <summary>S'entrega certificat d'assistència?</summary>
+        <p>Sí. Qui el sol·liciti al final de la jornada el rebrà per correu electrònic.</p>
       </details>
       <details>
-        <summary>Com hi arribo?</summary>
+        <summary>Com arribar-hi?</summary>
         <p>Escola d'Enginyeria de la UAB, Carrer dels Emprius 2, al centre de Sabadell, a pocs minuts a peu de les estacions de Renfe i FGC. <a href="https://maps.app.goo.gl/AoXZpFzdLGN8G7he6" target="_blank" rel="noopener">Veure-ho al mapa</a>.</p>
       </details>
     </div>
@@ -655,6 +661,7 @@ p{text-wrap:pretty}
 <section class="inscripcion section-pad" id="inscripcion">
   <div class="container">
     <h2>Reserva la teva plaça</h2>
+    <p class="insc-count" data-tpl="Ja hi ha {n} estudiants inscrits." hidden></p>
     <div class="inscripcion-wrap" style="margin-top:36px">
       <div class="form-card" id="formCard">
         <form class="form-fields" id="regForm">
@@ -674,17 +681,22 @@ p{text-wrap:pretty}
             <input type="checkbox" id="speedcheck" name="speedcheck" aria-describedby="speedhint">
             <label for="speedcheck">Vull fer Entrevistes Express</label>
           </div>
-          <p class="field-hint" id="speedhint">Cal correu UAB. Al correu de confirmació t'expliquem com crear el teu perfil de candidat, que és el que et dona plaça a les entrevistes.</p>
+          <p class="field-hint" id="speedhint">Requereix correu UAB. Al correu de confirmació trobaràs com crear el teu perfil de candidat, necessari per optar a les entrevistes.</p>
           <p class="form-error" id="formError" role="alert" hidden></p>
           <button type="submit" class="btn btn-fill form-submit">Confirmar la inscripció</button>
-          <p class="form-note">Gratuïta, sense compromís i oberta a estudiants de qualsevol universitat o grau. Les teves dades només s'utilitzen per gestionar la teva inscripció.</p>
+          <p class="form-note">Inscripció gratuïta i sense compromís, oberta a estudiants de qualsevol universitat o grau. Les teves dades només s'utilitzen per gestionar la teva inscripció (<a href="privacidad/">política de privacitat</a>).</p>
         </form>
         <div class="success-state" id="successState">
           <div class="success-icon">✓</div>
-          <h3 id="successTitle" tabindex="-1">Ja hi ets!</h3>
-          <p>Tens plaça per al 5 de maig de 2027 a les 15:00, al Campus Sabadell. T'hem enviat la confirmació a <b id="successEmail"></b>. Si no la veus en uns minuts, mira el correu brossa.</p>
-          <p class="success-speed" id="successSpeed" hidden>Les Entrevistes Express van a part: <a href="#speed">crea el teu perfil de candidat</a> amb el teu correu UAB.</p>
-          <a class="btn btn-outline success-cal" href="../assets/flyandgrow-2027.ics" download="flyandgrow-2027.ics">Afegir al calendari</a>
+          <h3 id="successTitle" tabindex="-1">Inscripció confirmada</h3>
+          <p>La teva plaça per al 5 de maig de 2027 a les 15:00 al Campus Sabadell està confirmada. Hem enviat la confirmació a <b id="successEmail"></b>. Si no la reps en uns minuts, revisa la carpeta de correu brossa.</p>
+          <p class="success-speed" id="successSpeed" hidden><b>Últim pas per a les Entrevistes Express:</b> <a href="/entrevistas" target="_blank" rel="noopener">crea el teu perfil de candidat</a> amb el teu correu UAB. És la informació que consulten les empreses per seleccionar a qui entrevistar.</p>
+          <div class="success-cals">
+            <a class="btn btn-outline" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fly%20%26%20Grow%20Sabadell%202027&amp;dates=20270505T130000Z/20270505T183000Z&amp;ctz=Europe/Madrid&amp;details=2n%20Congr%C3%A9s%20Aeron%C3%A0utic%20Universitari%20de%20la%20UAB.%20Una%20tarda%20amb%20empreses%20del%20sector%20aeron%C3%A0utic%2C%20pon%C3%A8ncies%2C%20taula%20rodona%20amb%20exalumnes%2C%20control%20aeri%20en%20directe%20amb%20IVAO%20Espanya%20i%20Entrevistes%20Express.%0A%0APrograma%3A%0A15%3A00%20Obertura%3A%20estands%20i%20pon%C3%A8ncies%0A17%3A30%20Xerrades%20del%20sector%0A19%3A30%20Networking%20i%20Entrevistes%20Express%0A20%3A30%20Fi%20de%20la%20jornada%0A%0ALloc%3A%20Escola%20d%27Enginyeria%20UAB%2C%20Carrer%20dels%20Emprius%202%2C%2008202%20Sabadell%0ACom%20arribar-hi%3A%20https%3A//maps.app.goo.gl/AoXZpFzdLGN8G7he6%0A%0ASi%20vas%20a%20les%20Entrevistes%20Express%2C%20porta%20un%20parell%20de%20CV%20impresos.%0AM%C3%A9s%20info%3A%20https%3A//flyandgrow.es/ca/%0A%0AEns%20veiem%20a%20pista.&amp;location=Escola%20d%27Enginyeria%20UAB%2C%20Carrer%20dels%20Emprius%202%2C%2008202%20Sabadell" target="_blank" rel="noopener">Google Calendar</a>
+            <a class="btn btn-outline" href="../assets/flyandgrow-2027-ca.ics" download="flyandgrow-2027.ics">Apple Calendar / Outlook</a>
+          </div>
+          <p class="success-share-text">Si coneixes algú a qui li pugui interessar, comparteix-ho:</p>
+          <a class="btn btn-fill success-share" href="https://wa.me/?text=M%27he%20inscrit%20a%20Fly%20%26%20Grow%20Sabadell%2C%20el%20congr%C3%A9s%20aeron%C3%A0utic%20universitari%20de%20la%20UAB%3A%20dimecres%205%20de%20maig%2C%2015%3A00%2C%20Campus%20Sabadell.%20L%27entrada%20%C3%A9s%20gratu%C3%AFta%3A%20https%3A//flyandgrow.es/ca/" target="_blank" rel="noopener">Compartir per WhatsApp</a>
         </div>
       </div>
     </div>
@@ -707,7 +719,7 @@ p{text-wrap:pretty}
         <a class="addr" href="https://maps.app.goo.gl/AoXZpFzdLGN8G7he6" target="_blank" rel="noopener">Carrer dels Emprius, 2, 08202 Sabadell, Barcelona</a>
       </div>
     </div>
-    <div class="footer-bottom">© 2026 Fly & Grow Sabadell. Grau en Gestió Aeronàutica, UAB Campus Sabadell. Web: <a href="https://guillermocort.es" target="_blank" rel="noopener" style="color:inherit;border-bottom:1px solid currentColor">Guillermo Cortés</a></div>
+    <div class="footer-bottom">© 2026 Fly & Grow Sabadell. Grau en Gestió Aeronàutica, UAB Campus Sabadell. <a href="privacidad/" style="color:inherit;border-bottom:1px solid currentColor">Política de privacitat</a>. Web: <a href="https://guillermocort.es" target="_blank" rel="noopener" style="color:inherit;border-bottom:1px solid currentColor">Guillermo Cortés</a></div>
   </div>
 </footer>
 
@@ -887,6 +899,12 @@ setTimeout(() => document.querySelectorAll('.hero-fade').forEach((el,i) => setTi
 // ticker duplicado pa que el loop no se note
 const track = document.getElementById('tickerTrack');
 track.innerHTML += track.innerHTML;
+
+// contador publico: la API solo devuelve la cifra a partir de un minimo (PUBLIC_COUNT_MIN)
+fetch('/api/stats').then(r => r.ok ? r.json() : {}).then(d => {
+  if (!d.inscritos) return;
+  document.querySelectorAll('.insc-count').forEach(el => { el.textContent = el.dataset.tpl.replace('{n}', d.inscritos); el.hidden = false; });
+}).catch(() => {});
 
 const regForm = document.getElementById('regForm');
 const formCard = document.getElementById('formCard');

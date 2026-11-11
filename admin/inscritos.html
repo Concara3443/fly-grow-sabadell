@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Inscritos - Fly & Grow</title>
+<style>
+:root{--blue:#223D58;--bg:#0d151f;--panel:#152233;--text:#E7E9ED;--muted:#9AADC2;--accent:#86BEF5;--green:#4EB869;--line:rgba(111,163,216,0.18)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:ui-monospace,'IBM Plex Mono',monospace;padding:28px 16px}
+.wrap{max-width:1100px;margin:0 auto}
+header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px}
+h1{font-size:20px;margin:0}
+h2{font-size:15px;margin:34px 0 10px}
+nav a{color:var(--accent);font-size:13px;margin-left:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:20px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:14px}
+.stat b{display:block;font-size:28px;color:var(--accent);font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.bar a{background:var(--blue);color:#fff;text-decoration:none;font-size:13px;padding:9px 14px;border-radius:4px}
+input[type=search]{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:4px;padding:9px 10px;font:inherit;font-size:13px;min-width:240px}
+.table{overflow-x:auto;border:1px solid var(--line);border-radius:6px;margin-top:10px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-weight:500;background:var(--panel);position:sticky;top:0}
+td.wrap{white-space:normal;min-width:220px}
+.si{color:var(--green)}
+.unis{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.unis span{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:5px 9px;font-size:12px}
+.err{color:#ff7a70}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Inscritos Fly &amp; Grow 2027</h1><nav><a href="./">Enviar correo</a><a href="#" id="reload">Actualizar</a></nav></header>
+  <div class="stats" id="stats"></div>
+  <p class="err" id="err" hidden>No se han podido cargar los datos.</p>
+
+  <h2>Por universidad / grado</h2>
+  <div class="unis" id="unis"></div>
+
+  <h2>Estudiantes</h2>
+  <div class="bar"><input type="search" id="q" placeholder="Buscar nombre, email o grado"><a href="api/export.csv?tipo=inscritos">Descargar Excel (CSV)</a></div>
+  <div class="table"><table><thead><tr><th>Fecha</th><th>Nombre</th><th>Email</th><th>Universidad / Grado</th><th>Entrevistas</th><th>Idioma</th></tr></thead><tbody id="ins"></tbody></table></div>
+
+  <h2>Empresas</h2>
+  <div class="bar"><span></span><a href="api/export.csv?tipo=empresas">Descargar Excel (CSV)</a></div>
+  <div class="table"><table><thead><tr><th>Fecha</th><th>Empresa</th><th>Contacto</th><th>Email</th><th>Paquete</th><th>Mensaje</th></tr></thead><tbody id="emp"></tbody></table></div>
+</div>
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fecha = (iso) => new Date(iso).toLocaleString('es-ES', { timeZone: 'Europe/Madrid', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+let datos = { inscritos: [], empresas: [] };
+
+function pintar() {
+  const q = $('q').value.trim().toLowerCase();
+  const ins = datos.inscritos.slice().reverse().filter((r) => !q || `${r.nombre} ${r.email} ${r.uni}`.toLowerCase().includes(q));
+  $('ins').innerHTML = ins.map((r) => `<tr><td>${fecha(r.fecha)}</td><td>${esc(r.nombre)}</td><td><a href="mailto:${esc(r.email)}" style="color:inherit">${esc(r.email)}</a></td><td class="wrap">${esc(r.uni)}</td><td class="${r.speedcheck ? 'si' : ''}">${r.speedcheck ? 'Sí' : 'No'}</td><td>${esc(r.lang)}</td></tr>`).join('');
+  $('emp').innerHTML = datos.empresas.slice().reverse().map((r) => `<tr><td>${fecha(r.fecha)}</td><td>${esc(r.empresa)}</td><td>${esc(r.contacto)}</td><td><a href="mailto:${esc(r.email)}" style="color:inherit">${esc(r.email)}</a></td><td>${esc(r.paquete)}</td><td class="wrap">${esc(r.mensaje)}</td></tr>`).join('');
+}
+
+async function cargar() {
+  $('err').hidden = true;
+  try {
+    const res = await fetch('api/datos', { cache: 'no-store' });
+    if (!res.ok) throw new Error();
+    datos = await res.json();
+  } catch { $('err').hidden = false; return; }
+  const i = datos.inscritos;
+  const hoy = new Date().toDateString();
+  const stat = (n, t) => `<div class="stat"><b>${n}</b><span>${t}</span></div>`;
+  $('stats').innerHTML = stat(i.length, 'estudiantes inscritos')
+    + stat(i.filter((r) => r.speedcheck).length, 'quieren Entrevistas Express')
+    + stat(i.filter((r) => new Date(r.fecha).toDateString() === hoy).length, 'inscritos hoy')
+    + stat(datos.empresas.length, 'solicitudes de empresas');
+  const unis = {};
+  i.forEach((r) => { const k = r.uni.trim(); unis[k] = (unis[k] || 0) + 1; });
+  $('unis').innerHTML = Object.entries(unis).sort((a, b) => b[1] - a[1]).map(([u, n]) => `<span>${esc(u)}: ${n}</span>`).join('') || '<span>Sin inscritos todavía</span>';
+  pintar();
+}
+$('q').addEventListener('input', pintar);
+$('reload').addEventListener('click', (e) => { e.preventDefault(); cargar(); });
+cargar();
+</script>
+</body>
+</html>

@@ -2,34 +2,44 @@
 // Simula Resend con un fetch falso y verifica el flujo de /inscripcion.
 const assert = require('assert');
 const http = require('http');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
 
 const calls = [];
 let failConfirm = false;
+let failNotify = false;
 const realFetch = global.fetch;
 global.fetch = async (url, opts) => {
   if (!String(url).includes('resend.com')) return realFetch(url, opts);
   const body = JSON.parse(opts.body);
   calls.push(body);
   const isConfirm = body.to === 'alumna@uab.cat';
-  const ok = !(isConfirm && failConfirm);
+  const isNotify = Array.isArray(body.to);
+  const ok = !(isConfirm && failConfirm) && !(isNotify && failNotify);
   return { ok, status: ok ? 200 : 500, text: async () => '' };
 };
 
 process.env.PORT = '3019';
 process.env.RESEND_API_KEY = 'test';
-process.env.NOTIFY_EMAIL = 'org@test';
+process.env.NOTIFY_EMAIL = 'org@test, otro@test';
+process.env.DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'fyg-check-'));
+process.env.PUBLIC_COUNT_MIN = '2';
+const store = require('./store');
 require('./server.js');
 
-function post(data, path = '/inscripcion') {
+function request(method, p, data, headers = {}) {
   return new Promise((resolve, reject) => {
-    const req = http.request({ host: '127.0.0.1', port: 3019, path, method: 'POST' }, (res) => {
-      res.resume();
-      res.on('end', () => resolve(res.statusCode));
+    const req = http.request({ host: '127.0.0.1', port: 3019, path: p, method, headers }, (res) => {
+      let body = '';
+      res.on('data', (c) => { body += c; });
+      res.on('end', () => resolve({ status: res.statusCode, body }));
     });
     req.on('error', reject);
-    req.end(JSON.stringify(data));
+    req.end(data ? JSON.stringify(data) : undefined);
   });
 }
+const post = async (data, p = '/inscripcion') => (await request('POST', p, data)).status;
 
 (async () => {
   await new Promise((r) => setTimeout(r, 200));
@@ -37,22 +47,27 @@ function post(data, path = '/inscripcion') {
 
   assert.strictEqual(await post(ok), 200);
   assert.strictEqual(calls.length, 2);
-  assert.strictEqual(calls[0].to, 'org@test');
+  assert.deepStrictEqual(calls[0].to, ['org@test', 'otro@test'], 'aviso a todas las direcciones');
   assert.strictEqual(calls[1].to, 'alumna@uab.cat');
   assert.strictEqual(calls[1].attachments[0].filename, 'flyandgrow-2027.ics');
-  assert.ok(calls[1].html.includes('Ana &lt;b&gt;'), 'nombre escapado');
-  assert.ok(calls[1].html.includes('Entrevistas Express'), 'parrafo de entrevistas si speedcheck');
+  assert.ok(calls[0].html.includes('Ana &lt;b&gt;'), 'nombre escapado en el aviso');
+  assert.ok(calls[1].html.includes('Hola, Ana:'), 'saludo con el nombre de pila');
+  assert.ok(!calls[1].html.includes('<b>!'), 'sin html del usuario en la confirmacion');
+  assert.ok(calls[1].html.includes('Último paso'), 'bloque de entrevistas si speedcheck');
+  assert.ok(calls[1].text.includes('Ana'), 'version texto plano');
 
   calls.length = 0;
   failConfirm = true;
   assert.strictEqual(await post({ ...ok, speedcheck: false }), 200, 'si falla la confirmacion la inscripcion sigue valiendo');
-  assert.ok(!calls[1].html.includes('Entrevistas Express'));
+  assert.ok(!calls[1].html.includes('Último paso'));
 
   calls.length = 0;
   failConfirm = false;
   assert.strictEqual(await post({ ...ok, lang: 'ca' }), 200);
-  assert.ok(calls[1].subject.startsWith('Tens plaça'), 'correo en catalan si viene de /ca/');
-  assert.ok(calls[1].html.includes('Entrevistes Express'));
+  assert.ok(calls[1].subject.startsWith('Inscripció confirmada'), 'correo en catalan si viene de /ca/');
+  assert.ok(calls[1].html.includes('Últim pas'));
+  assert.ok(calls[1].html.includes('calendar.google.com'), 'boton de Google Calendar');
+  assert.ok(Buffer.from(calls[1].attachments[0].content, 'base64').toString().includes('TRIGGER:-P1D'), 'ics con aviso');
 
   assert.strictEqual(await post({ ...ok, email: 'no-es-email' }), 400);
 
@@ -61,12 +76,34 @@ function post(data, path = '/inscripcion') {
   const emp = { empresa: 'Aero <SA>', contacto: 'Marta', email: 'rrhh@aero.es', paquete: 'Conexión', mensaje: 'Hola', lang: 'ca' };
   assert.strictEqual(await post(emp, '/empresa'), 200);
   assert.strictEqual(calls.length, 2);
-  assert.strictEqual(calls[0].to, 'org@test');
+  assert.deepStrictEqual(calls[0].to, ['org@test', 'otro@test']);
   assert.strictEqual(calls[0].reply_to, 'rrhh@aero.es');
   assert.ok(calls[0].html.includes('Aero &lt;SA&gt;'));
   assert.strictEqual(calls[1].to, 'rrhh@aero.es');
-  assert.ok(calls[1].subject.startsWith('Hem rebut'));
+  assert.ok(calls[1].subject.startsWith('Sol·licitud rebuda'));
   assert.strictEqual(await post({ ...emp, paquete: 'Gratis' }, '/empresa'), 400, 'paquete fuera de la lista');
+
+  // todo queda guardado, una persona por email aunque se inscriba varias veces
+  assert.strictEqual(store.inscritos().length, 1);
+  assert.strictEqual(store.readAll('empresas').length, 1);
+
+  // contador publico: solo a partir de PUBLIC_COUNT_MIN (2 en el test)
+  assert.strictEqual((await request('GET', '/stats')).body, '{}');
+  await post({ ...ok, email: 'otra@uab.cat' });
+  assert.strictEqual(JSON.parse((await request('GET', '/stats')).body).inscritos, 2);
+
+  // panel: sin la cabecera que pone nginx tras la contrasena, no hay datos
+  assert.strictEqual((await request('GET', '/admin/api/datos')).status, 404);
+  const datos = await request('GET', '/admin/api/datos', null, { 'x-flyandgrow-admin': '1' });
+  assert.strictEqual(JSON.parse(datos.body).inscritos.length, 2);
+  const csv = await request('GET', '/admin/api/export.csv', null, { 'x-flyandgrow-admin': '1' });
+  assert.ok(csv.body.includes('otra@uab.cat'), 'export csv');
+
+  // si el aviso al equipo no sale, la inscripcion vale igual y el aviso queda en cola
+  failNotify = true;
+  assert.strictEqual(await post({ ...ok, email: 'tercera@uab.cat' }), 200);
+  assert.strictEqual(store.readAll('avisos-pendientes').length, 1, 'aviso en cola para reintentar');
+  failNotify = false;
 
   console.log('ok');
   process.exit(0);

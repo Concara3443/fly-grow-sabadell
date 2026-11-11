@@ -3,12 +3,20 @@ const fs = require('fs');
 const path = require('path');
 
 const PORT = process.env.PORT || 3010;
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || '1707653@uab.cat';
+// avisos al equipo: admite varias direcciones separadas por comas
+const NOTIFY_EMAIL = (process.env.NOTIFY_EMAIL || '1707653@uab.cat').split(',').map((e) => e.trim()).filter(Boolean);
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Fly & Grow <onboarding@resend.dev>';
-const REPLY_TO_EMAIL = process.env.REPLY_TO_EMAIL || NOTIFY_EMAIL;
-const RESEND_API_KEY = process.env.RESEND_API_KEY;
-// mismo .ics que descarga la web en el boton "Anadir al calendario"
-const ICS_BASE64 = fs.readFileSync(path.join(__dirname, '..', 'assets', 'flyandgrow-2027.ics')).toString('base64');
+const REPLY_TO_EMAIL = process.env.REPLY_TO_EMAIL || NOTIFY_EMAIL[0];
+// mismos .ics (con avisos el dia antes y 3 h antes) y enlaces de Google Calendar que usa la web
+const ICS_BASE64 = {
+  es: fs.readFileSync(path.join(__dirname, '..', 'assets', 'flyandgrow-2027.ics')).toString('base64'),
+  ca: fs.readFileSync(path.join(__dirname, '..', 'assets', 'flyandgrow-2027-ca.ics')).toString('base64'),
+};
+const { confirmacion, empresaCopia } = require('./emails');
+const { sendWithRetry } = require('./mailer');
+const store = require('./store');
+// el contador publico "Ya somos X inscritos" solo se ensena a partir de este numero
+const PUBLIC_COUNT_MIN = Number(process.env.PUBLIC_COUNT_MIN || 100);
 
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => ({
@@ -25,109 +33,43 @@ function isNonEmptyString(s, maxLen) {
 }
 
 async function sendInscripcionEmail({ nombre, email, uni, speedcheck }) {
-  if (!RESEND_API_KEY) {
-    throw new Error('RESEND_API_KEY no configurada');
-  }
   const html = `
     <h2>Nueva inscripción a Fly & Grow Sabadell</h2>
     <p><b>Nombre:</b> ${escapeHtml(nombre)}</p>
     <p><b>Email:</b> ${escapeHtml(email)}</p>
     <p><b>Universidad / Grado:</b> ${escapeHtml(uni)}</p>
     <p><b>Entrevistas Express:</b> ${speedcheck ? 'Sí' : 'No'}</p>
+    <p>Lista completa: https://flyandgrow.es/admin/inscritos.html</p>
   `;
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: FROM_EMAIL,
-      to: NOTIFY_EMAIL,
-      reply_to: email,
-      subject: `Nueva inscripción: ${nombre}`,
-      html,
-    }),
-  });
-  if (!res.ok) {
-    const detail = await res.text().catch(() => '');
-    throw new Error(`Resend respondió ${res.status}: ${detail}`);
-  }
+  await notifyTeam({ reply_to: email, subject: `Nueva inscripción: ${nombre}`, html });
 }
 
-// textos del correo de confirmacion por idioma de la pagina desde la que se inscribe
-const CONFIRMACION = {
-  es: {
-    subject: 'Tienes plaza en Fly & Grow Sabadell, 5 de mayo de 2027',
-    speed: 'Has marcado que te interesan las Entrevistas Express. Van aparte: crea tu perfil de candidato con tu correo UAB desde <a href="https://flyandgrow.es/#speed">flyandgrow.es</a>.',
-    body: (n, speed) => `
-    <p>Hola ${n},</p>
-    <p>Tienes plaza en Fly &amp; Grow Sabadell, el 2º Congreso Aeronáutico Universitario.</p>
-    <p><b>Miércoles 5 de mayo de 2027, 15:00</b><br>
-    Escola d'Enginyeria UAB, Campus Sabadell<br>
-    Carrer dels Emprius, 2, 08202 Sabadell</p>
-    ${speed}
-    <p>Te adjuntamos el evento para que lo añadas a tu calendario. El programa está en <a href="https://flyandgrow.es/#programa">flyandgrow.es</a>.</p>
-    <p>Si tienes cualquier duda, responde a este correo.</p>
-    <p>Fly &amp; Grow Sabadell</p>`,
-  },
-  ca: {
-    subject: 'Tens plaça a Fly & Grow Sabadell, 5 de maig de 2027',
-    speed: 'Has marcat que t\'interessen les Entrevistes Express. Van a part: crea el teu perfil de candidat amb el teu correu UAB des de <a href="https://flyandgrow.es/ca/#speed">flyandgrow.es</a>.',
-    body: (n, speed) => `
-    <p>Hola ${n},</p>
-    <p>Tens plaça a Fly &amp; Grow Sabadell, el 2n Congrés Aeronàutic Universitari.</p>
-    <p><b>Dimecres 5 de maig de 2027, 15:00</b><br>
-    Escola d'Enginyeria UAB, Campus Sabadell<br>
-    Carrer dels Emprius, 2, 08202 Sabadell</p>
-    ${speed}
-    <p>T'adjuntem l'esdeveniment perquè l'afegeixis al teu calendari. El programa és a <a href="https://flyandgrow.es/ca/#programa">flyandgrow.es</a>.</p>
-    <p>Si tens qualsevol dubte, respon aquest correu.</p>
-    <p>Fly &amp; Grow Sabadell</p>`,
-  },
-};
-
 async function sendConfirmacionEmail({ nombre, email, speedcheck, lang }) {
-  const t = CONFIRMACION[lang] || CONFIRMACION.es;
-  const html = t.body(escapeHtml(nombre), speedcheck ? `<p>${t.speed}</p>` : '');
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: FROM_EMAIL,
-      to: email,
-      reply_to: REPLY_TO_EMAIL,
-      subject: t.subject,
-      html,
-      attachments: [{ filename: 'flyandgrow-2027.ics', content: ICS_BASE64 }],
-    }),
+  const l = lang === 'ca' ? 'ca' : 'es';
+  const { subject, html, text } = confirmacion({ nombre, speedcheck, lang: l });
+  await resendSend({
+    to: email,
+    reply_to: REPLY_TO_EMAIL,
+    subject,
+    html,
+    text,
+    attachments: [{ filename: 'flyandgrow-2027.ics', content: ICS_BASE64[l] }],
   });
-  if (!res.ok) {
-    const detail = await res.text().catch(() => '');
-    throw new Error(`Resend respondió ${res.status}: ${detail}`);
-  }
 }
 
 const PAQUETES = ['Despegue', 'Conexión', 'Altitud', 'Primera Clase', 'Por decidir'];
 
-async function resendSend(payload) {
-  if (!RESEND_API_KEY) {
-    throw new Error('RESEND_API_KEY no configurada');
-  }
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ from: FROM_EMAIL, ...payload }),
-  });
-  if (!res.ok) {
-    const detail = await res.text().catch(() => '');
-    throw new Error(`Resend respondió ${res.status}: ${detail}`);
+// cualquier envio: 3 intentos (ver mailer.js)
+const resendSend = (payload) => sendWithRetry({ from: FROM_EMAIL, ...payload });
+
+// aviso al equipo: si tras los reintentos no sale, queda en cola y el script diario lo reenvia hasta que llegue
+async function notifyTeam(payload) {
+  const full = { from: FROM_EMAIL, to: NOTIFY_EMAIL, ...payload };
+  try {
+    await sendWithRetry(full);
+  } catch (err) {
+    store.append('avisos-pendientes', { payload: full, error: err.message });
+    throw err;
   }
 }
 
@@ -142,55 +84,24 @@ async function sendEmpresaEmail({ empresa, contacto, email, paquete, mensaje, la
     <p><b>Idioma de la web:</b> ${lang === 'ca' ? 'catalán' : 'castellano'}</p>
     ${mensaje ? `<p><b>Mensaje:</b><br>${escapeHtml(mensaje).replace(/\n/g, '<br>')}</p>` : ''}
   `;
-  await resendSend({ to: NOTIFY_EMAIL, reply_to: email, subject: `Empresa: ${empresa} (${paquete})`, html });
+  await notifyTeam({ reply_to: email, subject: `Empresa: ${empresa} (${paquete})`, html });
 }
 
 // copia para la empresa
 async function sendEmpresaCopia({ empresa, contacto, email, paquete, lang }) {
-  const ca = lang === 'ca';
-  const p = paquete === 'Por decidir' ? (ca ? 'per decidir' : 'por decidir') : paquete;
-  const html = ca ? `
-    <p>Hola ${escapeHtml(contacto)},</p>
-    <p>Hem rebut la sol·licitud de ${escapeHtml(empresa)} per participar a Fly &amp; Grow Sabadell, el 5 de maig de 2027 al Campus Sabadell de la UAB.</p>
-    <p><b>Paquet:</b> ${escapeHtml(p)}</p>
-    <p>Us respondrem en uns dies amb els detalls. Si voleu afegir res, només cal que respongueu aquest correu.</p>
-    <p>Fly &amp; Grow Sabadell</p>` : `
-    <p>Hola ${escapeHtml(contacto)},</p>
-    <p>Hemos recibido la solicitud de ${escapeHtml(empresa)} para participar en Fly &amp; Grow Sabadell, el 5 de mayo de 2027 en el Campus Sabadell de la UAB.</p>
-    <p><b>Paquete:</b> ${escapeHtml(p)}</p>
-    <p>Os responderemos en unos días con los detalles. Si queréis añadir algo, basta con responder a este correo.</p>
-    <p>Fly &amp; Grow Sabadell</p>`;
-  await resendSend({
-    to: email,
-    reply_to: REPLY_TO_EMAIL,
-    subject: ca ? 'Hem rebut la vostra sol·licitud, Fly & Grow Sabadell 2027' : 'Hemos recibido vuestra solicitud, Fly & Grow Sabadell 2027',
-    html,
-  });
+  const { subject, html, text } = empresaCopia({ empresa, contacto, paquete, lang });
+  await resendSend({ to: email, reply_to: REPLY_TO_EMAIL, subject, html, text });
 }
 
 async function sendManualEmail({ to, subject, mensaje }) {
-  if (!RESEND_API_KEY) {
-    throw new Error('RESEND_API_KEY no configurada');
-  }
   const html = `<p>${escapeHtml(mensaje).replace(/\n/g, '<br>')}</p>`;
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: FROM_EMAIL,
-      to,
-      reply_to: REPLY_TO_EMAIL,
-      subject,
-      html,
-    }),
-  });
-  if (!res.ok) {
-    const detail = await res.text().catch(() => '');
-    throw new Error(`Resend respondió ${res.status}: ${detail}`);
-  }
+  await resendSend({ to, reply_to: REPLY_TO_EMAIL, subject, html, text: mensaje });
+}
+
+// CSV para Excel en castellano: separador ";" y BOM para que respete tildes
+function toCsv(rows, cols) {
+  const cell = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  return '\ufeff' + [cols.map(([, h]) => cell(h)).join(';'), ...rows.map((r) => cols.map(([k]) => cell(r[k])).join(';'))].join('\r\n');
 }
 
 function readJsonBody(req, maxBytes) {
@@ -233,13 +144,18 @@ const server = http.createServer(async (req, res) => {
     if (!isNonEmptyString(nombre, 120) || !isValidEmail(email) || !isNonEmptyString(uni, 160)) {
       return sendJson(400, { error: 'Faltan campos o son invalidos' });
     }
+    // primero se guarda: si luego falla algun correo, la inscripcion no se pierde
+    try {
+      store.append('inscripciones', { nombre: nombre.trim(), email: email.trim(), uni: uni.trim(), speedcheck: !!speedcheck, lang: lang === 'ca' ? 'ca' : 'es' });
+    } catch (err) {
+      console.error('Error guardando inscripcion:', err.message);
+      return sendJson(500, { error: 'No se pudo guardar' });
+    }
     try {
       await sendInscripcionEmail({ nombre, email, uni, speedcheck: !!speedcheck });
     } catch (err) {
-      console.error('Error enviando inscripcion:', err.message);
-      return sendJson(502, { error: 'No se pudo enviar el correo' });
+      console.error('Error enviando aviso de inscripcion:', err.message);
     }
-    // la inscripcion ya consta (el aviso al organizador salio); si falla la confirmacion solo se registra
     try {
       await sendConfirmacionEmail({ nombre, email, speedcheck: !!speedcheck, lang });
     } catch (err) {
@@ -261,10 +177,15 @@ const server = http.createServer(async (req, res) => {
       return sendJson(400, { error: 'Faltan campos o son invalidos' });
     }
     try {
+      store.append('empresas', { empresa: empresa.trim(), contacto: contacto.trim(), email: email.trim(), paquete, mensaje: mensaje || '', lang: lang === 'ca' ? 'ca' : 'es' });
+    } catch (err) {
+      console.error('Error guardando solicitud de empresa:', err.message);
+      return sendJson(500, { error: 'No se pudo guardar' });
+    }
+    try {
       await sendEmpresaEmail({ empresa, contacto, email, paquete, mensaje, lang });
     } catch (err) {
-      console.error('Error enviando solicitud de empresa:', err.message);
-      return sendJson(502, { error: 'No se pudo enviar el correo' });
+      console.error('Error enviando aviso de empresa:', err.message);
     }
     try {
       await sendEmpresaCopia({ empresa, contacto, email, paquete, lang });
@@ -274,7 +195,30 @@ const server = http.createServer(async (req, res) => {
     return sendJson(200, { ok: true });
   }
 
-  // nginx exige auth_basic antes de dejar pasar la peticion a esta ruta
+  if (req.method === 'GET' && req.url === '/stats') {
+    const n = store.inscritos().length;
+    return sendJson(200, n >= PUBLIC_COUNT_MIN ? { inscritos: n } : {});
+  }
+
+  // /admin/*: nginx pide contrasena y anade esta cabecera; la ruta publica /api/ la borra.
+  // Doble cierre por si alguna vez se cuela /api/admin/... sin pasar por la contrasena.
+  if (req.url.startsWith('/admin/') && req.headers['x-flyandgrow-admin'] !== '1') {
+    return sendJson(404, { error: 'not found' });
+  }
+
+  if (req.method === 'GET' && req.url === '/admin/api/datos') {
+    return sendJson(200, { inscritos: store.inscritos(), empresas: store.readAll('empresas') });
+  }
+
+  if (req.method === 'GET' && req.url.startsWith('/admin/api/export.csv')) {
+    const empresas = req.url.includes('tipo=empresas');
+    const csv = empresas
+      ? toCsv(store.readAll('empresas'), [['fecha', 'Fecha'], ['empresa', 'Empresa'], ['contacto', 'Contacto'], ['email', 'Email'], ['paquete', 'Paquete'], ['mensaje', 'Mensaje'], ['lang', 'Idioma']])
+      : toCsv(store.inscritos().map((r) => ({ ...r, speedcheck: r.speedcheck ? 'Sí' : 'No' })), [['fecha', 'Fecha'], ['nombre', 'Nombre'], ['email', 'Email'], ['uni', 'Universidad / Grado'], ['speedcheck', 'Entrevistas Express'], ['lang', 'Idioma']]);
+    res.writeHead(200, { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="${empresas ? 'empresas' : 'inscritos'}-flyandgrow.csv"` });
+    return res.end(csv);
+  }
+
   if (req.method === 'POST' && req.url === '/admin/enviar') {
     let data;
     try {
