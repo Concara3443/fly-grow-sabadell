@@ -45,6 +45,9 @@ td.wrap{white-space:normal;min-width:220px}
   <div class="bar"><input type="search" id="q" placeholder="Buscar nombre, email o grado"><a href="api/export.csv?tipo=inscritos">Descargar Excel (CSV)</a></div>
   <div class="table"><table><thead><tr><th>Fecha</th><th>Nombre</th><th>Email</th><th>Universidad / Grado</th><th>Entrevistas</th><th>Idioma</th></tr></thead><tbody id="ins"></tbody></table></div>
 
+  <h2>Invitaciones (sorteo: 3 o más)</h2>
+  <div class="table"><table><thead><tr><th>#</th><th>Nombre</th><th>Email</th><th>Inscritos con su enlace</th><th>Código</th></tr></thead><tbody id="ref"></tbody></table></div>
+
   <h2>Empresas</h2>
   <div class="bar"><span></span><a href="api/export.csv?tipo=empresas">Descargar Excel (CSV)</a></div>
   <div class="table"><table><thead><tr><th>Fecha</th><th>Empresa</th><th>Contacto</th><th>Email</th><th>Paquete</th><th>Mensaje</th></tr></thead><tbody id="emp"></tbody></table></div>
@@ -59,6 +62,7 @@ function pintar() {
   const q = $('q').value.trim().toLowerCase();
   const ins = datos.inscritos.slice().reverse().filter((r) => !q || `${r.nombre} ${r.email} ${r.uni}`.toLowerCase().includes(q));
   $('ins').innerHTML = ins.map((r) => `<tr><td>${fecha(r.fecha)}</td><td>${esc(r.nombre)}</td><td><a href="mailto:${esc(r.email)}" style="color:inherit">${esc(r.email)}</a></td><td class="wrap">${esc(r.uni)}</td><td class="${r.speedcheck ? 'si' : ''}">${r.speedcheck ? 'Sí' : 'No'}</td><td>${esc(r.lang)}</td></tr>`).join('');
+  $('ref').innerHTML = (datos.referidos || []).map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.nombre)}</td><td>${esc(r.email)}</td><td class="${r.invitados >= 3 ? 'si' : ''}">${r.invitados}${r.invitados >= 3 ? ' (entra en el sorteo)' : ''}</td><td>${esc(r.codigo)}</td></tr>`).join('') || '<tr><td colspan="5">Nadie ha invitado a nadie todavía</td></tr>';
   $('emp').innerHTML = datos.empresas.slice().reverse().map((r) => `<tr><td>${fecha(r.fecha)}</td><td>${esc(r.empresa)}</td><td>${esc(r.contacto)}</td><td><a href="mailto:${esc(r.email)}" style="color:inherit">${esc(r.email)}</a></td><td>${esc(r.paquete)}</td><td class="wrap">${esc(r.mensaje)}</td></tr>`).join('');
 }
 
@@ -75,7 +79,8 @@ async function cargar() {
   $('stats').innerHTML = stat(i.length, 'estudiantes inscritos')
     + stat(i.filter((r) => r.speedcheck).length, 'quieren Entrevistas Express')
     + stat(i.filter((r) => new Date(r.fecha).toDateString() === hoy).length, 'inscritos hoy')
-    + stat(datos.empresas.length, 'solicitudes de empresas');
+    + stat(datos.empresas.length, 'solicitudes de empresas')
+    + stat(i.filter((r) => r.ref).length, 'llegaron por invitación');
   const unis = {};
   i.forEach((r) => { const k = r.uni.trim(); unis[k] = (unis[k] || 0) + 1; });
   $('unis').innerHTML = Object.entries(unis).sort((a, b) => b[1] - a[1]).map(([u, n]) => `<span>${esc(u)}: ${n}</span>`).join('') || '<span>Sin inscritos todavía</span>';

@@ -84,9 +84,13 @@ const S = {
     sign: '<b>Organización de Fly &amp; Grow Sabadell</b>',
     signText: 'Organización de Fly & Grow Sabadell',
     speedTitle: 'Último paso para las Entrevistas Express',
-    speedText: 'Crea tu perfil de candidato con tu correo UAB. Es la información que consultan las empresas para seleccionar a quién entrevistar.',
+    speedText: 'Crea tu perfil de candidato con tu correo UAB antes del 25 de abril. Las empresas seleccionan a quién entrevistar antes del congreso: sin perfil no es posible optar a una entrevista.',
     speedBtn: 'Crear mi perfil',
     progBtn: 'Ver el programa completo',
+    invTitle: 'Invita a tus compañeros',
+    invText: 'Comparte tu enlace personal. Si se inscriben tres personas con él, participarás en el sorteo de premios de Fly &amp; Grow Sabadell.',
+    invBtn: 'Compartir por WhatsApp',
+    invWa: (url) => `Me he inscrito en Fly & Grow Sabadell, el congreso aeronáutico universitario de la UAB: miércoles 5 de mayo, 15:00, Campus Sabadell. La entrada es gratuita: ${url}`,
     mapBtn: 'Cómo llegar',
     where: `Escola d'Enginyeria UAB, Carrer dels Emprius 2, 08202 Sabadell\nCómo llegar: ${MAPS}`,
     confirm: {
@@ -105,12 +109,20 @@ const S = {
       calText: 'Añadir a Google Calendar',
       calText2: 'Apple Calendar u Outlook: abre el archivo adjunto.',
     },
+    cierre: {
+      subject: 'Entrevistas Express: la preinscripción cierra el 25 de abril',
+      preheader: 'Crea tu perfil de candidato antes del domingo 25 de abril.',
+      title: 'Últimos días para las Entrevistas Express',
+      lead: 'La preinscripción a las Entrevistas Express cierra el <b>domingo 25 de abril</b>. Después, las empresas revisan los perfiles y seleccionan a quién entrevistar el día del congreso: sin perfil no es posible optar a una entrevista.',
+      btn: 'Crear mi perfil',
+      note: 'Si ya lo has creado, no tienes que hacer nada más.',
+      bye: 'Mucha suerte.',
+    },
     semana: {
       subject: 'Queda una semana: Fly & Grow Sabadell, 5 de mayo',
       preheader: 'El miércoles 5 de mayo a las 15:00 te esperamos en el Campus Sabadell.',
       title: 'Queda una semana',
       lead: 'El miércoles 5 de mayo a las 15:00 comienza Fly &amp; Grow Sabadell en el Campus Sabadell. Te recomendamos revisar el programa para organizar tu tarde.',
-      speedText: 'Si todavía no has creado tu perfil de candidato, te recomendamos hacerlo esta semana con tu correo UAB: las empresas seleccionan a quién entrevistar antes del congreso.',
       bye: 'Te esperamos el próximo miércoles.',
     },
     dia: {
@@ -141,9 +153,13 @@ const S = {
     sign: '<b>Organització de Fly &amp; Grow Sabadell</b>',
     signText: 'Organització de Fly & Grow Sabadell',
     speedTitle: 'Últim pas per a les Entrevistes Express',
-    speedText: 'Crea el teu perfil de candidat amb el teu correu UAB. És la informació que consulten les empreses per seleccionar a qui entrevistar.',
+    speedText: "Crea el teu perfil de candidat amb el teu correu UAB abans del 25 d'abril. Les empreses seleccionen a qui entrevistar abans del congrés: sense perfil no és possible optar a una entrevista.",
     speedBtn: 'Crear el meu perfil',
     progBtn: 'Veure el programa complet',
+    invTitle: 'Convida els teus companys',
+    invText: "Comparteix el teu enllaç personal. Si s'hi inscriuen tres persones, participaràs en el sorteig de premis de Fly &amp; Grow Sabadell.",
+    invBtn: 'Compartir per WhatsApp',
+    invWa: (url) => `M'he inscrit a Fly & Grow Sabadell, el congrés aeronàutic universitari de la UAB: dimecres 5 de maig, 15:00, Campus Sabadell. L'entrada és gratuïta: ${url}`,
     mapBtn: 'Com arribar-hi',
     where: `Escola d'Enginyeria UAB, Carrer dels Emprius 2, 08202 Sabadell\nCom arribar-hi: ${MAPS}`,
     confirm: {
@@ -162,12 +178,20 @@ const S = {
       calText: 'Afegir a Google Calendar',
       calText2: 'Apple Calendar o Outlook: obre el fitxer adjunt.',
     },
+    cierre: {
+      subject: "Entrevistes Express: la preinscripció tanca el 25 d'abril",
+      preheader: "Crea el teu perfil de candidat abans de diumenge 25 d'abril.",
+      title: 'Últims dies per a les Entrevistes Express',
+      lead: "La preinscripció a les Entrevistes Express tanca <b>diumenge 25 d'abril</b>. Després, les empreses revisen els perfils i seleccionen a qui entrevistar el dia del congrés: sense perfil no és possible optar a una entrevista.",
+      btn: 'Crear el meu perfil',
+      note: "Si ja l'has creat, no cal que facis res més.",
+      bye: 'Molta sort.',
+    },
     semana: {
       subject: 'Queda una setmana: Fly & Grow Sabadell, 5 de maig',
       preheader: "Dimecres 5 de maig a les 15:00 t'esperem al Campus Sabadell.",
       title: 'Queda una setmana',
       lead: 'Dimecres 5 de maig a les 15:00 comença Fly &amp; Grow Sabadell al Campus Sabadell. Et recomanem revisar el programa per organitzar la teva tarda.',
-      speedText: "Si encara no has creat el teu perfil de candidat, et recomanem fer-ho aquesta setmana amb el teu correu UAB: les empreses seleccionen a qui entrevistar abans del congrés.",
       bye: "T'esperem dimecres vinent.",
     },
     dia: {
@@ -191,9 +215,16 @@ const S = {
   },
 };
 
-function confirmacion({ nombre, speedcheck, lang: lg }) {
+function confirmacion({ nombre, speedcheck, lang: lg, codigo }) {
   const l = lang(lg); const s = S[l]; const t = s.confirm;
   const n = escapeHtml(firstName(nombre));
+  // enlace personal de invitacion (el codigo lo calcula store.codigo a partir del email)
+  const refUrl = codigo ? `https://flyandgrow.es/${l === 'ca' ? 'ca/' : ''}?ref=${codigo}` : '';
+  const invite = refUrl ? `
+      ${h2(s.invTitle)}
+      <p style="margin:0 0 10px">${s.invText}</p>
+      <p style="margin:0 0 10px;font-family:${MONO};font-size:14px;background:#F1F4F7;border:1px solid ${C.line};border-radius:3px;padding:10px 12px;word-break:break-all">${refUrl}</p>
+      <p style="margin:0">${button(`https://wa.me/?text=${encodeURIComponent(s.invWa(refUrl))}`, s.invBtn, C.green, '#ffffff')}</p>` : '';
   const prog = t.prog.map(([h, a]) => `
         <tr><td style="padding:9px 0;border-top:1px solid ${C.line};font-family:${MONO};font-weight:700;color:${C.ink};width:64px;vertical-align:top">${h}</td>
             <td style="padding:9px 0;border-top:1px solid ${C.line}">${a}</td></tr>`).join('');
@@ -208,6 +239,7 @@ function confirmacion({ nombre, speedcheck, lang: lg }) {
       ${h2(t.progTitle)}
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:${BODY};font-size:15px;color:#2B3A4A">${prog}</table>
       <p style="margin:16px 0 0">${button(`${home(l)}#programa`, s.progBtn)}&nbsp; ${outline(MAPS, s.mapBtn)}</p>
+      ${invite}
       <p style="margin:26px 0 0">${t.bye}<br>${s.sign}</p>`;
   const html = layout({ lang: l, preheader: t.preheader, photo: 'equipo.jpg', photoAlt: s.photoAlt, title: t.title, content, footer: s.footer, privacy: s.privacy });
   const text = [
@@ -215,6 +247,7 @@ function confirmacion({ nombre, speedcheck, lang: lg }) {
     speedcheck ? `${s.speedTitle}: ${s.speedText}\n${BASE}/entrevistas` : '',
     `${t.calText}: ${GCAL[l]}\n${t.calText2}`,
     `${s.progBtn}: ${home(l)}#programa`,
+    refUrl ? `${s.invTitle}: ${s.invText.replace(/&amp;/g, '&')}\n${refUrl}` : '',
     `${t.bye}\n${s.signText}`,
   ].filter(Boolean).join('\n\n');
   return { subject: t.subject, html, text };
@@ -227,11 +260,12 @@ function recordatorio({ nombre, speedcheck, lang: lg, tipo }) {
   const n = escapeHtml(firstName(nombre));
   let content = `<p style="margin:0 0 6px">${s.hello(n)}</p><p style="margin:0 0 20px">${t.lead}</p>`;
   const text = [s.hello(firstName(nombre)), t.lead.replace(/&amp;/g, '&')];
-  if (tipo === 'semana') {
+  if (tipo === 'cierre') {
+    content += `<p style="margin:0 0 10px">${button(`${BASE}/entrevistas`, t.btn, C.green, '#ffffff')}</p><p style="margin:0;font-size:14px;color:${C.soft}">${t.note}</p>`;
+    text.push(`${BASE}/entrevistas\n${t.note}`);
+  } else if (tipo === 'semana') {
     content += board(s.board);
-    if (speedcheck) content += greenBox(s.speedTitle, t.speedText, `${BASE}/entrevistas`, s.speedBtn);
     content += `<p style="margin:20px 0 0">${button(`${home(l)}#programa`, s.progBtn)}&nbsp; ${outline(MAPS, s.mapBtn)}</p>`;
-    if (speedcheck) text.push(`${t.speedText}\n${BASE}/entrevistas`);
     text.push(`${s.progBtn}: ${home(l)}#programa\n${s.where}`);
   } else if (tipo === 'dia') {
     content += board(s.board) + h2(t.tipsTitle)

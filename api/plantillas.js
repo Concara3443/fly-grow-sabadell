@@ -10,9 +10,9 @@ const FROM_EMAIL = process.env.FROM_EMAIL || 'Fly & Grow <onboarding@resend.dev>
 
 const muestras = [];
 for (const lang of ['es', 'ca']) {
-  muestras.push([`confirmacion ${lang} (con Entrevistas Express)`, confirmacion({ nombre: 'Marta Pérez', speedcheck: true, lang })]);
-  muestras.push([`confirmacion ${lang} (sin Entrevistas Express)`, confirmacion({ nombre: 'Marta Pérez', speedcheck: false, lang })]);
-  for (const tipo of ['semana', 'dia', 'encuesta']) {
+  muestras.push([`confirmacion ${lang} (con Entrevistas Express)`, confirmacion({ nombre: 'Marta Pérez', speedcheck: true, lang, codigo: 'a1b2c3d' })]);
+  muestras.push([`confirmacion ${lang} (sin Entrevistas Express)`, confirmacion({ nombre: 'Marta Pérez', speedcheck: false, lang, codigo: 'a1b2c3d' })]);
+  for (const tipo of ['cierre', 'semana', 'dia', 'encuesta']) {
     muestras.push([`${tipo} ${lang}`, recordatorio({ nombre: 'Marta Pérez', speedcheck: true, lang, tipo })]);
   }
   muestras.push([`empresa ${lang}`, empresaCopia({ empresa: 'Aerolíneas Ejemplo', contacto: 'Laura', paquete: 'Conexión', lang })]);

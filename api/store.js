@@ -35,4 +35,20 @@ function rewrite(name, rows) {
   fs.writeFileSync(file(name), rows.map((r) => JSON.stringify(r) + '\n').join(''), { mode: 0o600 });
 }
 
-module.exports = { DATA_DIR, append, readAll, rewrite, inscritos };
+// codigo personal de invitacion: corto, estable para el mismo email y no revela el email
+const crypto = require('crypto');
+const codigo = (email) => crypto.createHash('sha256').update(`fyg2027:${String(email).trim().toLowerCase()}`).digest('hex').slice(0, 7);
+
+// ranking de invitaciones: cuantos inscritos llegaron con el enlace de cada persona
+function referidos() {
+  const lista = inscritos();
+  const porCodigo = new Map(lista.map((r) => [codigo(r.email), r]));
+  const cuenta = new Map();
+  for (const r of lista) {
+    if (r.ref && porCodigo.has(r.ref) && r.ref !== codigo(r.email)) cuenta.set(r.ref, (cuenta.get(r.ref) || 0) + 1);
+  }
+  return [...cuenta].map(([c, n]) => ({ nombre: porCodigo.get(c).nombre, email: porCodigo.get(c).email, codigo: c, invitados: n }))
+    .sort((a, b) => b.invitados - a.invitados);
+}
+
+module.exports = { DATA_DIR, append, readAll, rewrite, inscritos, codigo, referidos };

@@ -307,6 +307,7 @@ p{text-wrap:pretty}
 .success-speed b{color:var(--text);font-weight:600}
 .success-share-text{margin-top:26px;font-size:14px}
 .success-share{margin-top:10px}
+.success-ref{display:block;margin-top:10px;font-family:var(--mono);font-size:13px;color:var(--blue-bright);overflow-wrap:anywhere}
 .insc-count{font-family:var(--mono);font-size:13.5px;color:var(--green-text);margin-top:14px}
 .form-card.submitted .form-fields{display:none}
 
@@ -592,8 +593,9 @@ p{text-wrap:pretty}
     <div class="speed-copy">
         <h2>Entrevistas Express</h2>
         <p>Entrevistas de 5 a 10 minutos con empresas del sector el mismo día del congreso, sin necesidad de un proceso de selección largo.</p>
+        <p>Las empresas seleccionan a quién entrevistar antes del congreso: la preinscripción cierra el <b>25 de abril</b> y, sin perfil, no es posible optar a una entrevista.</p>
         <ul class="speed-list">
-          <li><span class="num">1</span><span><b>Crea tu perfil</b> con tu correo UAB, tu curso y tu CV antes de la fecha límite.</span></li>
+          <li><span class="num">1</span><span><b>Crea tu perfil</b> con tu correo UAB, tu curso y tu CV antes del 25 de abril.</span></li>
           <li><span class="num">2</span><span><b>Las empresas revisan</b> los perfiles y contactan antes del evento con quienes quieren entrevistar.</span></li>
           <li><span class="num">3</span><span><b>Entrevista</b> el día del congreso, en formato rotativo.</span></li>
         </ul>
@@ -618,7 +620,7 @@ p{text-wrap:pretty}
         <a href="/entrevistas" class="btn pass-cta" target="_blank" rel="noopener">Crear mi perfil</a>
       </div>
     </div>
-    <p class="pass-fine">Sujeto a un mínimo de preinscripciones y a las plazas que ofrezca cada empresa.</p>
+    <p class="pass-fine">Preinscripción abierta hasta el 25 de abril. Sujeta a un mínimo de preinscripciones y a las plazas que ofrezca cada empresa.</p>
   </div>
 </section>
 
@@ -681,7 +683,7 @@ p{text-wrap:pretty}
             <input type="checkbox" id="speedcheck" name="speedcheck" aria-describedby="speedhint">
             <label for="speedcheck">Quiero hacer Entrevistas Express</label>
           </div>
-          <p class="field-hint" id="speedhint">Requiere correo UAB. En el correo de confirmación encontrarás cómo crear tu perfil de candidato, necesario para optar a las entrevistas.</p>
+          <p class="field-hint" id="speedhint">Requiere correo UAB y preinscripción antes del 25 de abril. En el correo de confirmación encontrarás cómo crear tu perfil de candidato, necesario para optar a las entrevistas.</p>
           <p class="form-error" id="formError" role="alert" hidden></p>
           <button type="submit" class="btn btn-fill form-submit">Confirmar inscripción</button>
           <p class="form-note">Inscripción gratuita y sin compromiso, abierta a estudiantes de cualquier universidad o grado. Tus datos solo se utilizan para gestionar tu inscripción (<a href="privacidad/">política de privacidad</a>).</p>
@@ -690,13 +692,13 @@ p{text-wrap:pretty}
           <div class="success-icon">✓</div>
           <h3 id="successTitle" tabindex="-1">Inscripción confirmada</h3>
           <p>Tu plaza para el 5 de mayo de 2027 a las 15:00 en el Campus Sabadell está confirmada. Hemos enviado la confirmación a <b id="successEmail"></b>. Si no la recibes en unos minutos, revisa la carpeta de correo no deseado.</p>
-          <p class="success-speed" id="successSpeed" hidden><b>Último paso para las Entrevistas Express:</b> <a href="/entrevistas" target="_blank" rel="noopener">crea tu perfil de candidato</a> con tu correo UAB. Es la información que consultan las empresas para seleccionar a quién entrevistar.</p>
+          <p class="success-speed" id="successSpeed" hidden><b>Último paso para las Entrevistas Express:</b> <a href="/entrevistas" target="_blank" rel="noopener">crea tu perfil de candidato</a> con tu correo UAB antes del 25 de abril. Es la información que consultan las empresas para seleccionar a quién entrevistar.</p>
           <div class="success-cals">
             <a class="btn btn-outline" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fly%20%26%20Grow%20Sabadell%202027&amp;dates=20270505T130000Z/20270505T183000Z&amp;ctz=Europe/Madrid&amp;details=2%C2%BA%20Congreso%20Aeron%C3%A1utico%20Universitario%20de%20la%20UAB.%20Una%20tarde%20con%20empresas%20del%20sector%20aeron%C3%A1utico%2C%20ponencias%2C%20mesa%20redonda%20con%20exalumnos%2C%20control%20a%C3%A9reo%20en%20directo%20con%20IVAO%20Espa%C3%B1a%20y%20Entrevistas%20Express.%0A%0APrograma%3A%0A15%3A00%20Apertura%3A%20stands%20y%20ponencias%0A17%3A30%20Charlas%20del%20sector%0A19%3A30%20Networking%20y%20Entrevistas%20Express%0A20%3A30%20Fin%20de%20la%20jornada%0A%0ALugar%3A%20Escola%20d%27Enginyeria%20UAB%2C%20Carrer%20dels%20Emprius%202%2C%2008202%20Sabadell%0AC%C3%B3mo%20llegar%3A%20https%3A//maps.app.goo.gl/AoXZpFzdLGN8G7he6%0A%0ASi%20vas%20a%20las%20Entrevistas%20Express%2C%20trae%20un%20par%20de%20CV%20impresos.%0AM%C3%A1s%20info%3A%20https%3A//flyandgrow.es%0A%0ANos%20vemos%20en%20pista.&amp;location=Escola%20d%27Enginyeria%20UAB%2C%20Carrer%20dels%20Emprius%202%2C%2008202%20Sabadell" target="_blank" rel="noopener">Google Calendar</a>
             <a class="btn btn-outline" href="assets/flyandgrow-2027.ics" download="flyandgrow-2027.ics">Apple Calendar / Outlook</a>
           </div>
-          <p class="success-share-text">Si conoces a alguien a quien le pueda interesar, compártelo:</p>
-          <a class="btn btn-fill success-share" href="https://wa.me/?text=Me%20he%20inscrito%20en%20Fly%20%26%20Grow%20Sabadell%2C%20el%20congreso%20aeron%C3%A1utico%20universitario%20de%20la%20UAB%3A%20mi%C3%A9rcoles%205%20de%20mayo%2C%2015%3A00%2C%20Campus%20Sabadell.%20La%20entrada%20es%20gratuita%3A%20https%3A//flyandgrow.es" target="_blank" rel="noopener">Compartir por WhatsApp</a>
+          <p class="success-share-text">Comparte tu enlace personal: si se inscriben tres personas con él, participarás en el sorteo de premios de Fly &amp; Grow Sabadell.<span class="success-ref" id="successRef"></span></p>
+          <a class="btn btn-fill success-share" id="shareWa" data-wa="Me he inscrito en Fly & Grow Sabadell, el congreso aeronáutico universitario de la UAB: miércoles 5 de mayo, 15:00, Campus Sabadell. La entrada es gratuita: {url}" href="https://wa.me/?text=Me%20he%20inscrito%20en%20Fly%20%26%20Grow%20Sabadell%2C%20el%20congreso%20aeron%C3%A1utico%20universitario%20de%20la%20UAB%3A%20mi%C3%A9rcoles%205%20de%20mayo%2C%2015%3A00%2C%20Campus%20Sabadell.%20La%20entrada%20es%20gratuita%3A%20https%3A//flyandgrow.es" target="_blank" rel="noopener">Compartir por WhatsApp</a>
         </div>
       </div>
     </div>
@@ -900,6 +902,11 @@ setTimeout(() => document.querySelectorAll('.hero-fade').forEach((el,i) => setTi
 const track = document.getElementById('tickerTrack');
 track.innerHTML += track.innerHTML;
 
+// enlace de invitacion: si llega con ?ref=, se guarda para mandarlo con la inscripcion
+const refParam = new URLSearchParams(location.search).get('ref');
+try { if (refParam) sessionStorage.setItem('fygRef', refParam); } catch {}
+function refGuardado() { try { return refParam || sessionStorage.getItem('fygRef') || ''; } catch { return refParam || ''; } }
+
 // contador publico: la API solo devuelve la cifra a partir de un minimo (PUBLIC_COUNT_MIN)
 fetch('/api/stats').then(r => r.ok ? r.json() : {}).then(d => {
   if (!d.inscritos) return;
@@ -924,6 +931,7 @@ regForm.addEventListener('submit', async (e) => {
     uni: document.getElementById('uni').value,
     speedcheck: document.getElementById('speedcheck').checked,
     lang: document.documentElement.lang,
+    ref: refGuardado(),
   };
 
   try {
@@ -934,6 +942,14 @@ regForm.addEventListener('submit', async (e) => {
     });
     if (!res.ok) throw new Error(res.status === 400 ? 'invalid' : 'server');
     document.getElementById('successEmail').textContent = data.email;
+    // enlace personal para invitar: va en el boton de WhatsApp y se ensena debajo
+    const resp = await res.json().catch(() => ({}));
+    if (resp.codigo) {
+      const url = `${location.origin}${document.documentElement.lang === 'ca' ? '/ca/' : '/'}?ref=${resp.codigo}`;
+      const wa = document.getElementById('shareWa');
+      wa.href = 'https://wa.me/?text=' + encodeURIComponent(wa.dataset.wa.replace('{url}', url));
+      document.getElementById('successRef').textContent = url;
+    }
     document.getElementById('successSpeed').hidden = !data.speedcheck;
     formCard.classList.add('submitted');
     successState.classList.add('show');

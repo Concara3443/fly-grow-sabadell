@@ -24,7 +24,7 @@ process.env.PORT = '3019';
 process.env.RESEND_API_KEY = 'test';
 process.env.NOTIFY_EMAIL = 'org@test, otro@test';
 process.env.DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'fyg-check-'));
-process.env.PUBLIC_COUNT_MIN = '2';
+process.env.PUBLIC_COUNT_MIN = '3';
 const store = require('./store');
 require('./server.js');
 
@@ -83,19 +83,29 @@ const post = async (data, p = '/inscripcion') => (await request('POST', p, data)
   assert.ok(calls[1].subject.startsWith('Sol·licitud rebuda'));
   assert.strictEqual(await post({ ...emp, paquete: 'Gratis' }, '/empresa'), 400, 'paquete fuera de la lista');
 
+  // invitaciones: quien llega con ?ref= de otro inscrito suma en su ranking; no vale invitarse a uno mismo
+  const codAna = store.codigo('alumna@uab.cat');
+  calls.length = 0;
+  await post({ ...ok, email: 'amiga@uab.cat', ref: codAna });
+  assert.ok(calls[1].html.includes(`?ref=${store.codigo('amiga@uab.cat')}`), 'enlace personal en la confirmacion');
+  await post({ ...ok, ref: codAna });
+  assert.deepStrictEqual(store.referidos().map((r) => [r.email, r.invitados]), [['alumna@uab.cat', 1]]);
+  calls.length = 0;
+
   // todo queda guardado, una persona por email aunque se inscriba varias veces
-  assert.strictEqual(store.inscritos().length, 1);
+  assert.strictEqual(store.inscritos().length, 2);
   assert.strictEqual(store.readAll('empresas').length, 1);
 
-  // contador publico: solo a partir de PUBLIC_COUNT_MIN (2 en el test)
-  assert.strictEqual((await request('GET', '/stats')).body, '{}');
+  // contador publico: solo a partir de PUBLIC_COUNT_MIN (3 en el test)
+  assert.strictEqual((await request('GET', '/stats')).body, '{}', 'por debajo del minimo no se ensena');
   await post({ ...ok, email: 'otra@uab.cat' });
-  assert.strictEqual(JSON.parse((await request('GET', '/stats')).body).inscritos, 2);
+  assert.strictEqual(JSON.parse((await request('GET', '/stats')).body).inscritos, 3);
 
   // panel: sin la cabecera que pone nginx tras la contrasena, no hay datos
   assert.strictEqual((await request('GET', '/admin/api/datos')).status, 404);
   const datos = await request('GET', '/admin/api/datos', null, { 'x-flyandgrow-admin': '1' });
-  assert.strictEqual(JSON.parse(datos.body).inscritos.length, 2);
+  assert.strictEqual(JSON.parse(datos.body).inscritos.length, 3);
+  assert.strictEqual(JSON.parse(datos.body).referidos[0].invitados, 1);
   const csv = await request('GET', '/admin/api/export.csv', null, { 'x-flyandgrow-admin': '1' });
   assert.ok(csv.body.includes('otra@uab.cat'), 'export csv');
 

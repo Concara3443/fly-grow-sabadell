@@ -15,6 +15,8 @@ const DRY = process.argv.includes('--dry-run');
 // (cada destinatario cuenta) y hay que dejar sitio a las inscripciones y avisos del propio dia.
 // Quien no lo recibe un dia, lo recibe al siguiente dentro de la ventana.
 const CAMPANAS = [
+  // solo a quien marco Entrevistas Express: la preinscripcion cierra el 25 de abril
+  { tipo: 'cierre', desde: '2027-04-21', hasta: '2027-04-23', soloEntrevistas: true },
   { tipo: 'semana', desde: '2027-04-26', hasta: '2027-04-28' },
   { tipo: 'dia', desde: '2027-05-02', hasta: '2027-05-04' },
   { tipo: 'encuesta', desde: '2027-05-06', hasta: '2027-05-09' },
@@ -43,9 +45,9 @@ async function reintentarAvisos() {
   if (!DRY) store.rewrite('avisos-pendientes', siguen);
 }
 
-async function campana(tipo) {
+async function campana(tipo, soloEntrevistas) {
   const yaEnviados = new Set(store.readAll('enviados').filter((e) => e.tipo === tipo).map((e) => e.email.toLowerCase()));
-  const faltan = store.inscritos().filter((r) => !yaEnviados.has(r.email.toLowerCase()));
+  const faltan = store.inscritos().filter((r) => !yaEnviados.has(r.email.toLowerCase()) && (!soloEntrevistas || r.speedcheck));
   const destino = faltan.slice(0, MAX_POR_DIA);
   console.log(`${tipo}: ${faltan.length} por enviar (${yaEnviados.size} ya enviados); hoy salen ${destino.length}`);
   if (faltan.length > MAX_POR_DIA && hoy() === CAMPANAS.find((c) => c.tipo === tipo).hasta) {
@@ -67,6 +69,6 @@ async function campana(tipo) {
 (async () => {
   await reintentarAvisos();
   const c = CAMPANAS.find((x) => hoy() >= x.desde && hoy() <= x.hasta);
-  if (c) await campana(c.tipo);
+  if (c) await campana(c.tipo, c.soloEntrevistas);
   else console.log(`hoy (${hoy()}) no toca ningun recordatorio`);
 })().catch((err) => { console.error(err); process.exit(1); });

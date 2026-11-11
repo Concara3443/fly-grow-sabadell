@@ -44,9 +44,9 @@ async function sendInscripcionEmail({ nombre, email, uni, speedcheck }) {
   await notifyTeam({ reply_to: email, subject: `Nueva inscripción: ${nombre}`, html });
 }
 
-async function sendConfirmacionEmail({ nombre, email, speedcheck, lang }) {
+async function sendConfirmacionEmail({ nombre, email, speedcheck, lang, codigo }) {
   const l = lang === 'ca' ? 'ca' : 'es';
-  const { subject, html, text } = confirmacion({ nombre, speedcheck, lang: l });
+  const { subject, html, text } = confirmacion({ nombre, speedcheck, lang: l, codigo });
   await resendSend({
     to: email,
     reply_to: REPLY_TO_EMAIL,
@@ -141,12 +141,13 @@ const server = http.createServer(async (req, res) => {
       return sendJson(400, { error: err.message });
     }
     const { nombre, email, uni, speedcheck, lang } = data || {};
+    const ref = typeof data?.ref === 'string' && /^[a-f0-9]{7}$/.test(data.ref) ? data.ref : '';
     if (!isNonEmptyString(nombre, 120) || !isValidEmail(email) || !isNonEmptyString(uni, 160)) {
       return sendJson(400, { error: 'Faltan campos o son invalidos' });
     }
     // primero se guarda: si luego falla algun correo, la inscripcion no se pierde
     try {
-      store.append('inscripciones', { nombre: nombre.trim(), email: email.trim(), uni: uni.trim(), speedcheck: !!speedcheck, lang: lang === 'ca' ? 'ca' : 'es' });
+      store.append('inscripciones', { nombre: nombre.trim(), email: email.trim(), uni: uni.trim(), speedcheck: !!speedcheck, lang: lang === 'ca' ? 'ca' : 'es', ref });
     } catch (err) {
       console.error('Error guardando inscripcion:', err.message);
       return sendJson(500, { error: 'No se pudo guardar' });
@@ -157,11 +158,11 @@ const server = http.createServer(async (req, res) => {
       console.error('Error enviando aviso de inscripcion:', err.message);
     }
     try {
-      await sendConfirmacionEmail({ nombre, email, speedcheck: !!speedcheck, lang });
+      await sendConfirmacionEmail({ nombre, email, speedcheck: !!speedcheck, lang, codigo: store.codigo(email) });
     } catch (err) {
       console.error('Error enviando confirmacion a', email, ':', err.message);
     }
-    return sendJson(200, { ok: true });
+    return sendJson(200, { ok: true, codigo: store.codigo(email) });
   }
 
   if (req.method === 'POST' && req.url === '/empresa') {
@@ -207,14 +208,15 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.method === 'GET' && req.url === '/admin/api/datos') {
-    return sendJson(200, { inscritos: store.inscritos(), empresas: store.readAll('empresas') });
+    const ins = store.inscritos().map((r) => ({ ...r, codigo: store.codigo(r.email) }));
+    return sendJson(200, { inscritos: ins, empresas: store.readAll('empresas'), referidos: store.referidos() });
   }
 
   if (req.method === 'GET' && req.url.startsWith('/admin/api/export.csv')) {
     const empresas = req.url.includes('tipo=empresas');
     const csv = empresas
       ? toCsv(store.readAll('empresas'), [['fecha', 'Fecha'], ['empresa', 'Empresa'], ['contacto', 'Contacto'], ['email', 'Email'], ['paquete', 'Paquete'], ['mensaje', 'Mensaje'], ['lang', 'Idioma']])
-      : toCsv(store.inscritos().map((r) => ({ ...r, speedcheck: r.speedcheck ? 'Sí' : 'No' })), [['fecha', 'Fecha'], ['nombre', 'Nombre'], ['email', 'Email'], ['uni', 'Universidad / Grado'], ['speedcheck', 'Entrevistas Express'], ['lang', 'Idioma']]);
+      : toCsv(store.inscritos().map((r) => ({ ...r, speedcheck: r.speedcheck ? 'Sí' : 'No', codigo: store.codigo(r.email) })), [['fecha', 'Fecha'], ['nombre', 'Nombre'], ['email', 'Email'], ['uni', 'Universidad / Grado'], ['speedcheck', 'Entrevistas Express'], ['lang', 'Idioma'], ['codigo', 'Su código'], ['ref', 'Invitado por (código)']]);
     res.writeHead(200, { 'Content-Type': 'text/csv; charset=utf-8', 'Content-Disposition': `attachment; filename="${empresas ? 'empresas' : 'inscritos'}-flyandgrow.csv"` });
     return res.end(csv);
   }
