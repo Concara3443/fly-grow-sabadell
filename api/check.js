@@ -46,28 +46,26 @@ const post = async (data, p = '/inscripcion') => (await request('POST', p, data)
   const ok = { nombre: 'Ana <b>', email: 'alumna@uab.cat', uni: 'UAB', speedcheck: true };
 
   assert.strictEqual(await post(ok), 200);
-  assert.strictEqual(calls.length, 2);
-  assert.deepStrictEqual(calls[0].to, ['org@test', 'otro@test'], 'aviso a todas las direcciones');
-  assert.strictEqual(calls[1].to, 'alumna@uab.cat');
-  assert.strictEqual(calls[1].attachments[0].filename, 'flyandgrow-2027.ics');
-  assert.ok(calls[0].html.includes('Ana &lt;b&gt;'), 'nombre escapado en el aviso');
-  assert.ok(calls[1].html.includes('Hola, Ana:'), 'saludo con el nombre de pila');
-  assert.ok(!calls[1].html.includes('<b>!'), 'sin html del usuario en la confirmacion');
-  assert.ok(calls[1].html.includes('Último paso'), 'bloque de entrevistas si speedcheck');
-  assert.ok(calls[1].text.includes('Ana'), 'version texto plano');
+  assert.strictEqual(calls.length, 1, 'inscripcion = 1 correo (solo la confirmacion)');
+  assert.strictEqual(calls[0].to, 'alumna@uab.cat');
+  assert.strictEqual(calls[0].attachments[0].filename, 'flyandgrow-2027.ics');
+  assert.ok(calls[0].html.includes('Hola, Ana:'), 'saludo con el nombre de pila');
+  assert.ok(!calls[0].html.includes('<b>!'), 'sin html del usuario en la confirmacion');
+  assert.ok(calls[0].html.includes('Último paso'), 'bloque de entrevistas si speedcheck');
+  assert.ok(calls[0].text.includes('Ana'), 'version texto plano');
 
   calls.length = 0;
   failConfirm = true;
   assert.strictEqual(await post({ ...ok, speedcheck: false }), 200, 'si falla la confirmacion la inscripcion sigue valiendo');
-  assert.ok(!calls[1].html.includes('Último paso'));
+  assert.ok(!calls[0].html.includes('Último paso'));
 
   calls.length = 0;
   failConfirm = false;
   assert.strictEqual(await post({ ...ok, lang: 'ca' }), 200);
-  assert.ok(calls[1].subject.startsWith('Inscripció confirmada'), 'correo en catalan si viene de /ca/');
-  assert.ok(calls[1].html.includes('Últim pas'));
-  assert.ok(calls[1].html.includes('calendar.google.com'), 'boton de Google Calendar');
-  assert.ok(Buffer.from(calls[1].attachments[0].content, 'base64').toString().includes('TRIGGER:-P1D'), 'ics con aviso');
+  assert.ok(calls[0].subject.startsWith('Inscripció confirmada'), 'correo en catalan si viene de /ca/');
+  assert.ok(calls[0].html.includes('Últim pas'));
+  assert.ok(calls[0].html.includes('calendar.google.com'), 'boton de Google Calendar');
+  assert.ok(Buffer.from(calls[0].attachments[0].content, 'base64').toString().includes('TRIGGER:-P1D'), 'ics con aviso');
 
   assert.strictEqual(await post({ ...ok, email: 'no-es-email' }), 400);
 
@@ -87,7 +85,7 @@ const post = async (data, p = '/inscripcion') => (await request('POST', p, data)
   const codAna = store.codigo('alumna@uab.cat');
   calls.length = 0;
   await post({ ...ok, email: 'amiga@uab.cat', ref: codAna });
-  assert.ok(calls[1].html.includes(`?ref=${store.codigo('amiga@uab.cat')}`), 'enlace personal en la confirmacion');
+  assert.ok(calls[0].html.includes(`?ref=${store.codigo('amiga@uab.cat')}`), 'enlace personal en la confirmacion');
   await post({ ...ok, ref: codAna });
   assert.deepStrictEqual(store.referidos().map((r) => [r.email, r.invitados]), [['alumna@uab.cat', 1]]);
   calls.length = 0;
@@ -109,9 +107,9 @@ const post = async (data, p = '/inscripcion') => (await request('POST', p, data)
   const csv = await request('GET', '/admin/api/export.csv', null, { 'x-flyandgrow-admin': '1' });
   assert.ok(csv.body.includes('otra@uab.cat'), 'export csv');
 
-  // si el aviso al equipo no sale, la inscripcion vale igual y el aviso queda en cola
+  // si el aviso de una empresa al equipo no sale, la solicitud vale igual y el aviso queda en cola
   failNotify = true;
-  assert.strictEqual(await post({ ...ok, email: 'tercera@uab.cat' }), 200);
+  assert.strictEqual(await post(emp, '/empresa'), 200);
   assert.strictEqual(store.readAll('avisos-pendientes').length, 1, 'aviso en cola para reintentar');
   failNotify = false;
 

@@ -6,6 +6,8 @@
 const store = require('./store');
 const { recordatorio } = require('./emails');
 const { sendWithRetry } = require('./mailer');
+const fs = require('fs');
+const path = require('path');
 
 const FROM_EMAIL = process.env.FROM_EMAIL || 'Fly & Grow <onboarding@resend.dev>';
 const REPLY_TO_EMAIL = process.env.REPLY_TO_EMAIL || (process.env.NOTIFY_EMAIL || '1707653@uab.cat').split(',')[0].trim();
@@ -66,8 +68,33 @@ async function campana(tipo, soloEntrevistas) {
   }
 }
 
+// resumen diario al equipo: las inscripciones nuevas desde el ultimo resumen, en UN correo (no uno por inscripcion)
+const NOTIFY = (process.env.NOTIFY_EMAIL || '1707653@uab.cat').split(',').map((e) => e.trim()).filter(Boolean);
+const ESTADO = path.join(store.DATA_DIR, 'estado.json');
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+async function resumenDiario() {
+  let estado = {};
+  try { estado = JSON.parse(fs.readFileSync(ESTADO, 'utf8')); } catch {}
+  const desde = estado.ultimoResumen || '1970-01-01T00:00:00Z';
+  const todas = store.readAll('inscripciones');
+  const nuevas = todas.filter((r) => r.fecha > desde);
+  const total = store.inscritos().length;
+  console.log(`resumen: ${nuevas.length} inscripciones nuevas, ${total} en total`);
+  if (!nuevas.length || DRY) return;
+  const ee = nuevas.filter((r) => r.speedcheck).length;
+  const filas = nuevas.map((r) => `<tr><td>${esc(r.nombre)}</td><td>${esc(r.email)}</td><td>${esc(r.uni)}</td><td>${r.speedcheck ? 'Sí' : 'No'}</td></tr>`).join('');
+  const html = `<h2>Fly &amp; Grow: ${nuevas.length} inscripciones nuevas</h2>
+    <p>Total de inscritos: <b>${total}</b>. De las nuevas, ${ee} quieren Entrevistas Express.</p>
+    <table cellpadding="6" style="border-collapse:collapse;font-family:Arial,sans-serif;font-size:14px"><tr><th align="left">Nombre</th><th align="left">Email</th><th align="left">Universidad / Grado</th><th align="left">Entrevistas</th></tr>${filas}</table>
+    <p>Lista completa y Excel: https://flyandgrow.es/admin/inscritos.html</p>`;
+  await sendWithRetry({ from: FROM_EMAIL, to: NOTIFY, subject: `Fly & Grow: ${nuevas.length} inscripciones nuevas (total ${total})`, html });
+  fs.writeFileSync(ESTADO, JSON.stringify({ ...estado, ultimoResumen: nuevas[nuevas.length - 1].fecha }), { mode: 0o600 });
+}
+
 (async () => {
   await reintentarAvisos();
+  try { await resumenDiario(); } catch (err) { console.error('resumen diario no enviado (se reintenta manana):', err.message); }
   const c = CAMPANAS.find((x) => hoy() >= x.desde && hoy() <= x.hasta);
   if (c) await campana(c.tipo, c.soloEntrevistas);
   else console.log(`hoy (${hoy()}) no toca ningun recordatorio`);

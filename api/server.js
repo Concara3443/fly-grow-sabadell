@@ -32,6 +32,17 @@ function isNonEmptyString(s, maxLen) {
   return typeof s === 'string' && s.trim().length > 0 && s.length <= maxLen;
 }
 
+// aviso instantaneo gratis (opcional): webhook de Discord. Sin variable, no hace nada.
+async function avisoChat(texto) {
+  if (!process.env.DISCORD_WEBHOOK) return;
+  try {
+    await fetch(process.env.DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ content: texto.slice(0, 1900) }) });
+  } catch (err) {
+    console.error('Error avisando por Discord:', err.message);
+  }
+}
+
+// ponytail: ya no se usa por inscripcion (gastaba cupo de Resend); el equipo recibe el resumen diario de recordatorios.js
 async function sendInscripcionEmail({ nombre, email, uni, speedcheck }) {
   const html = `
     <h2>Nueva inscripción a Fly & Grow Sabadell</h2>
@@ -152,11 +163,8 @@ const server = http.createServer(async (req, res) => {
       console.error('Error guardando inscripcion:', err.message);
       return sendJson(500, { error: 'No se pudo guardar' });
     }
-    try {
-      await sendInscripcionEmail({ nombre, email, uni, speedcheck: !!speedcheck });
-    } catch (err) {
-      console.error('Error enviando aviso de inscripcion:', err.message);
-    }
+    // sin correo al equipo por cada inscripcion: panel + resumen diario + (opcional) Discord
+    avisoChat(`Nueva inscripción: ${nombre.trim()} (${uni.trim()})${speedcheck ? ', quiere Entrevistas Express' : ''}. Total: ${store.inscritos().length}`);
     try {
       await sendConfirmacionEmail({ nombre, email, speedcheck: !!speedcheck, lang, codigo: store.codigo(email) });
     } catch (err) {
@@ -183,6 +191,7 @@ const server = http.createServer(async (req, res) => {
       console.error('Error guardando solicitud de empresa:', err.message);
       return sendJson(500, { error: 'No se pudo guardar' });
     }
+    avisoChat(`Solicitud de empresa: ${empresa.trim()} (${paquete}), contacto ${contacto.trim()} <${email.trim()}>`);
     try {
       await sendEmpresaEmail({ empresa, contacto, email, paquete, mensaje, lang });
     } catch (err) {
