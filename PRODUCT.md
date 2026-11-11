@@ -53,7 +53,7 @@ The Grau en Gestió Aeronàutica is practically unique in Spain, so the audience
 
 - Name: Fly & Grow Sabadell. Official logos (logotype, isotype, imagotype, colour and white) live in `/home/concara/guillermo/Fly & Grow/Grafismo/00_Recursos/00_Logos_FlyGrow/`.
 - Official Fly & Grow corporate blue `#223D58` (from the specifications annex) and UAB institutional green `#008539` (from the UAB logo) are brand colours, not choices.
-- Voice: plain Spanish, direct, student-to-student; to companies, informal plural "vosotros".
+- Voice: professional Spanish. Students: "tú", plain and direct, no colloquialisms. Companies: "usted" (as in the official dossier). Confirmed by Guillermo, 2026-11-11.
 
 ## Evidence on Hand
 

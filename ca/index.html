@@ -251,10 +251,15 @@ p{text-wrap:pretty}
 .pass-stub::before{top:-11px}
 .pass-stub::after{bottom:-11px}
 .pass-gate b{font-family:var(--display);font-size:52px;line-height:1}
-.pass-close{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 26px 22px;padding:12px 14px;background:#E1E7ED;border-radius:3px}
+.speed-copy p b{color:var(--text);font-weight:600}
+.pass-days{display:flex;flex-direction:column;align-items:flex-end}
+.pass-close .countdown-num{font-size:30px;color:var(--paper);justify-content:flex-end}
+.pass-days-lbl{margin-top:5px;font-family:var(--mono);font-size:11.5px;color:var(--pass-soft)}
+.pass-close.texto .countdown-num{display:none}
+.pass-close.texto .pass-days-lbl{margin:0;font-size:14px;font-weight:700;color:#00672C;text-transform:uppercase;letter-spacing:.03em}
+.pass.closed .pass-close .pass-days-lbl{color:var(--blue)}
+.pass-close{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 26px 0;padding:12px 14px;background:#E1E7ED;border-radius:3px}
 .pass-close b{font-family:var(--mono);font-size:15px;font-weight:600}
-.pass-left{font-family:var(--mono);font-weight:700;font-size:14px;color:#00672C;text-transform:uppercase;letter-spacing:.03em}
-.pass.closed .pass-left{color:var(--blue)}
 .pass.closed .pass-cta{display:none}
 .pass-cta{justify-content:center;background:var(--blue);color:var(--paper);font-weight:600;font-size:14px;padding:15px 18px}
 .pass-cta:hover{background:#1a3048}
@@ -294,6 +299,9 @@ p{text-wrap:pretty}
 .checkbox-row label{padding:12px 0}
 .checkbox-row label{font-size:14.5px;color:var(--text);font-family:var(--body)}
 .form-submit{width:100%;justify-content:center;margin-top:6px}
+.form-strip{margin:-40px -40px 30px;border:0;border-radius:var(--r) var(--r) 0 0}
+.form-strip div{flex:1;text-align:center}
+.form-card.submitted .form-strip{display:none}
 .form-note{margin-top:14px;font-size:13px;color:var(--muted);text-align:center}
 .form-error{margin:0 0 14px;font-size:13.5px;color:#ff7a70;text-align:center;line-height:1.5}
 .form-error a{color:inherit;border-bottom:1px solid currentColor}
@@ -318,9 +326,6 @@ p{text-wrap:pretty}
 .invite-link button{flex:none;padding:0 16px;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--blue);background:var(--paper);min-width:96px}
 .invite-wa{margin-top:12px;width:100%;justify-content:center;background:var(--green);color:#fff;font-weight:600;font-size:14px;padding:15px 18px}
 .invite-wa:hover{background:#00702f}
-.hook{margin:30px 0 8px;padding:24px 26px;background:var(--bg-deep);border:1px solid var(--line);border-radius:var(--r);max-width:760px}
-.hook-big{display:block;font-family:var(--display);font-size:clamp(32px,5.4vw,48px);line-height:1;letter-spacing:.02em;color:var(--paper)}
-.hook-sub{display:block;margin-top:10px;font-family:var(--mono);font-size:14px;font-weight:500;color:var(--green-text);text-transform:uppercase;letter-spacing:.04em}
 .insc-count{font-family:var(--mono);font-size:13.5px;color:var(--green-text);margin-top:14px}
 .form-card.submitted .form-fields{display:none}
 
@@ -371,7 +376,7 @@ p{text-wrap:pretty}
   .boardingstrip div:nth-child(2){border-right:none}
   .boardingstrip div:last-child{grid-column:1/-1;border-top:1px solid rgba(156,187,220,.22)}
   .pass-band,.pass-route,.pass-fields{padding-left:18px;padding-right:18px}
-  .pass-close{margin:0 18px 18px}
+  .pass-close{margin:16px 18px 0}
   .pass-fields{grid-template-columns:1fr 1fr}
   .pass-stub{padding:18px}
   .pass-gate b{font-size:40px}
@@ -380,6 +385,7 @@ p{text-wrap:pretty}
   .countdown-num{font-size:30px}
   .timeline-item{grid-template-columns:1fr;gap:5px}
   .form-card{padding:28px 20px}
+  .form-strip{margin:-28px -20px 24px;width:auto}
   .stat-row{flex-direction:column;align-items:flex-start;gap:4px}
   .stat-label{text-align:left}
 }
@@ -606,8 +612,7 @@ p{text-wrap:pretty}
   <div class="container">
     <div class="speed-copy">
         <h2>Entrevistes Express</h2>
-        <p>Entrevistes de 5 a 10 minuts amb empreses del sector el mateix dia del congrés, sense necessitat d'un procés de selecció llarg.</p>
-        <p class="hook"><span class="hook-big">Sense perfil, no hi ha entrevista</span><span class="hook-sub">Les empreses trien abans del congrés. Preinscripció fins al 25 d'abril</span></p>
+        <p>Entrevistes de 5 a 10 minuts amb empreses del sector el mateix dia del congrés. Les empreses trien a qui entrevistar abans de l'esdeveniment, a partir dels perfils: <b>sense perfil, no hi ha entrevista.</b></p>
         <ul class="speed-list">
           <li><span class="num">1</span><span><b>Crea el teu perfil</b> amb el teu correu UAB, el teu curs i el teu CV abans del 25 d'abril.</span></li>
           <li><span class="num">2</span><span><b>Les empreses revisen</b> els perfils i es posen en contacte, abans de l'esdeveniment, amb qui volen entrevistar.</span></li>
@@ -617,6 +622,10 @@ p{text-wrap:pretty}
     <div class="pass">
       <div class="pass-main">
         <div class="pass-band"><span>Targeta d'embarcament</span><b>FG 2027</b></div>
+        <div class="pass-close" id="eeClose" data-left="Queden {n} dies per al tancament" data-one="Queda 1 dia" data-today="Últim dia" data-closed="Embarcament tancat">
+          <div><span class="lbl">Tancament d'embarcament</span><b>25 ABR 2027</b></div>
+          <div class="pass-days"><div class="countdown-num" id="eeDays" aria-hidden="true"></div><span class="pass-days-lbl" id="eeLeft">Fins al 25 d'abril</span></div>
+        </div>
         <div class="pass-route">
           <div><span class="lbl">Origen</span><span class="code">Aula</span></div>
           <svg viewBox="0 0 220 24" aria-hidden="true"><path d="M0 11.4h150v1.2H0z" opacity=".35"/><path transform="translate(156 0)" d="M2 12l20-4 8-7 4 1-3 7 12 1 6-3 3 1-4 5 4 5-3 1-6-3-12 1 3 7-4 1-8-7-20-4z"/></svg>
@@ -628,17 +637,13 @@ p{text-wrap:pretty}
           <div><span class="lbl">Data</span><b>05 Mai 2027</b></div>
           <div><span class="lbl">Durada</span><b>5-10 min</b></div>
         </div>
-        <div class="pass-close" id="eeClose" data-left="Queden {n} dies" data-one="Queda 1 dia" data-today="Últim dia" data-closed="Embarcament tancat">
-          <div><span class="lbl">Tancament d'embarcament</span><b>25 ABR 2027</b></div>
-          <span class="pass-left" id="eeLeft">Fins al 25 d'abril</span>
-        </div>
       </div>
       <div class="pass-stub">
         <div class="pass-gate"><span class="lbl">Porta</span><b>EE</b></div>
         <a href="/entrevistas" class="btn pass-cta" target="_blank" rel="noopener">Crear el meu perfil</a>
       </div>
     </div>
-    <p class="pass-fine">Preinscripció oberta fins al 25 d'abril. Subjecta a un mínim de preinscripcions i a les places que ofereixi cada empresa.</p>
+    <p class="pass-fine">Subjecta a un mínim de preinscripcions i a les places que ofereixi cada empresa.</p>
   </div>
 </section>
 
@@ -681,10 +686,10 @@ p{text-wrap:pretty}
 <section class="inscripcion section-pad" id="inscripcion">
   <div class="container">
     <h2>Reserva la teva plaça</h2>
-    <p class="hook"><span class="hook-big">Gratuït, sense compromís i per a qualsevol grau</span><span class="hook-sub">Inscriure's porta menys d'un minut</span></p>
     <p class="insc-count" data-tpl="Ja hi ha {n} estudiants inscrits." hidden></p>
     <div class="inscripcion-wrap" style="margin-top:36px">
       <div class="form-card" id="formCard">
+        <div class="boardingstrip form-strip"><div><span class="lbl">Entrada</span><span class="val">0 €</span></div><div><span class="lbl">Obert a</span><span class="val">Qualsevol grau</span></div><div><span class="lbl">Inscripció</span><span class="val">1 minut</span></div></div>
         <form class="form-fields" id="regForm">
           <div class="field">
             <label for="nombre">Nom complet</label>
@@ -705,7 +710,7 @@ p{text-wrap:pretty}
           <p class="field-hint" id="speedhint">Requereix correu UAB i preinscripció abans del 25 d'abril. Al correu de confirmació trobaràs com crear el teu perfil de candidat, necessari per optar a les entrevistes.</p>
           <p class="form-error" id="formError" role="alert" hidden></p>
           <button type="submit" class="btn btn-fill form-submit">Confirmar la inscripció</button>
-          <p class="form-note">Inscripció gratuïta i sense compromís, oberta a estudiants de qualsevol universitat o grau. Les teves dades només s'utilitzen per gestionar la teva inscripció (<a href="privacidad/">política de privacitat</a>).</p>
+          <p class="form-note">Sense compromís. Les teves dades només s'utilitzen per gestionar la teva inscripció (<a href="privacidad/">política de privacidad</a>).</p>
         </form>
         <div class="success-state" id="successState">
           <div class="success-icon">✓</div>
@@ -931,6 +936,15 @@ track.innerHTML += track.innerHTML;
   const ymd = (d) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(d);
   const dias = Math.round((Date.parse('2027-04-25') - Date.parse(ymd(new Date()))) / 86400000);
   const left = document.getElementById('eeLeft');
+  if (dias >= 2) {
+    // fichas de solapa como el contador del hero, pero fijas: cambian solo cuando cambia el dia
+    initDigits('eeDays', Math.max(2, String(dias).length));
+    setDigits('eeDays', String(dias).padStart(Math.max(2, String(dias).length), '0'));
+    left.textContent = box.dataset.left.replace('{n}', dias).replace(/^\S+ \d+ /, '');
+    box.setAttribute('aria-label', box.dataset.left.replace('{n}', dias));
+    return;
+  }
+  box.classList.add('texto');
   if (dias < 0) {
     left.textContent = box.dataset.closed;
     box.closest('.pass').classList.add('closed');
@@ -938,7 +952,7 @@ track.innerHTML += track.innerHTML;
     document.getElementById('speedhint').hidden = true;
     document.querySelector('.pass-fine').hidden = true;
   } else {
-    left.textContent = dias === 0 ? box.dataset.today : dias === 1 ? box.dataset.one : box.dataset.left.replace('{n}', dias);
+    left.textContent = dias === 0 ? box.dataset.today : box.dataset.one;
   }
 })();
 
