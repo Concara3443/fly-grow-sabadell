@@ -173,8 +173,6 @@ INDEX = [
     # botones y nav (al final, son trozos cortos que aparecen varias veces)
     ('Inscríbete gratis', 'Inscriu-te gratis'),
     ('>Empresas<', '>Empreses<'),
-    ('Comparte tu enlace personal: si se inscriben tres personas con él, participarás en el sorteo de premios de Fly &amp; Grow Sabadell.<span class="success-ref" id="successRef"></span>',
-     'Comparteix el teu enllaç personal: si s\'hi inscriuen tres persones, participaràs en el sorteig de premis de Fly &amp; Grow Sabadell.<span class="success-ref" id="successRef"></span>'),
     ('>Compartir por WhatsApp<', '>Compartir per WhatsApp<'),
     ('https://wa.me/?text=Me%20he%20inscrito%20en%20Fly%20%26%20Grow%20Sabadell%2C%20el%20congreso%20aeron%C3%A1utico%20universitario%20de%20la%20UAB%3A%20mi%C3%A9rcoles%205%20de%20mayo%2C%2015%3A00%2C%20Campus%20Sabadell.%20La%20entrada%20es%20gratuita%3A%20https%3A//flyandgrow.es', 'https://wa.me/?text=M%27he%20inscrit%20a%20Fly%20%26%20Grow%20Sabadell%2C%20el%20congr%C3%A9s%20aeron%C3%A0utic%20universitari%20de%20la%20UAB%3A%20dimecres%205%20de%20maig%2C%2015%3A00%2C%20Campus%20Sabadell.%20L%27entrada%20%C3%A9s%20gratu%C3%AFta%3A%20https%3A//flyandgrow.es/ca/'),
     ('data-tpl="Ya hay {n} estudiantes inscritos."', 'data-tpl="Ja hi ha {n} estudiants inscrits."'),
@@ -183,6 +181,14 @@ INDEX = [
      "Les empreses seleccionen a qui entrevistar abans del congrés: la preinscripció tanca el <b>25 d'abril</b> i, sense perfil, no és possible optar a una entrevista."),
     ('data-wa="Me he inscrito en Fly & Grow Sabadell, el congreso aeronáutico universitario de la UAB: miércoles 5 de mayo, 15:00, Campus Sabadell. La entrada es gratuita: {url}"',
      'data-wa="M\'he inscrit a Fly & Grow Sabadell, el congrés aeronàutic universitari de la UAB: dimecres 5 de maig, 15:00, Campus Sabadell. L\'entrada és gratuïta: {url}"'),
+    ('>Invita a tus compañeros<', '>Convida els teus companys<'),
+    ('Si se inscriben tres personas con tu enlace personal, participarás en el sorteo de premios de Fly &amp; Grow Sabadell.',
+     "Si s'inscriuen tres persones amb el teu enllaç personal, participaràs en el sorteig de premis de Fly &amp; Grow Sabadell."),
+    ('data-ok="Copiado">Copiar<', 'data-ok="Copiat">Copiar<'),
+    ('data-left="Quedan {n} días" data-one="Queda 1 día" data-today="Último día" data-closed="Embarque cerrado"',
+     'data-left="Queden {n} dies" data-one="Queda 1 dia" data-today="Últim dia" data-closed="Embarcament tancat"'),
+    ('<span class="lbl">Cierre de embarque</span>', "<span class=\"lbl\">Tancament d'embarcament</span>"),
+    ('>Hasta el 25 de abril<', ">Fins al 25 d'abril<"),
     ('Entrevistas Express', 'Entrevistes Express'),
 ]
 

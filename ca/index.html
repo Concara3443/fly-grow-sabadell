@@ -251,6 +251,11 @@ p{text-wrap:pretty}
 .pass-stub::before{top:-11px}
 .pass-stub::after{bottom:-11px}
 .pass-gate b{font-family:var(--display);font-size:52px;line-height:1}
+.pass-close{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:0 26px 22px;padding:12px 14px;background:#E1E7ED;border-radius:3px}
+.pass-close b{font-family:var(--mono);font-size:15px;font-weight:600}
+.pass-left{font-family:var(--mono);font-weight:700;font-size:14px;color:#00672C;text-transform:uppercase;letter-spacing:.03em}
+.pass.closed .pass-left{color:var(--blue)}
+.pass.closed .pass-cta{display:none}
 .pass-cta{justify-content:center;background:var(--blue);color:var(--paper);font-weight:600;font-size:14px;padding:15px 18px}
 .pass-cta:hover{background:#1a3048}
 .pass-fine{font-size:13px;color:var(--muted);margin-top:16px}
@@ -305,9 +310,14 @@ p{text-wrap:pretty}
 .success-cals{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .success-cals .btn{justify-content:center}
 .success-speed b{color:var(--text);font-weight:600}
-.success-share-text{margin-top:26px;font-size:14px}
-.success-share{margin-top:10px}
-.success-ref{display:block;margin-top:10px;font-family:var(--mono);font-size:13px;color:var(--blue-bright);overflow-wrap:anywhere}
+.invite{margin-top:28px;padding:22px 20px;border:1px solid var(--green);border-radius:var(--r);background:rgba(0,133,57,.10);text-align:left}
+.invite-title{font-family:var(--display);font-weight:400;font-size:26px;letter-spacing:.02em;color:var(--green-text)}
+.invite p{color:var(--text);margin-top:6px}
+.invite-link{display:flex;align-items:stretch;margin-top:14px;border:1px solid var(--line);border-radius:2px;background:var(--bg-panel)}
+.invite-link span{flex:1;min-width:0;padding:12px;font-family:var(--mono);font-size:13px;color:var(--blue-bright);overflow-wrap:anywhere}
+.invite-link button{flex:none;padding:0 16px;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--blue);background:var(--paper);min-width:96px}
+.invite-wa{margin-top:12px;width:100%;justify-content:center;background:var(--green);color:#fff;font-weight:600;font-size:14px;padding:15px 18px}
+.invite-wa:hover{background:#00702f}
 .insc-count{font-family:var(--mono);font-size:13.5px;color:var(--green-text);margin-top:14px}
 .form-card.submitted .form-fields{display:none}
 
@@ -358,6 +368,7 @@ p{text-wrap:pretty}
   .boardingstrip div:nth-child(2){border-right:none}
   .boardingstrip div:last-child{grid-column:1/-1;border-top:1px solid rgba(156,187,220,.22)}
   .pass-band,.pass-route,.pass-fields{padding-left:18px;padding-right:18px}
+  .pass-close{margin:0 18px 18px}
   .pass-fields{grid-template-columns:1fr 1fr}
   .pass-stub{padding:18px}
   .pass-gate b{font-size:40px}
@@ -614,6 +625,10 @@ p{text-wrap:pretty}
           <div><span class="lbl">Data</span><b>05 Mai 2027</b></div>
           <div><span class="lbl">Durada</span><b>5-10 min</b></div>
         </div>
+        <div class="pass-close" id="eeClose" data-left="Queden {n} dies" data-one="Queda 1 dia" data-today="Últim dia" data-closed="Embarcament tancat">
+          <div><span class="lbl">Tancament d'embarcament</span><b>25 ABR 2027</b></div>
+          <span class="pass-left" id="eeLeft">Fins al 25 d'abril</span>
+        </div>
       </div>
       <div class="pass-stub">
         <div class="pass-gate"><span class="lbl">Porta</span><b>EE</b></div>
@@ -697,8 +712,12 @@ p{text-wrap:pretty}
             <a class="btn btn-outline" href="https://calendar.google.com/calendar/render?action=TEMPLATE&amp;text=Fly%20%26%20Grow%20Sabadell%202027&amp;dates=20270505T130000Z/20270505T183000Z&amp;ctz=Europe/Madrid&amp;details=2n%20Congr%C3%A9s%20Aeron%C3%A0utic%20Universitari%20de%20la%20UAB.%20Una%20tarda%20amb%20empreses%20del%20sector%20aeron%C3%A0utic%2C%20pon%C3%A8ncies%2C%20taula%20rodona%20amb%20exalumnes%2C%20control%20aeri%20en%20directe%20amb%20IVAO%20Espanya%20i%20Entrevistes%20Express.%0A%0APrograma%3A%0A15%3A00%20Obertura%3A%20estands%20i%20pon%C3%A8ncies%0A17%3A30%20Xerrades%20del%20sector%0A19%3A30%20Networking%20i%20Entrevistes%20Express%0A20%3A30%20Fi%20de%20la%20jornada%0A%0ALloc%3A%20Escola%20d%27Enginyeria%20UAB%2C%20Carrer%20dels%20Emprius%202%2C%2008202%20Sabadell%0ACom%20arribar-hi%3A%20https%3A//maps.app.goo.gl/AoXZpFzdLGN8G7he6%0A%0ASi%20vas%20a%20les%20Entrevistes%20Express%2C%20porta%20un%20parell%20de%20CV%20impresos.%0AM%C3%A9s%20info%3A%20https%3A//flyandgrow.es/ca/%0A%0AEns%20veiem%20a%20pista.&amp;location=Escola%20d%27Enginyeria%20UAB%2C%20Carrer%20dels%20Emprius%202%2C%2008202%20Sabadell" target="_blank" rel="noopener">Google Calendar</a>
             <a class="btn btn-outline" href="../assets/flyandgrow-2027-ca.ics" download="flyandgrow-2027.ics">Apple Calendar / Outlook</a>
           </div>
-          <p class="success-share-text">Comparteix el teu enllaç personal: si s'hi inscriuen tres persones, participaràs en el sorteig de premis de Fly &amp; Grow Sabadell.<span class="success-ref" id="successRef"></span></p>
-          <a class="btn btn-fill success-share" id="shareWa" data-wa="M'he inscrit a Fly & Grow Sabadell, el congrés aeronàutic universitari de la UAB: dimecres 5 de maig, 15:00, Campus Sabadell. L'entrada és gratuïta: {url}" href="https://wa.me/?text=M%27he%20inscrit%20a%20Fly%20%26%20Grow%20Sabadell%2C%20el%20congr%C3%A9s%20aeron%C3%A0utic%20universitari%20de%20la%20UAB%3A%20dimecres%205%20de%20maig%2C%2015%3A00%2C%20Campus%20Sabadell.%20L%27entrada%20%C3%A9s%20gratu%C3%AFta%3A%20https%3A//flyandgrow.es/ca/" target="_blank" rel="noopener">Compartir per WhatsApp</a>
+          <div class="invite">
+            <h4 class="invite-title">Convida els teus companys</h4>
+            <p>Si s'inscriuen tres persones amb el teu enllaç personal, participaràs en el sorteig de premis de Fly &amp; Grow Sabadell.</p>
+            <div class="invite-link"><span id="successRef">flyandgrow.es</span><button type="button" id="copyRef" data-ok="Copiat">Copiar</button></div>
+            <a class="btn invite-wa" id="shareWa" data-wa="M'he inscrit a Fly & Grow Sabadell, el congrés aeronàutic universitari de la UAB: dimecres 5 de maig, 15:00, Campus Sabadell. L'entrada és gratuïta: {url}" href="https://wa.me/?text=M%27he%20inscrit%20a%20Fly%20%26%20Grow%20Sabadell%2C%20el%20congr%C3%A9s%20aeron%C3%A0utic%20universitari%20de%20la%20UAB%3A%20dimecres%205%20de%20maig%2C%2015%3A00%2C%20Campus%20Sabadell.%20L%27entrada%20%C3%A9s%20gratu%C3%AFta%3A%20https%3A//flyandgrow.es/ca/" target="_blank" rel="noopener">Compartir per WhatsApp</a>
+          </div>
         </div>
       </div>
     </div>
@@ -901,6 +920,31 @@ setTimeout(() => document.querySelectorAll('.hero-fade').forEach((el,i) => setTi
 // ticker duplicado pa que el loop no se note
 const track = document.getElementById('tickerTrack');
 track.innerHTML += track.innerHTML;
+
+// cierre de embarque de Entrevistes Express: solo dias (nada de segundos), y al pasar la fecha se cierra
+(() => {
+  const box = document.getElementById('eeClose');
+  const ymd = (d) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(d);
+  const dias = Math.round((Date.parse('2027-04-25') - Date.parse(ymd(new Date()))) / 86400000);
+  const left = document.getElementById('eeLeft');
+  if (dias < 0) {
+    left.textContent = box.dataset.closed;
+    box.closest('.pass').classList.add('closed');
+    document.querySelector('.checkbox-row').hidden = true;
+    document.getElementById('speedhint').hidden = true;
+    document.querySelector('.pass-fine').hidden = true;
+  } else {
+    left.textContent = dias === 0 ? box.dataset.today : dias === 1 ? box.dataset.one : box.dataset.left.replace('{n}', dias);
+  }
+})();
+
+document.getElementById('copyRef').addEventListener('click', async (e) => {
+  try {
+    await navigator.clipboard.writeText(document.getElementById('successRef').textContent);
+    const b = e.currentTarget, txt = b.textContent;
+    b.textContent = b.dataset.ok; setTimeout(() => { b.textContent = txt; }, 1800);
+  } catch {}
+});
 
 // enlace de invitacion: si llega con ?ref=, se guarda para mandarlo con la inscripcion
 const refParam = new URLSearchParams(location.search).get('ref');
