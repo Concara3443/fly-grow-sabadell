@@ -318,6 +318,9 @@ p{text-wrap:pretty}
 .invite-link button{flex:none;padding:0 16px;font-family:var(--mono);font-size:13px;font-weight:600;color:var(--blue);background:var(--paper);min-width:96px}
 .invite-wa{margin-top:12px;width:100%;justify-content:center;background:var(--green);color:#fff;font-weight:600;font-size:14px;padding:15px 18px}
 .invite-wa:hover{background:#00702f}
+.hook{margin:30px 0 8px;padding:24px 26px;background:var(--bg-deep);border:1px solid var(--line);border-radius:var(--r);max-width:760px}
+.hook-big{display:block;font-family:var(--display);font-size:clamp(32px,5.4vw,48px);line-height:1;letter-spacing:.02em;color:var(--paper)}
+.hook-sub{display:block;margin-top:10px;font-family:var(--mono);font-size:14px;font-weight:500;color:var(--green-text);text-transform:uppercase;letter-spacing:.04em}
 .insc-count{font-family:var(--mono);font-size:13.5px;color:var(--green-text);margin-top:14px}
 .form-card.submitted .form-fields{display:none}
 
@@ -604,7 +607,7 @@ p{text-wrap:pretty}
     <div class="speed-copy">
         <h2>Entrevistes Express</h2>
         <p>Entrevistes de 5 a 10 minuts amb empreses del sector el mateix dia del congrés, sense necessitat d'un procés de selecció llarg.</p>
-        <p>Les empreses seleccionen a qui entrevistar abans del congrés: la preinscripció tanca el <b>25 d'abril</b> i, sense perfil, no és possible optar a una entrevista.</p>
+        <p class="hook"><span class="hook-big">Sense perfil, no hi ha entrevista</span><span class="hook-sub">Les empreses trien abans del congrés. Preinscripció fins al 25 d'abril</span></p>
         <ul class="speed-list">
           <li><span class="num">1</span><span><b>Crea el teu perfil</b> amb el teu correu UAB, el teu curs i el teu CV abans del 25 d'abril.</span></li>
           <li><span class="num">2</span><span><b>Les empreses revisen</b> els perfils i es posen en contacte, abans de l'esdeveniment, amb qui volen entrevistar.</span></li>
@@ -678,6 +681,7 @@ p{text-wrap:pretty}
 <section class="inscripcion section-pad" id="inscripcion">
   <div class="container">
     <h2>Reserva la teva plaça</h2>
+    <p class="hook"><span class="hook-big">Gratuït, sense compromís i per a qualsevol grau</span><span class="hook-sub">Inscriure's porta menys d'un minut</span></p>
     <p class="insc-count" data-tpl="Ja hi ha {n} estudiants inscrits." hidden></p>
     <div class="inscripcion-wrap" style="margin-top:36px">
       <div class="form-card" id="formCard">
