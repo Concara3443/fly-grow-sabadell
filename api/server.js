@@ -15,6 +15,7 @@ const ICS_BASE64 = {
 const { confirmacion, empresaCopia } = require('./emails');
 const { sendWithRetry } = require('./mailer');
 const store = require('./store');
+const usuarios = require('./usuarios');
 // el contador publico "Ya somos X inscritos" solo se ensena a partir de este numero
 const PUBLIC_COUNT_MIN = Number(process.env.PUBLIC_COUNT_MIN || 100);
 
@@ -42,7 +43,7 @@ async function avisoChat(texto) {
   }
 }
 
-// ponytail: ya no se usa por inscripcion (gastaba cupo de Resend); el equipo recibe el resumen diario de recordatorios.js
+// ponytail: ya no se usa por inscripcion (gastaba cupo de Resend); el equipo mira el panel /admin/inscritos.html
 async function sendInscripcionEmail({ nombre, email, uni, speedcheck }) {
   const html = `
     <h2>Nueva inscripción a Fly & Grow Sabadell</h2>
@@ -163,7 +164,7 @@ const server = http.createServer(async (req, res) => {
       console.error('Error guardando inscripcion:', err.message);
       return sendJson(500, { error: 'No se pudo guardar' });
     }
-    // sin correo al equipo por cada inscripcion: panel + resumen diario + (opcional) Discord
+    // sin correo al equipo por cada inscripcion: se consulta en el panel (y, opcional, aviso por Discord)
     avisoChat(`Nueva inscripción: ${nombre.trim()} (${uni.trim()})${speedcheck ? ', quiere Entrevistas Express' : ''}. Total: ${store.inscritos().length}`);
     try {
       await sendConfirmacionEmail({ nombre, email, speedcheck: !!speedcheck, lang, codigo: store.codigo(email) });
@@ -214,6 +215,25 @@ const server = http.createServer(async (req, res) => {
   // Doble cierre por si alguna vez se cuela /api/admin/... sin pasar por la contrasena.
   if (req.url.startsWith('/admin/') && req.headers['x-flyandgrow-admin'] !== '1') {
     return sendJson(404, { error: 'not found' });
+  }
+
+  // cuentas del panel: nginx pasa el usuario que ha entrado en X-Flyandgrow-User
+  if (req.url.startsWith('/admin/api/usuarios')) {
+    const yo = req.headers['x-flyandgrow-user'] || '';
+    try {
+      if (req.method === 'GET') return sendJson(200, { usuarios: usuarios.lista(), yo });
+      if (req.method === 'POST') {
+        const { usuario, password } = await readJsonBody(req, 2_000);
+        usuarios.crear(String(usuario || '').trim().toLowerCase(), password);
+        return sendJson(200, { usuarios: usuarios.lista(), yo });
+      }
+      if (req.method === 'DELETE') {
+        usuarios.borrar(new URL(req.url, 'http://x').searchParams.get('u') || '', yo);
+        return sendJson(200, { usuarios: usuarios.lista(), yo });
+      }
+    } catch (err) {
+      return sendJson(err.status || 400, { error: err.message });
+    }
   }
 
   if (req.method === 'GET' && req.url === '/admin/api/datos') {

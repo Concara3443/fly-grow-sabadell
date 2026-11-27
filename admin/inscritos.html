@@ -30,6 +30,14 @@ td.wrap{white-space:normal;min-width:220px}
 .unis{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .unis span{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:5px 9px;font-size:12px}
 .err{color:#ff7a70}
+.acc-form{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;margin-top:12px}
+.acc-form label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
+.acc-form input{background:var(--panel);border:1px solid var(--line);color:var(--text);border-radius:4px;padding:9px 10px;font:inherit;font-size:13px;min-width:200px}
+.acc-form button,.acc-del{background:var(--blue);color:#fff;border:0;border-radius:4px;padding:10px 14px;font:inherit;font-size:13px;cursor:pointer}
+.acc-form button.sec{background:transparent;border:1px solid var(--line);color:var(--text)}
+.acc-del{background:transparent;border:1px solid var(--line);color:#ff9a92;padding:6px 10px}
+.acc-msg{font-size:13px;margin-top:10px}
+.acc-msg.ok{color:var(--green)}
 </style>
 </head>
 <body>
@@ -51,6 +59,16 @@ td.wrap{white-space:normal;min-width:220px}
   <h2>Empresas</h2>
   <div class="bar"><span></span><a href="api/export.csv?tipo=empresas">Descargar Excel (CSV)</a></div>
   <div class="table"><table><thead><tr><th>Fecha</th><th>Empresa</th><th>Contacto</th><th>Email</th><th>Paquete</th><th>Mensaje</th></tr></thead><tbody id="emp"></tbody></table></div>
+
+  <h2>Cuentas del panel</h2>
+  <div class="table"><table><thead><tr><th>Usuario</th><th></th></tr></thead><tbody id="acc"></tbody></table></div>
+  <form class="acc-form" id="accForm">
+    <label>Usuario<input id="accUser" required pattern="[a-z0-9._\-]{3,32}" autocomplete="off" placeholder="nombre"></label>
+    <label>Contraseña<input id="accPass" required minlength="10" autocomplete="new-password" placeholder="mínimo 10 caracteres"></label>
+    <button type="button" class="sec" id="accGen">Generar contraseña</button>
+    <button type="submit">Crear cuenta</button>
+  </form>
+  <p class="acc-msg" id="accMsg" hidden></p>
 </div>
 <script>
 const $ = (id) => document.getElementById(id);
@@ -87,6 +105,33 @@ async function cargar() {
   pintar();
 }
 $('q').addEventListener('input', pintar);
+
+// cuentas del panel
+async function cuentas(method = 'GET', body, qs = '') {
+  const res = await fetch('api/usuarios' + qs, { method, cache: 'no-store', headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined });
+  const d = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(d.error || 'No se ha podido completar.');
+  $('acc').innerHTML = d.usuarios.map((u) => `<tr><td>${esc(u)}${u === d.yo ? ' (tú)' : ''}</td><td style="text-align:right">${u === d.yo ? '' : `<button class="acc-del" data-u="${esc(u)}">Eliminar</button>`}</td></tr>`).join('');
+}
+function avisar(texto, ok) { const m = $('accMsg'); m.textContent = texto; m.className = 'acc-msg' + (ok ? ' ok' : ' err'); m.hidden = false; }
+$('accGen').addEventListener('click', () => {
+  const abc = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const r = crypto.getRandomValues(new Uint32Array(14));
+  $('accPass').value = Array.from(r, (n) => abc[n % abc.length]).join('');
+});
+$('accForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const usuario = $('accUser').value.trim().toLowerCase(), password = $('accPass').value;
+  try { await cuentas('POST', { usuario, password }); avisar(`Cuenta creada. Usuario: ${usuario}  Contraseña: ${password}  (cópiala ahora, no se vuelve a mostrar)`, true); e.target.reset(); }
+  catch (err) { avisar(err.message, false); }
+});
+$('acc').addEventListener('click', async (e) => {
+  const b = e.target.closest('.acc-del'); if (!b) return;
+  if (!confirm(`¿Eliminar la cuenta ${b.dataset.u}? Dejará de poder entrar al panel.`)) return;
+  try { await cuentas('DELETE', null, '?u=' + encodeURIComponent(b.dataset.u)); avisar(`Cuenta ${b.dataset.u} eliminada.`, true); }
+  catch (err) { avisar(err.message, false); }
+});
+cuentas().catch((err) => avisar(err.message, false));
 $('reload').addEventListener('click', (e) => { e.preventDefault(); cargar(); });
 cargar();
 </script>

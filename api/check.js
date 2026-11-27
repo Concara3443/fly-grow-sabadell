@@ -25,6 +25,7 @@ process.env.RESEND_API_KEY = 'test';
 process.env.NOTIFY_EMAIL = 'org@test, otro@test';
 process.env.DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'fyg-check-'));
 process.env.PUBLIC_COUNT_MIN = '3';
+process.env.HTPASSWD = path.join(process.env.DATA_DIR, 'htpasswd');
 const store = require('./store');
 require('./server.js');
 
@@ -112,6 +113,18 @@ const post = async (data, p = '/inscripcion') => (await request('POST', p, data)
   assert.strictEqual(await post(emp, '/empresa'), 200);
   assert.strictEqual(store.readAll('avisos-pendientes').length, 1, 'aviso en cola para reintentar');
   failNotify = false;
+
+  // cuentas del panel
+  const adm = { 'x-flyandgrow-admin': '1', 'x-flyandgrow-user': 'guillermo', 'content-type': 'application/json' };
+  fs.writeFileSync(process.env.HTPASSWD, 'guillermo:$6$x$y\n');
+  assert.deepStrictEqual(JSON.parse((await request('GET', '/admin/api/usuarios', null, adm)).body).usuarios, ['guillermo']);
+  assert.strictEqual((await request('POST', '/admin/api/usuarios', { usuario: 'Laura', password: 'unaclavelarga' }, adm)).status, 200);
+  assert.ok(fs.readFileSync(process.env.HTPASSWD, 'utf8').includes('laura:$6$'), 'hash sha-512, usuario en minusculas');
+  assert.strictEqual((await request('POST', '/admin/api/usuarios', { usuario: 'laura', password: 'otraclavelarga' }, adm)).status, 409, 'duplicado');
+  assert.strictEqual((await request('POST', '/admin/api/usuarios', { usuario: 'ana', password: 'corta' }, adm)).status, 400, 'clave corta');
+  assert.strictEqual((await request('DELETE', '/admin/api/usuarios?u=guillermo', null, adm)).status, 400, 'no borrarse a si mismo');
+  assert.strictEqual((await request('DELETE', '/admin/api/usuarios?u=laura', null, adm)).status, 200);
+  assert.strictEqual((await request('GET', '/admin/api/usuarios')).status, 404, 'sin pasar por nginx no hay acceso');
 
   console.log('ok');
   process.exit(0);
