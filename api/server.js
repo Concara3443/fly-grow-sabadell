@@ -43,7 +43,7 @@ async function avisoChat(texto) {
   }
 }
 
-// ponytail: ya no se usa por inscripcion (gastaba cupo de Resend); el equipo mira el panel /admin/inscritos.html
+// Nota: ya no se usa por inscripcion (gastaba cupo de Resend); el equipo mira el panel /admin/inscritos.html
 async function sendInscripcionEmail({ nombre, email, uni, speedcheck }) {
   const html = `
     <h2>Nueva inscripción a Fly & Grow Sabadell</h2>

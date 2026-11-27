@@ -21,7 +21,7 @@ const CAMPANAS = [
   { tipo: 'dia', desde: '2027-05-02', hasta: '2027-05-04' },
   { tipo: 'encuesta', desde: '2027-05-06', hasta: '2027-05-09' },
 ];
-// ponytail: tope fijo por ejecucion, no mide lo ya gastado hoy; con plan Pro de Resend subir MAX_POR_DIA
+// Nota: tope fijo por ejecucion, no mide lo ya gastado hoy; con plan Pro de Resend subir MAX_POR_DIA
 const MAX_POR_DIA = Number(process.env.MAX_POR_DIA || 80);
 
 const hoy = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Madrid' }).format(new Date());

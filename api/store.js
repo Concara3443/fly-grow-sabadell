@@ -1,5 +1,5 @@
 // Inscripciones y solicitudes guardadas en ficheros JSONL (una linea por registro), fuera del root web.
-// ponytail: ficheros planos, sin base de datos; vale de sobra para cientos de inscritos de un congreso.
+// Ficheros planos, sin base de datos; vale de sobra para cientos de inscritos de un congreso.
 const fs = require('fs');
 const path = require('path');
 
